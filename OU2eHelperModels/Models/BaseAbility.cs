@@ -1,0 +1,20 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace OU2eHelperModels.Models
+{
+    public class BaseAbility
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string HtmlDescription { get; set; }
+        public List<BaseAttribute> Uses { get; set; } = new List<BaseAttribute>();
+        public List<BaseSkill> Supports { get; set; } = new List<BaseSkill>();
+        public List<BaseTrainingValue> Modifies { get; set; } = new List<BaseTrainingValue>();
+        public bool AdvancesSkills { get; set; }
+        public string Type { get; set; }
+        public bool IsProfessional { get; set; }
+    }
+}
