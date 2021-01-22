@@ -9,7 +9,7 @@ namespace OU2eHelper.Services
     public interface IPlayerCharacterService
     {
         Task<IEnumerable<PlayerCharacter>> GetPlayerCharacters();
-        Task<PlayerCharacter> UpdatePlayerCharacter(PlayerCharacter playerCharacter);
+        Task<PlayerCharacter> UpdatePlayerCharacter(int id, PlayerCharacter playerCharacter);
         Task<PlayerCharacter> CreatePlayerCharacter(PlayerCharacter playerCharacter);
 
     }

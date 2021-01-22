@@ -29,9 +29,9 @@ namespace OU2eHelper.Services
             return await _httpClient.PostJsonAsync<PlayerCharacter>("/api/PlayerCharacters", playerCharacter);
         }
 
-        public async Task<PlayerCharacter> UpdatePlayerCharacter(PlayerCharacter playerCharacter)
+        public async Task<PlayerCharacter> UpdatePlayerCharacter(int id, PlayerCharacter playerCharacter)
         {
-            return await _httpClient.PutJsonAsync<PlayerCharacter>("/api/PlayerCharacters", playerCharacter);
+            return await _httpClient.PutJsonAsync<PlayerCharacter>($"/api/PlayerCharacters/{id}", playerCharacter);
         }
     }
 }

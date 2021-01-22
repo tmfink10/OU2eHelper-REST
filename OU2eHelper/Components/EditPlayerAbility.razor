@@ -1,0 +1,26 @@
+﻿@using OU2eHelper.Services
+@inject IPlayerAbilityService PlayerAbilityService
+
+<h3>Edit: @PlayerAbility</h3>
+
+
+
+@code {
+
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
+
+    [Parameter] public int EditPlayerAbilityId { get; set; }
+
+    PlayerAbility PlayerAbility { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        PlayerAbility = await PlayerAbilityService.GetPlayerAbility(EditPlayerAbilityId);
+    }
+
+    async Task SavePlayerAbility()
+    {
+        await PlayerAbilityService.UpdatePlayerAbility(EditPlayerAbilityId, PlayerAbility);
+        await ModalInstance.CloseAsync(ModalResult.Ok(PlayerAbility));
+    }
+}

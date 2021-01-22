@@ -42,6 +42,7 @@ namespace OU2eHelperApi
             services.AddScoped<IBaseSkillRepository, BaseSkillRepository>();
             services.AddScoped<IBaseTrainingValueRepository, BaseTrainingValueRepository>();
             services.AddScoped<IPlayerCharacterRepository, PlayerCharacterRepository>();
+            services.AddScoped<IPlayerAbilityRepository, PlayerAbilityRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

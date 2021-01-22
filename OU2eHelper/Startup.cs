@@ -1,4 +1,5 @@
 using System;
+using Blazored.Modal;
 using BlazorStrap;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
@@ -24,6 +25,7 @@ namespace OU2eHelper
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddBlazoredModal();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddBootstrapCss();
@@ -47,6 +49,11 @@ namespace OU2eHelper
             {
                 client.BaseAddress = new Uri("https://localhost:44332/");
             });
+            services.AddHttpClient<IPlayerAbilityService, PlayerAbilityService>(client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:44332/");
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

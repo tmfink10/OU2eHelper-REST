@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using OU2eHelper.Components
 @inherits IndexBase
 
 <h1 style="margin-bottom: 20px">Outbreak Undead 2e: Character Creator</h1>
@@ -82,12 +83,28 @@ else
     else
     {
         <h2>Abilities</h2>
-        <ul>
+        <BSTable class="col-md-8">
+            <thead>
+            <tr>
+                <th scope="col" style="width: 35%">Ability</th>
+                <th style="width: 15%">Tier</th>
+                <th style="width: 40%">Notes</th>
+                <th style="width: 10%"></th>
+            </tr>
+            </thead>
             @foreach (var ability in ThisCharacter.Abilities)
             {
-                <li>@ability.BaseAbility.Name</li>
+                <tbody>
+                    <tr>
+                        <th scope="row">@ability.BaseAbility.Name</th>
+                        <td>@ability.Tier</td>
+                        <td>@ability.Notes</td>
+                        <td><BSButton Color="Color.Primary" @onclick="@(()=>EditPlayerAbilityModal(ability.Id))">Edit</BSButton></td>
+                    </tr>
+                </tbody>
             }
-        </ul>
+            
+        </BSTable>
         <BSForm Model="Helper" OnValidSubmit="HandleOnValidAbilitySubmit">
             <BSFormGroup>
                 <BSRow class="col-md-8">
@@ -102,7 +119,7 @@ else
                     </BSCol>
                 </BSRow>
             </BSFormGroup>
-            <BSButton Color="Color.Primary" ButtonType="ButtonType.Submit" @onclick="@onConfirmationToggle">Add Ability</BSButton>
+            <BSButton Color="Color.Primary" ButtonType="ButtonType.Submit">Add Ability</BSButton>
         </BSForm>
     }
 

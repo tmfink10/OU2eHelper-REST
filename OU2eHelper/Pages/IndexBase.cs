@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Blazored.Modal;
+using Blazored.Modal.Services;
 using BlazorStrap;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using OU2eHelper.Components;
 using OU2eHelper.Services;
 using OU2eHelperModels.Models;
 
@@ -14,7 +17,6 @@ namespace OU2eHelper.Pages
     {
         [Inject]
         public IBaseAbilityService BaseAbilityService { get; set; }
-
         public IEnumerable<BaseAbility> BaseAbilities { get; set; }
 
         [Inject]
@@ -33,6 +35,10 @@ namespace OU2eHelper.Pages
         public IPlayerCharacterService PlayerCharacterService { get; set; }
         public IEnumerable<PlayerCharacter> PlayerCharacters { get; set; }
 
+        [Inject]
+        public IPlayerAbilityService PlayerAbilityService { get; set; }
+        public IEnumerable<PlayerAbility> PlayerAbilities { get; set; }
+
         protected bool _createNew;
         protected bool _addAbilities;
 
@@ -44,11 +50,6 @@ namespace OU2eHelper.Pages
             BaseTrainingValues = (await BaseTrainingValueService.GetTrainingValues()).ToArray();
             PlayerCharacters = (await PlayerCharacterService.GetPlayerCharacters()).ToArray();
         }
-
-        public PlayerAttribute Strength = new PlayerAttribute();
-        public PlayerAttribute Perception = new PlayerAttribute();
-        public PlayerAttribute Empathy = new PlayerAttribute();
-        public PlayerAttribute Willpower = new PlayerAttribute();
 
         public class HelperClass
         {
@@ -65,47 +66,60 @@ namespace OU2eHelper.Pages
 
             ThisCharacter.Age = 30;
 
-            ThisCharacter.Strength = Strength;
-            ThisCharacter.Strength.Value = 30;
-            ThisCharacter.Strength.BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Strength");
+            ThisCharacter.Strength = new PlayerAttribute
+            {
+                Value = 30, BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Strength")
+            };
+            //ThisCharacter.Attributes.Add(ThisCharacter.Strength.BaseAttribute.Name, ThisCharacter.Strength);
 
-            ThisCharacter.Perception = Perception;
-            ThisCharacter.Perception.Value = 30;
-            ThisCharacter.Perception.BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Perception");
+            ThisCharacter.Perception = new PlayerAttribute
+            {
+                Value = 30, BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Perception")
+            };
+            //ThisCharacter.Attributes.Add(ThisCharacter.Perception.BaseAttribute.Name, ThisCharacter.Perception);
 
-            ThisCharacter.Empathy = Empathy;
-            ThisCharacter.Empathy.Value = 30;
-            ThisCharacter.Empathy.BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Empathy");
+            ThisCharacter.Empathy = new PlayerAttribute
+            {
+                Value = 30, BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Empathy")
+            };
+            //ThisCharacter.Attributes.Add(ThisCharacter.Empathy.BaseAttribute.Name, ThisCharacter.Empathy);
 
-            ThisCharacter.Willpower = Willpower;
-            ThisCharacter.Willpower.Value = 30;
-            ThisCharacter.Willpower.BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Willpower");
+            ThisCharacter.Willpower = new PlayerAttribute
+            {
+                Value = 30, BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Willpower")
+            };
+            //ThisCharacter.Attributes.Add(ThisCharacter.Willpower.BaseAttribute.Name, ThisCharacter.Willpower);
 
             ThisCharacter.DamageThreshold = ThisCharacter.Strength.Bonus + ThisCharacter.Willpower.Bonus;
             ThisCharacter.Morale = ThisCharacter.Empathy.Bonus + ThisCharacter.Willpower.Bonus;
             ThisCharacter.CargoCapacity = ThisCharacter.Strength.Bonus;
-
+            ThisCharacter.SurvivalPoints = 25;
+            
             SetGestalt();
         }
 
-        public async Task HandleOnValidSubmit()
+        public async Task<PlayerCharacter> HandleOnValidSubmit()
         {
-            if (PlayerCharacters.FirstOrDefault(c => c.Id == ThisCharacter.Id) != null)
+            if (ThisCharacter.Id != 0)
             {
-                await PlayerCharacterService.UpdatePlayerCharacter(ThisCharacter);
+                return await PlayerCharacterService.UpdatePlayerCharacter(ThisCharacter.Id, ThisCharacter);
             }
             else
             {
-                await PlayerCharacterService.CreatePlayerCharacter(ThisCharacter);
+                ThisCharacter = await PlayerCharacterService.CreatePlayerCharacter(ThisCharacter);
+                return ThisCharacter;
             }
         }
 
-        public void HandleOnValidAbilitySubmit()
+        public async Task HandleOnValidAbilitySubmit()
         {
             Console.WriteLine($"{Helper.FormString}");
             var tempAbility = new PlayerAbility();
             tempAbility.BaseAbility = BaseAbilities.FirstOrDefault(a => a.Id == Int32.Parse(Helper.FormString));
+            tempAbility = await PlayerAbilityService.CreatePlayerAbility(tempAbility);
+            
             ThisCharacter.Abilities.Add(tempAbility);
+            
         }
 
         public void SetGestalt()
@@ -118,14 +132,21 @@ namespace OU2eHelper.Pages
             {
                 ThisCharacter.GestaltLevel = (ThisCharacter.Age - 35) / 5 + 35;
             }
-
-            ThisCharacter.SurvivalPoints = 25;
         }
 
         protected BSModal Confirmation { get; set; }
         protected void onConfirmationToggle(MouseEventArgs e)
         {
             Confirmation.Toggle();
+        }
+
+        [CascadingParameter] public IModalService Modal { get; set; }
+        protected void EditPlayerAbilityModal(int playerAbilityId)
+        {
+            var parameters = new ModalParameters();
+            parameters.Add(nameof(EditPlayerAbility.EditPlayerAbilityId), playerAbilityId);
+
+            Modal.Show<EditPlayerAbility>("Edit Ability", parameters);
         }
 
         protected BSModal StrengthDescription { get; set; }
