@@ -8,12 +8,12 @@ namespace OU2eHelperModels.Models
     {
         public int Id { get; set; }
         //public int PlayerCharacterId { get; set; }
-        //public PlayerCharacter PlayerCharacter { get; set; }
+        public PlayerCharacter PlayerCharacter { get; set; }
         public BaseAttribute BaseAttribute { get; set; }
         public int Value { get; set; } = 0;
         public int Points { get; set; } = 0;
         public int Bonus => Value / 10;
-        public string Notes { get; set; }
+        public string Notes { get; set; } = "";
 
         public void Advance(PlayerCharacter character)
         {

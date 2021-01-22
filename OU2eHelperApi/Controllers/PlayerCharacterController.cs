@@ -95,7 +95,6 @@ namespace OU2eHelperApi.Controllers
             }
             catch (Exception e)
             {
-                var exception = e;
                 Console.WriteLine(e.StackTrace);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error posting data to the database.");
             }

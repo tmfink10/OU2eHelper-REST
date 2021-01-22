@@ -25,33 +25,35 @@ namespace OU2eHelper
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            var uri = "https://localhost:44332/";
+
             services.AddBlazoredModal();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddBootstrapCss();
             services.AddHttpClient<IBaseAbilityService, BaseAbilityService>(client =>
             {
-                client.BaseAddress = new Uri("https://localhost:44332/");
+                client.BaseAddress = new Uri(uri);
             });
             services.AddHttpClient<IBaseAttributeService, BaseAttributeService>(client =>
             {
-                client.BaseAddress = new Uri("https://localhost:44332/");
+                client.BaseAddress = new Uri(uri);
             });
             services.AddHttpClient<IBaseSkillService, BaseSkillService>(client =>
             {
-                client.BaseAddress = new Uri("https://localhost:44332/");
+                client.BaseAddress = new Uri(uri);
             });
             services.AddHttpClient<IBaseTrainingValueService, BaseTrainingValueService>(client =>
             {
-                client.BaseAddress = new Uri("https://localhost:44332/");
+                client.BaseAddress = new Uri(uri);
             });
             services.AddHttpClient<IPlayerCharacterService, PlayerCharacterService>(client =>
             {
-                client.BaseAddress = new Uri("https://localhost:44332/");
+                client.BaseAddress = new Uri(uri);
             });
             services.AddHttpClient<IPlayerAbilityService, PlayerAbilityService>(client =>
             {
-                client.BaseAddress = new Uri("https://localhost:44332/");
+                client.BaseAddress = new Uri(uri);
             });
 
         }

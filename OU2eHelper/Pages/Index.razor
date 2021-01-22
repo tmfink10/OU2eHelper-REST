@@ -39,19 +39,19 @@ else
             <BSRow Class="col-md-8" style="margin-bottom: 15px">
                 <BSCol>
                     <BSLabel For="characterStrength" @onclick="@onStrengthToggle">Strength</BSLabel>
-                    <BSBasicInput Id="characterStrength" InputType="InputType.Number" PlaceHolder="@ThisCharacter.Strength.Value" @bind-Value="ThisCharacter.Strength.Value" />
+                    <BSBasicInput Id="characterStrength" InputType="InputType.Number" PlaceHolder="@ThisCharacter.StrengthService.Value" @bind-Value="ThisCharacter.StrengthService.Value" />
                 </BSCol>
                 <BSCol>
                     <BSLabel For="characterPerception" @onclick="@onPerceptionToggle">Perception</BSLabel>
-                    <BSBasicInput Id="characterPerception" InputType="InputType.Number" PlaceHolder="@ThisCharacter.Perception.Value" @bind-Value="ThisCharacter.Perception.Value" />
+                    <BSBasicInput Id="characterPerception" InputType="InputType.Number" PlaceHolder="@ThisCharacter.PerceptionService.Value" @bind-Value="ThisCharacter.PerceptionService.Value" />
                 </BSCol>
                 <BSCol>
                     <BSLabel For="characterEmpathy" @onclick="@onEmpathyToggle">Empathy</BSLabel>
-                    <BSBasicInput Id="characterEmpathy" InputType="InputType.Number" PlaceHolder="@ThisCharacter.Empathy.Value" @bind-Value="ThisCharacter.Empathy.Value" />
+                    <BSBasicInput Id="characterEmpathy" InputType="InputType.Number" PlaceHolder="@ThisCharacter.EmpathyService.Value" @bind-Value="ThisCharacter.EmpathyService.Value" />
                 </BSCol>
                 <BSCol>
                     <BSLabel For="characterWillpower" @onclick="@onWillpowerToggle">Willpower</BSLabel>
-                    <BSBasicInput Id="characterWillpower" InputType="InputType.Number" PlaceHolder="@ThisCharacter.Willpower.Value" @bind-Value="ThisCharacter.Willpower.Value" />
+                    <BSBasicInput Id="characterWillpower" InputType="InputType.Number" PlaceHolder="@ThisCharacter.WillpowerService.Value" @bind-Value="ThisCharacter.WillpowerService.Value" />
                 </BSCol>
             </BSRow>
             <h3 style="margin-bottom: 5px">Character Resources</h3>
@@ -136,7 +136,7 @@ else
     <BSModal @ref="StrengthDescription" IsCentered="true">
         <BSModalHeader OnClick="@onStrengthToggle">Strength</BSModalHeader>
         <BSModalBody>
-            <p>@((MarkupString) ThisCharacter.Strength.BaseAttribute.HtmlDescription)</p>
+            <p>@((MarkupString) ThisCharacter.StrengthService.BaseAttribute.HtmlDescription)</p>
         </BSModalBody>
         <BSModalFooter>
             <BSButton Color="Color.Primary" OnClick="@onStrengthToggle">Ok</BSButton>
@@ -145,7 +145,7 @@ else
     <BSModal @ref="PerceptionDescription" IsCentered="true">
         <BSModalHeader OnClick="@onPerceptionToggle">Perception</BSModalHeader>
         <BSModalBody>
-            <p>@((MarkupString) ThisCharacter.Perception.BaseAttribute.HtmlDescription)</p>
+            <p>@((MarkupString) ThisCharacter.PerceptionService.BaseAttribute.HtmlDescription)</p>
         </BSModalBody>
         <BSModalFooter>
             <BSButton Color="Color.Primary" OnClick="@onPerceptionToggle">Ok</BSButton>
@@ -154,7 +154,7 @@ else
     <BSModal @ref="EmpathyDescription" IsCentered="true">
         <BSModalHeader OnClick="@onEmpathyToggle">Empathy</BSModalHeader>
         <BSModalBody>
-            <p>@((MarkupString) ThisCharacter.Empathy.BaseAttribute.HtmlDescription)</p>
+            <p>@((MarkupString) ThisCharacter.EmpathyService.BaseAttribute.HtmlDescription)</p>
         </BSModalBody>
         <BSModalFooter>
             <BSButton Color="Color.Primary" OnClick="@onEmpathyToggle">Ok</BSButton>
@@ -163,7 +163,7 @@ else
     <BSModal @ref="WillpowerDescription" IsCentered="true">
         <BSModalHeader OnClick="@onWillpowerToggle">Willpower</BSModalHeader>
         <BSModalBody>
-            <p>@((MarkupString) ThisCharacter.Willpower.BaseAttribute.HtmlDescription)</p>
+            <p>@((MarkupString) ThisCharacter.WillpowerService.BaseAttribute.HtmlDescription)</p>
         </BSModalBody>
         <BSModalFooter>
             <BSButton Color="Color.Primary" OnClick="@onWillpowerToggle">Ok</BSButton>

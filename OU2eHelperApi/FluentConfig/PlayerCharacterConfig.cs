@@ -16,16 +16,23 @@ namespace OU2eHelperApi.FluentConfig
                 .HasMaxLength(60);
             builder.Property(c => c.Sex)
                 .HasMaxLength(20);
+
             builder.Ignore(c => c.Attributes);
+            builder.Ignore(c => c.StrengthService);
+            builder.Ignore(c => c.PerceptionService);
+            builder.Ignore(c => c.EmpathyService);
+            builder.Ignore(c => c.WillpowerService);
+            
             //Notes intentionally omitted to be nvarchar(max)
 
-            builder.HasOne<PlayerAttribute>(c => c.Strength);
-            builder.HasOne<PlayerAttribute>(c => c.Perception);
-            builder.HasOne<PlayerAttribute>(c => c.Empathy);
-            builder.HasOne<PlayerAttribute>(c => c.Willpower);
-            builder.HasMany<PlayerSkill>(c => c.Skills);
-            builder.HasMany<PlayerAbility>(c => c.Abilities);
-            builder.HasMany<PlayerTrainingValue>(c => c.TrainingValues);
+            builder.HasMany<PlayerSkill>(c => c.Skills)
+                .WithOne(s => s.PlayerCharacter);
+            builder.HasMany<PlayerAbility>(c => c.Abilities)
+                .WithOne(a => a.PlayerCharacter);
+            builder.HasMany<PlayerTrainingValue>(c => c.TrainingValues)
+                .WithOne(t => t.PlayerCharacter);
+            builder.HasMany<PlayerAttribute>(c => c.PlayerAttributes)
+                .WithOne(a => a.PlayerCharacter);
 
             builder.HasData(new PlayerCharacter
             {
