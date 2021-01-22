@@ -61,10 +61,6 @@ namespace OU2eHelperApi.Data
                 result.Age = playerCharacter.Age;
                 result.Sex = playerCharacter.Sex;
                 result.Attributes = playerCharacter.Attributes;
-                result.Strength = playerCharacter.Strength;
-                result.Perception = playerCharacter.Perception;
-                result.Empathy = playerCharacter.Empathy;
-                result.Willpower = playerCharacter.Willpower;
                 result.Skills = playerCharacter.Skills;
                 result.Abilities = playerCharacter.Abilities;
                 result.TrainingValues = playerCharacter.TrainingValues;

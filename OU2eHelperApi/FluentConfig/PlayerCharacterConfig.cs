@@ -19,14 +19,13 @@ namespace OU2eHelperApi.FluentConfig
             builder.Ignore(c => c.Attributes);
             //Notes intentionally omitted to be nvarchar(max)
 
-            builder.HasMany<PlayerAttribute>(c => c.PlayerAttributes)
-                .WithOne(c => c.PlayerCharacter);
-            builder.HasMany<PlayerSkill>(c => c.Skills)
-                .WithOne(s => s.PlayerCharacter);
-            builder.HasMany<PlayerAbility>(c => c.Abilities)
-                .WithOne(a => a.PlayerCharacter);
-            builder.HasMany<PlayerTrainingValue>(c => c.TrainingValues)
-                .WithOne(t => t.PlayerCharacter);
+            builder.HasOne<PlayerAttribute>(c => c.Strength);
+            builder.HasOne<PlayerAttribute>(c => c.Perception);
+            builder.HasOne<PlayerAttribute>(c => c.Empathy);
+            builder.HasOne<PlayerAttribute>(c => c.Willpower);
+            builder.HasMany<PlayerSkill>(c => c.Skills);
+            builder.HasMany<PlayerAbility>(c => c.Abilities);
+            builder.HasMany<PlayerTrainingValue>(c => c.TrainingValues);
 
             builder.HasData(new PlayerCharacter
             {

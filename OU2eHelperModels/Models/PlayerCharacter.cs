@@ -13,7 +13,7 @@ namespace OU2eHelperModels.Models
         public int Age { get; set; }
         public string Sex { get; set; }
         public Dictionary<string, PlayerAttribute> Attributes { get; set; } = new Dictionary<string, PlayerAttribute>();
-        public List<PlayerAttribute> PlayerAttributes { get; set; } = new List<PlayerAttribute>();
+        //public List<PlayerAttribute> PlayerAttributes { get; set; } = new List<PlayerAttribute>();
         public List<PlayerSkill> Skills { get; set; } = new List<PlayerSkill>();
         public List<PlayerAbility> Abilities { get; set; } = new List<PlayerAbility>();
         public List<PlayerTrainingValue> TrainingValues { get; set; } = new List<PlayerTrainingValue>();
@@ -25,6 +25,11 @@ namespace OU2eHelperModels.Models
         public int DamageThreshold { get; set; } = 0;
         public int Morale { get; set; } = 0;
         public string Notes { get; set; } = "";
+
+        public PlayerAttribute Strength { get; set; }
+        public PlayerAttribute Perception { get; set; }
+        public PlayerAttribute Empathy { get; set; }
+        public PlayerAttribute Willpower { get; set; }
 
         //private PlayerCharacter()
         //{
