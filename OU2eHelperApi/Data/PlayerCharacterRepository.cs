@@ -45,11 +45,11 @@ namespace OU2eHelperApi.Data
             _dbContext.Entry(playerCharacter.PerceptionService.BaseAttribute).State = EntityState.Unchanged;
             _dbContext.Entry(playerCharacter.EmpathyService.BaseAttribute).State = EntityState.Unchanged;
             _dbContext.Entry(playerCharacter.WillpowerService.BaseAttribute).State = EntityState.Unchanged;
-            foreach (var attribute in playerCharacter.PlayerAttributes)
-            {
-                _dbContext.Entry(attribute).State = EntityState.Unchanged;
-            }
-            await _dbContext.SaveChangesAsync();
+            //foreach (var attribute in playerCharacter.PlayerAttributes)
+            //{
+            //    _dbContext.Entry(attribute).State = EntityState.Unchanged;
+            //}
+            //await _dbContext.SaveChangesAsync();
             return result.Entity;
         }
 

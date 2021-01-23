@@ -36,7 +36,7 @@ namespace OU2eHelperApi
             });
             services.AddDbContext<OU2eHelperContext>(options => options.UseSqlServer(
                 Configuration.GetConnectionString("DefaultConnection")
-            ));
+            ).EnableSensitiveDataLogging(true));
             services.AddScoped<IBaseAbilityRepository, BaseAbilityRepository>();
             services.AddScoped<IBaseAttributeRepository, BaseAttributeRepository>();
             services.AddScoped<IBaseSkillRepository, BaseSkillRepository>();
