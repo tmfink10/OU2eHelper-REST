@@ -26,10 +26,10 @@ namespace OU2eHelperModels.Models
         public int Morale { get; set; } = 0;
         public string Notes { get; set; } = "";
 
-        public PlayerAttribute StrengthService { get; set; }
-        public PlayerAttribute PerceptionService { get; set; }
-        public PlayerAttribute EmpathyService { get; set; }
-        public PlayerAttribute WillpowerService { get; set; }
+        //public PlayerAttribute StrengthService { get; set; }
+        //public PlayerAttribute PerceptionService { get; set; }
+        //public PlayerAttribute EmpathyService { get; set; }
+        //public PlayerAttribute WillpowerService { get; set; }
 
         //private PlayerCharacter()
         //{

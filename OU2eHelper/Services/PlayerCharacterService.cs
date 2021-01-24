@@ -12,7 +12,6 @@ namespace OU2eHelper.Services
     public class PlayerCharacterService : IPlayerCharacterService
     {
         private readonly HttpClient _httpClient;
-        private readonly PlayerCharacter _playerCharacter;
 
         public PlayerCharacterService(HttpClient httpClient)
         {

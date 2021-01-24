@@ -18,10 +18,10 @@ namespace OU2eHelperApi.FluentConfig
                 .HasMaxLength(20);
 
             builder.Ignore(c => c.Attributes);
-            builder.Ignore(c => c.StrengthService);
-            builder.Ignore(c => c.PerceptionService);
-            builder.Ignore(c => c.EmpathyService);
-            builder.Ignore(c => c.WillpowerService);
+            //builder.Ignore(c => c.StrengthService);
+            //builder.Ignore(c => c.PerceptionService);
+            //builder.Ignore(c => c.EmpathyService);
+            //builder.Ignore(c => c.WillpowerService);
             
             //Notes intentionally omitted to be nvarchar(max)
 
@@ -32,7 +32,8 @@ namespace OU2eHelperApi.FluentConfig
             builder.HasMany<PlayerTrainingValue>(c => c.TrainingValues)
                 .WithOne(t => t.PlayerCharacter);
             builder.HasMany<PlayerAttribute>(c => c.PlayerAttributes)
-                .WithOne(a => a.PlayerCharacter);
+                .WithOne(a => a.PlayerCharacter)
+                .HasForeignKey(a => a.PlayerCharacterId);
 
             builder.HasData(new PlayerCharacter
             {

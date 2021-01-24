@@ -60,6 +60,11 @@ namespace OU2eHelper.Pages
         protected PlayerAbility ThisPlayerAbility = new PlayerAbility();
         protected HelperClass Helper = new HelperClass();
 
+        protected PlayerAttribute StrengthService { get; set; }
+        protected PlayerAttribute PerceptionService { get; set; }
+        protected PlayerAttribute EmpathyService { get; set; }
+        protected PlayerAttribute WillpowerService { get; set; }
+
         public void HandleNewCharacterClick()
         {
             _createNew = !_createNew;
@@ -72,7 +77,7 @@ namespace OU2eHelper.Pages
             };
             ThisCharacter.PlayerAttributes.Add(strength);
             ThisCharacter.Attributes.Add(strength.BaseAttribute.Name, strength);
-            ThisCharacter.StrengthService = strength;
+            StrengthService = strength;
 
             var perception = new PlayerAttribute
             {
@@ -80,7 +85,7 @@ namespace OU2eHelper.Pages
             };
             ThisCharacter.PlayerAttributes.Add(perception);
             ThisCharacter.Attributes.Add(perception.BaseAttribute.Name, perception);
-            ThisCharacter.PerceptionService = perception;
+            PerceptionService = perception;
 
             var empathy = new PlayerAttribute
             {
@@ -88,7 +93,7 @@ namespace OU2eHelper.Pages
             };
             ThisCharacter.PlayerAttributes.Add(empathy);
             ThisCharacter.Attributes.Add(empathy.BaseAttribute.Name, empathy);
-            ThisCharacter.EmpathyService = empathy;
+            EmpathyService = empathy;
 
             var willpower = new PlayerAttribute
             {
@@ -96,7 +101,7 @@ namespace OU2eHelper.Pages
             };
             ThisCharacter.PlayerAttributes.Add(willpower);
             ThisCharacter.Attributes.Add(willpower.BaseAttribute.Name, willpower);
-            ThisCharacter.WillpowerService = willpower;
+            WillpowerService = willpower;
 
             ThisCharacter.DamageThreshold = strength.Bonus + willpower.Bonus;
             ThisCharacter.Morale = empathy.Bonus + willpower.Bonus;
@@ -106,39 +111,33 @@ namespace OU2eHelper.Pages
             SetGestalt();
         }
 
+        
+
         public async Task<PlayerCharacter> HandleOnValidSubmit()
         {
             if (ThisCharacter.Id != 0)
             {
                 //Sync the attribute services with the attributes in the list
                 //Sync Strength
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Strength").Value =
-                        ThisCharacter.StrengthService.Value;
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Strength").Points =
-                    ThisCharacter.StrengthService.Points;
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Strength").Notes =
-                    ThisCharacter.StrengthService.Notes;
+                var strength = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Strength");
+                strength.Value = StrengthService.Value;
+                strength.Points = StrengthService.Points;
+                strength.Notes = StrengthService.Notes;
                 //Sync Perception
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Perception").Value =
-                    ThisCharacter.PerceptionService.Value;
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Perception").Points =
-                    ThisCharacter.PerceptionService.Points;
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Perception").Notes =
-                    ThisCharacter.PerceptionService.Notes;
+                var perception = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Perception");
+                perception.Value = PerceptionService.Value;
+                perception.Points = PerceptionService.Points;
+                perception.Notes = PerceptionService.Notes;
                 //Sync Empathy
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Empathy").Value =
-                    ThisCharacter.EmpathyService.Value;
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Empathy").Points =
-                    ThisCharacter.EmpathyService.Points;
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Empathy").Notes =
-                    ThisCharacter.EmpathyService.Notes;
+                var empathy = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Empathy");
+                empathy.Value = EmpathyService.Value;
+                empathy.Points = EmpathyService.Points;
+                empathy.Notes = EmpathyService.Notes;
                 //Sync Willpower
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Willpower").Value =
-                    ThisCharacter.WillpowerService.Value;
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Willpower").Points =
-                    ThisCharacter.WillpowerService.Points;
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Willpower").Notes =
-                    ThisCharacter.WillpowerService.Notes;
+                var willpower = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Willpower");
+                willpower.Value = WillpowerService.Value;
+                willpower.Points = WillpowerService.Points;
+                willpower.Notes = WillpowerService.Notes;
 
                 return await PlayerCharacterService.UpdatePlayerCharacter(ThisCharacter.Id, ThisCharacter);
             }
@@ -146,36 +145,27 @@ namespace OU2eHelper.Pages
             {
                 //Sync the attribute services with the attributes in the list
                 //Sync Strength
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Strength").Value =
-                        ThisCharacter.StrengthService.Value;
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Strength").Points =
-                    ThisCharacter.StrengthService.Points;
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Strength").Notes =
-                    ThisCharacter.StrengthService.Notes;
+                var strength = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Strength");
+                strength.Value = StrengthService.Value;
+                strength.Points = StrengthService.Points;
+                strength.Notes = StrengthService.Notes;
                 //Sync Perception
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Perception").Value =
-                    ThisCharacter.PerceptionService.Value;
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Perception").Points =
-                    ThisCharacter.PerceptionService.Points;
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Perception").Notes =
-                    ThisCharacter.PerceptionService.Notes;
+                var perception = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Perception");
+                perception.Value = PerceptionService.Value;
+                perception.Points = PerceptionService.Points;
+                perception.Notes = PerceptionService.Notes;
                 //Sync Empathy
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Empathy").Value =
-                    ThisCharacter.EmpathyService.Value;
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Empathy").Points =
-                    ThisCharacter.EmpathyService.Points;
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Empathy").Notes =
-                    ThisCharacter.EmpathyService.Notes;
+                var empathy = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Empathy");
+                empathy.Value = EmpathyService.Value;
+                empathy.Points = EmpathyService.Points;
+                empathy.Notes = EmpathyService.Notes;
                 //Sync Willpower
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Willpower").Value =
-                    ThisCharacter.WillpowerService.Value;
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Willpower").Points =
-                    ThisCharacter.WillpowerService.Points;
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Willpower").Notes =
-                    ThisCharacter.WillpowerService.Notes;
+                var willpower = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Willpower");
+                willpower.Value = WillpowerService.Value;
+                willpower.Points = WillpowerService.Points;
+                willpower.Notes = WillpowerService.Notes;
 
-                ThisCharacter = await PlayerCharacterService.CreatePlayerCharacter(ThisCharacter);
-                return ThisCharacter;
+                return ThisCharacter = await PlayerCharacterService.CreatePlayerCharacter(ThisCharacter);
             }
         }
 

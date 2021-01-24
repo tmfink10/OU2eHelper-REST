@@ -7,7 +7,7 @@ namespace OU2eHelperModels.Models
     public class PlayerAttribute
     {
         public int Id { get; set; }
-        //public int PlayerCharacterId { get; set; }
+        public int PlayerCharacterId { get; set; }
         public PlayerCharacter PlayerCharacter { get; set; }
         public BaseAttribute BaseAttribute { get; set; }
         public int Value { get; set; } = 0;

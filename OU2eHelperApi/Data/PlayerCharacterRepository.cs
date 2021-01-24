@@ -41,15 +41,15 @@ namespace OU2eHelperApi.Data
         public async Task<PlayerCharacter> AddPlayerCharacter(PlayerCharacter playerCharacter)
         {
             var result = await _dbContext.PlayerCharacters.AddAsync(playerCharacter);
-            _dbContext.Entry(playerCharacter.StrengthService.BaseAttribute).State = EntityState.Unchanged;
-            _dbContext.Entry(playerCharacter.PerceptionService.BaseAttribute).State = EntityState.Unchanged;
-            _dbContext.Entry(playerCharacter.EmpathyService.BaseAttribute).State = EntityState.Unchanged;
-            _dbContext.Entry(playerCharacter.WillpowerService.BaseAttribute).State = EntityState.Unchanged;
-            //foreach (var attribute in playerCharacter.PlayerAttributes)
-            //{
-            //    _dbContext.Entry(attribute).State = EntityState.Unchanged;
-            //}
-            //await _dbContext.SaveChangesAsync();
+            //_dbContext.Entry(playerCharacter.StrengthService.BaseAttribute).State = EntityState.Unchanged;
+            //_dbContext.Entry(playerCharacter.PerceptionService.BaseAttribute).State = EntityState.Unchanged;
+            //_dbContext.Entry(playerCharacter.EmpathyService.BaseAttribute).State = EntityState.Unchanged;
+            //_dbContext.Entry(playerCharacter.WillpowerService.BaseAttribute).State = EntityState.Unchanged;
+            foreach (var attribute in playerCharacter.PlayerAttributes)
+            {
+                _dbContext.Entry(attribute.BaseAttribute).State = EntityState.Unchanged;
+            }
+            await _dbContext.SaveChangesAsync();
             return result.Entity;
         }
 
