@@ -55,6 +55,7 @@ namespace OU2eHelper.Pages
         {
             public string FormString;
         }
+
         protected PlayerCharacter ThisCharacter = new PlayerCharacter();
         protected BaseAbility ThisBaseAbility = new BaseAbility();
         protected PlayerAbility ThisPlayerAbility = new PlayerAbility();
@@ -65,7 +66,7 @@ namespace OU2eHelper.Pages
         protected PlayerAttribute EmpathyService { get; set; }
         protected PlayerAttribute WillpowerService { get; set; }
 
-        public void HandleNewCharacterClick()
+        protected void HandleNewCharacterClick()
         {
             _createNew = !_createNew;
 
@@ -76,7 +77,6 @@ namespace OU2eHelper.Pages
                 Value = 30, BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Strength")
             };
             ThisCharacter.PlayerAttributes.Add(strength);
-            ThisCharacter.Attributes.Add(strength.BaseAttribute.Name, strength);
             StrengthService = strength;
 
             var perception = new PlayerAttribute
@@ -84,7 +84,6 @@ namespace OU2eHelper.Pages
                 Value = 30, BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Perception")
             };
             ThisCharacter.PlayerAttributes.Add(perception);
-            ThisCharacter.Attributes.Add(perception.BaseAttribute.Name, perception);
             PerceptionService = perception;
 
             var empathy = new PlayerAttribute
@@ -92,7 +91,6 @@ namespace OU2eHelper.Pages
                 Value = 30, BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Empathy")
             };
             ThisCharacter.PlayerAttributes.Add(empathy);
-            ThisCharacter.Attributes.Add(empathy.BaseAttribute.Name, empathy);
             EmpathyService = empathy;
 
             var willpower = new PlayerAttribute
@@ -100,7 +98,6 @@ namespace OU2eHelper.Pages
                 Value = 30, BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Willpower")
             };
             ThisCharacter.PlayerAttributes.Add(willpower);
-            ThisCharacter.Attributes.Add(willpower.BaseAttribute.Name, willpower);
             WillpowerService = willpower;
 
             ThisCharacter.DamageThreshold = strength.Bonus + willpower.Bonus;
@@ -110,10 +107,8 @@ namespace OU2eHelper.Pages
 
             SetGestalt();
         }
-
         
-
-        public async Task<PlayerCharacter> HandleOnValidSubmit()
+        protected async Task<PlayerCharacter> HandleOnValidSubmit()
         {
             if (ThisCharacter.Id != 0)
             {
@@ -169,7 +164,7 @@ namespace OU2eHelper.Pages
             }
         }
 
-        public async Task HandleOnValidAbilitySubmit()
+        protected async Task HandleOnValidAbilitySubmit()
         {
             Console.WriteLine($"{Helper.FormString}");
             var tempAbility = new PlayerAbility();
@@ -180,7 +175,7 @@ namespace OU2eHelper.Pages
             
         }
 
-        public void SetGestalt()
+        protected void SetGestalt()
         {
             if (ThisCharacter.Age < 36)
             {

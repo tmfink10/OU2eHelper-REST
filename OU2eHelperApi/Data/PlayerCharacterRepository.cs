@@ -41,10 +41,6 @@ namespace OU2eHelperApi.Data
         public async Task<PlayerCharacter> AddPlayerCharacter(PlayerCharacter playerCharacter)
         {
             var result = await _dbContext.PlayerCharacters.AddAsync(playerCharacter);
-            //_dbContext.Entry(playerCharacter.StrengthService.BaseAttribute).State = EntityState.Unchanged;
-            //_dbContext.Entry(playerCharacter.PerceptionService.BaseAttribute).State = EntityState.Unchanged;
-            //_dbContext.Entry(playerCharacter.EmpathyService.BaseAttribute).State = EntityState.Unchanged;
-            //_dbContext.Entry(playerCharacter.WillpowerService.BaseAttribute).State = EntityState.Unchanged;
             foreach (var attribute in playerCharacter.PlayerAttributes)
             {
                 _dbContext.Entry(attribute.BaseAttribute).State = EntityState.Unchanged;
@@ -64,7 +60,6 @@ namespace OU2eHelperApi.Data
                 result.LastName = playerCharacter.LastName;
                 result.Age = playerCharacter.Age;
                 result.Sex = playerCharacter.Sex;
-                result.Attributes = playerCharacter.Attributes;
                 result.Skills = playerCharacter.Skills;
                 result.Abilities = playerCharacter.Abilities;
                 result.TrainingValues = playerCharacter.TrainingValues;

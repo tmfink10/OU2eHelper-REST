@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OU2eHelperApi.Data;
 
 namespace OU2eHelperApi.Migrations
 {
     [DbContext(typeof(OU2eHelperContext))]
-    partial class OU2eHelperContextModelSnapshot : ModelSnapshot
+    [Migration("20210124085405_RefactorPlayerCharacter")]
+    partial class RefactorPlayerCharacter
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

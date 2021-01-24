@@ -17,12 +17,6 @@ namespace OU2eHelperApi.FluentConfig
             builder.Property(c => c.Sex)
                 .HasMaxLength(20);
 
-            builder.Ignore(c => c.Attributes);
-            //builder.Ignore(c => c.StrengthService);
-            //builder.Ignore(c => c.PerceptionService);
-            //builder.Ignore(c => c.EmpathyService);
-            //builder.Ignore(c => c.WillpowerService);
-            
             //Notes intentionally omitted to be nvarchar(max)
 
             builder.HasMany<PlayerSkill>(c => c.Skills)

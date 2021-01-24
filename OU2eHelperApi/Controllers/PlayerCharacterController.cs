@@ -121,8 +121,9 @@ namespace OU2eHelperApi.Controllers
                 return await _playerCharacterRepository.UpdatePlayerCharacter(playerCharacter);
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.StackTrace);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error updating data in the database.");
             }
         }
