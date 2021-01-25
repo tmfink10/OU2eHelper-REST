@@ -43,8 +43,8 @@ namespace OU2eHelperApi
             services.AddScoped<IPlayerAbilityRepository, PlayerAbilityRepository>();
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
-            //services.AddDbContext<OU2eHelperContext>(options => options.UseSqlServer(
-            //    Configuration.GetConnectionString("DefaultConnection")
+            services.AddDbContext<OU2eHelperContext>(options => options.UseSqlServer(
+                Configuration.GetConnectionString("DefaultConnection")));
             //).EnableSensitiveDataLogging(true));
         }
 

@@ -88,7 +88,7 @@ namespace OU2eHelperApi.Controllers
                 var newPlayerCharacter = await _playerCharacterRepository.AddPlayerCharacter(playerCharacter);
 
                 //This is the last line of code to execute before the web app crashes with Status Code 500. Executes fine and returns 201 from Swagger.
-                return newPlayerCharacter;
+                return CreatedAtAction(nameof(GetPlayerCharacter), new { id = newPlayerCharacter.Id }, newPlayerCharacter);
             }
 
             return BadRequest();
