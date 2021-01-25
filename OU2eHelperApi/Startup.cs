@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using OU2eHelperApi.Data;
 
 namespace OU2eHelperApi
@@ -34,15 +35,17 @@ namespace OU2eHelperApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "OU2eHelperApi", Version = "v1" });
             });
-            services.AddDbContext<OU2eHelperContext>(options => options.UseSqlServer(
-                Configuration.GetConnectionString("DefaultConnection")
-            ).EnableSensitiveDataLogging(true));
             services.AddScoped<IBaseAbilityRepository, BaseAbilityRepository>();
             services.AddScoped<IBaseAttributeRepository, BaseAttributeRepository>();
             services.AddScoped<IBaseSkillRepository, BaseSkillRepository>();
             services.AddScoped<IBaseTrainingValueRepository, BaseTrainingValueRepository>();
             services.AddScoped<IPlayerCharacterRepository, PlayerCharacterRepository>();
             services.AddScoped<IPlayerAbilityRepository, PlayerAbilityRepository>();
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
+            //services.AddDbContext<OU2eHelperContext>(options => options.UseSqlServer(
+            //    Configuration.GetConnectionString("DefaultConnection")
+            //).EnableSensitiveDataLogging(true));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
