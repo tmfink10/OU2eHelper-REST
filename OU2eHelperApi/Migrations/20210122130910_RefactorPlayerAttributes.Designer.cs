@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OU2eHelperApi.Data;
 
 namespace OU2eHelperApi.Migrations
 {
     [DbContext(typeof(OU2eHelperContext))]
-    partial class OU2eHelperContextModelSnapshot : ModelSnapshot
+    [Migration("20210122130910_RefactorPlayerAttributes")]
+    partial class RefactorPlayerAttributes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1453,7 +1455,7 @@ namespace OU2eHelperApi.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int>("BaseAbilityId")
+                    b.Property<int?>("BaseAbilityId")
                         .HasColumnType("int");
 
                     b.Property<string>("Notes")
@@ -1493,7 +1495,7 @@ namespace OU2eHelperApi.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("PlayerCharacterId")
+                    b.Property<int?>("PlayerCharacterId")
                         .HasColumnType("int");
 
                     b.Property<int>("Points")
@@ -1654,14 +1656,14 @@ namespace OU2eHelperApi.Migrations
             modelBuilder.Entity("OU2eHelperModels.Models.BaseAttribute", b =>
                 {
                     b.HasOne("OU2eHelperModels.Models.BaseAbility", null)
-                        .WithMany("UsesBaseAttributes")
+                        .WithMany("Uses")
                         .HasForeignKey("BaseAbilityId");
                 });
 
             modelBuilder.Entity("OU2eHelperModels.Models.BaseSkill", b =>
                 {
                     b.HasOne("OU2eHelperModels.Models.BaseAbility", null)
-                        .WithMany("SupportsBaseSkills")
+                        .WithMany("Supports")
                         .HasForeignKey("BaseAbilityId");
 
                     b.HasOne("OU2eHelperModels.Models.PlayerAbility", null)
@@ -1684,7 +1686,7 @@ namespace OU2eHelperApi.Migrations
             modelBuilder.Entity("OU2eHelperModels.Models.BaseTrainingValue", b =>
                 {
                     b.HasOne("OU2eHelperModels.Models.BaseAbility", null)
-                        .WithMany("ModifiesBaseTrainingValues")
+                        .WithMany("Modifies")
                         .HasForeignKey("BaseAbilityId");
                 });
 
@@ -1692,12 +1694,10 @@ namespace OU2eHelperApi.Migrations
                 {
                     b.HasOne("OU2eHelperModels.Models.BaseAbility", "BaseAbility")
                         .WithMany()
-                        .HasForeignKey("BaseAbilityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BaseAbilityId");
 
                     b.HasOne("OU2eHelperModels.Models.PlayerCharacter", "PlayerCharacter")
-                        .WithMany("PlayerAbilities")
+                        .WithMany("Abilities")
                         .HasForeignKey("PlayerCharacterId");
 
                     b.Navigation("BaseAbility");
@@ -1713,9 +1713,7 @@ namespace OU2eHelperApi.Migrations
 
                     b.HasOne("OU2eHelperModels.Models.PlayerCharacter", "PlayerCharacter")
                         .WithMany("PlayerAttributes")
-                        .HasForeignKey("PlayerCharacterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PlayerCharacterId");
 
                     b.Navigation("BaseAttribute");
 
@@ -1729,7 +1727,7 @@ namespace OU2eHelperApi.Migrations
                         .HasForeignKey("BaseSkillId");
 
                     b.HasOne("OU2eHelperModels.Models.PlayerCharacter", "PlayerCharacter")
-                        .WithMany("PlayerSkills")
+                        .WithMany("Skills")
                         .HasForeignKey("PlayerCharacterId");
 
                     b.Navigation("BaseSkill");
@@ -1754,11 +1752,11 @@ namespace OU2eHelperApi.Migrations
 
             modelBuilder.Entity("OU2eHelperModels.Models.BaseAbility", b =>
                 {
-                    b.Navigation("ModifiesBaseTrainingValues");
+                    b.Navigation("Modifies");
 
-                    b.Navigation("SupportsBaseSkills");
+                    b.Navigation("Supports");
 
-                    b.Navigation("UsesBaseAttributes");
+                    b.Navigation("Uses");
                 });
 
             modelBuilder.Entity("OU2eHelperModels.Models.PlayerAbility", b =>
@@ -1768,11 +1766,11 @@ namespace OU2eHelperApi.Migrations
 
             modelBuilder.Entity("OU2eHelperModels.Models.PlayerCharacter", b =>
                 {
-                    b.Navigation("PlayerAbilities");
+                    b.Navigation("Abilities");
 
                     b.Navigation("PlayerAttributes");
 
-                    b.Navigation("PlayerSkills");
+                    b.Navigation("Skills");
 
                     b.Navigation("TrainingValues");
                 });

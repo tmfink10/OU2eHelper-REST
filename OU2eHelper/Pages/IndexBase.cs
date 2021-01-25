@@ -55,74 +55,127 @@ namespace OU2eHelper.Pages
         {
             public string FormString;
         }
+
         protected PlayerCharacter ThisCharacter = new PlayerCharacter();
         protected BaseAbility ThisBaseAbility = new BaseAbility();
         protected PlayerAbility ThisPlayerAbility = new PlayerAbility();
         protected HelperClass Helper = new HelperClass();
 
-        public void HandleNewCharacterClick()
+        protected PlayerAttribute StrengthService { get; set; }
+        protected PlayerAttribute PerceptionService { get; set; }
+        protected PlayerAttribute EmpathyService { get; set; }
+        protected PlayerAttribute WillpowerService { get; set; }
+
+        protected void HandleNewCharacterClick()
         {
             _createNew = !_createNew;
 
             ThisCharacter.Age = 30;
 
-            ThisCharacter.Strength = new PlayerAttribute
+            var strength = new PlayerAttribute
             {
                 Value = 30, BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Strength")
             };
-            //ThisCharacter.Attributes.Add(ThisCharacter.Strength.BaseAttribute.Name, ThisCharacter.Strength);
+            ThisCharacter.PlayerAttributes.Add(strength);
+            StrengthService = strength;
 
-            ThisCharacter.Perception = new PlayerAttribute
+            var perception = new PlayerAttribute
             {
                 Value = 30, BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Perception")
             };
-            //ThisCharacter.Attributes.Add(ThisCharacter.Perception.BaseAttribute.Name, ThisCharacter.Perception);
+            ThisCharacter.PlayerAttributes.Add(perception);
+            PerceptionService = perception;
 
-            ThisCharacter.Empathy = new PlayerAttribute
+            var empathy = new PlayerAttribute
             {
                 Value = 30, BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Empathy")
             };
-            //ThisCharacter.Attributes.Add(ThisCharacter.Empathy.BaseAttribute.Name, ThisCharacter.Empathy);
+            ThisCharacter.PlayerAttributes.Add(empathy);
+            EmpathyService = empathy;
 
-            ThisCharacter.Willpower = new PlayerAttribute
+            var willpower = new PlayerAttribute
             {
                 Value = 30, BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Willpower")
             };
-            //ThisCharacter.Attributes.Add(ThisCharacter.Willpower.BaseAttribute.Name, ThisCharacter.Willpower);
+            ThisCharacter.PlayerAttributes.Add(willpower);
+            WillpowerService = willpower;
 
-            ThisCharacter.DamageThreshold = ThisCharacter.Strength.Bonus + ThisCharacter.Willpower.Bonus;
-            ThisCharacter.Morale = ThisCharacter.Empathy.Bonus + ThisCharacter.Willpower.Bonus;
-            ThisCharacter.CargoCapacity = ThisCharacter.Strength.Bonus;
+            ThisCharacter.DamageThreshold = strength.Bonus + willpower.Bonus;
+            ThisCharacter.Morale = empathy.Bonus + willpower.Bonus;
+            ThisCharacter.CargoCapacity = strength.Bonus;
             ThisCharacter.SurvivalPoints = 25;
-            
+
             SetGestalt();
         }
-
-        public async Task<PlayerCharacter> HandleOnValidSubmit()
+        
+        protected async Task<PlayerCharacter> HandleOnValidSubmit()
         {
             if (ThisCharacter.Id != 0)
             {
+                //Sync the attribute services with the attributes in the list
+                //Sync Strength
+                var strength = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Strength");
+                strength.Value = StrengthService.Value;
+                strength.Points = StrengthService.Points;
+                strength.Notes = StrengthService.Notes;
+                //Sync Perception
+                var perception = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Perception");
+                perception.Value = PerceptionService.Value;
+                perception.Points = PerceptionService.Points;
+                perception.Notes = PerceptionService.Notes;
+                //Sync Empathy
+                var empathy = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Empathy");
+                empathy.Value = EmpathyService.Value;
+                empathy.Points = EmpathyService.Points;
+                empathy.Notes = EmpathyService.Notes;
+                //Sync Willpower
+                var willpower = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Willpower");
+                willpower.Value = WillpowerService.Value;
+                willpower.Points = WillpowerService.Points;
+                willpower.Notes = WillpowerService.Notes;
+
                 return await PlayerCharacterService.UpdatePlayerCharacter(ThisCharacter.Id, ThisCharacter);
             }
             else
             {
-                ThisCharacter = await PlayerCharacterService.CreatePlayerCharacter(ThisCharacter);
-                return ThisCharacter;
+                //Sync the attribute services with the attributes in the list
+                //Sync Strength
+                var strength = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Strength");
+                strength.Value = StrengthService.Value;
+                strength.Points = StrengthService.Points;
+                strength.Notes = StrengthService.Notes;
+                //Sync Perception
+                var perception = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Perception");
+                perception.Value = PerceptionService.Value;
+                perception.Points = PerceptionService.Points;
+                perception.Notes = PerceptionService.Notes;
+                //Sync Empathy
+                var empathy = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Empathy");
+                empathy.Value = EmpathyService.Value;
+                empathy.Points = EmpathyService.Points;
+                empathy.Notes = EmpathyService.Notes;
+                //Sync Willpower
+                var willpower = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Willpower");
+                willpower.Value = WillpowerService.Value;
+                willpower.Points = WillpowerService.Points;
+                willpower.Notes = WillpowerService.Notes;
+
+                return ThisCharacter = await PlayerCharacterService.CreatePlayerCharacter(ThisCharacter);
             }
         }
 
-        public async Task HandleOnValidAbilitySubmit()
+        protected async Task HandleOnValidAbilitySubmit()
         {
             Console.WriteLine($"{Helper.FormString}");
             var tempAbility = new PlayerAbility();
             tempAbility.BaseAbility = BaseAbilities.FirstOrDefault(a => a.Id == Int32.Parse(Helper.FormString));
             tempAbility = await PlayerAbilityService.CreatePlayerAbility(tempAbility);
             
-            ThisCharacter.Abilities.Add(tempAbility);
+            ThisCharacter.PlayerAbilities.Add(tempAbility);
             
         }
 
-        public void SetGestalt()
+        protected void SetGestalt()
         {
             if (ThisCharacter.Age < 36)
             {

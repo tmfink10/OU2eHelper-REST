@@ -10,9 +10,9 @@ namespace OU2eHelperModels.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public string HtmlDescription { get; set; }
-        public List<BaseAttribute> Uses { get; set; } = new List<BaseAttribute>();
-        public List<BaseSkill> Supports { get; set; } = new List<BaseSkill>();
-        public List<BaseTrainingValue> Modifies { get; set; } = new List<BaseTrainingValue>();
+        public List<BaseAttribute> UsesBaseAttributes { get; set; } = new List<BaseAttribute>();
+        public List<BaseSkill> SupportsBaseSkills { get; set; } = new List<BaseSkill>();
+        public List<BaseTrainingValue> ModifiesBaseTrainingValues { get; set; } = new List<BaseTrainingValue>();
         public bool AdvancesSkills { get; set; }
         public string Type { get; set; }
         public bool IsProfessional { get; set; }

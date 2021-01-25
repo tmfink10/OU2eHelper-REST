@@ -12,11 +12,10 @@ namespace OU2eHelperModels.Models
         public string FullName => $"{FirstName} {LastName}";
         public int Age { get; set; }
         public string Sex { get; set; }
-        public Dictionary<string, PlayerAttribute> Attributes { get; set; } = new Dictionary<string, PlayerAttribute>();
-        public List<PlayerAttribute> PlayerAttributes { get; set; } = new List<PlayerAttribute>();
-        public List<PlayerSkill> Skills { get; set; } = new List<PlayerSkill>();
-        public List<PlayerAbility> Abilities { get; set; } = new List<PlayerAbility>();
-        public List<PlayerTrainingValue> TrainingValues { get; set; } = new List<PlayerTrainingValue>();
+        public ICollection<PlayerAttribute> PlayerAttributes { get; set; } = new List<PlayerAttribute>();
+        public ICollection<PlayerSkill> PlayerSkills { get; set; } = new List<PlayerSkill>();
+        public ICollection<PlayerAbility> PlayerAbilities { get; set; } = new List<PlayerAbility>();
+        public ICollection<PlayerTrainingValue> TrainingValues { get; set; } = new List<PlayerTrainingValue>();
         public int SurvivalPoints { get; set; } = 0;
         public int GestaltLevel { get; set; } = 0;
         public int CargoCapacity { get; set; } = 0;
@@ -31,47 +30,9 @@ namespace OU2eHelperModels.Models
         //    //Constructor for EntityFramework Core
         //}
 
-
         public PlayerCharacter()
         {
 
-        }
-        //public PlayerCharacter(PlayerAttribute strength, PlayerAttribute perception, PlayerAttribute empathy, PlayerAttribute willpower)
-        //{
-        //    Strength = strength;
-        //    Perception = perception;
-        //    Empathy = empathy;
-        //    Willpower = willpower;
-        //    Attributes.Add("Strength", Strength);
-        //    Attributes.Add("Perception", Perception);
-        //    Attributes.Add("Empathy", Empathy);
-        //    Attributes.Add("Willpower", Willpower);
-
-        //}
-
-        public int CheckSkill(PlayerSkill skill)
-        {
-            var rnd = new Random();
-
-            PlayerAttribute primaryAttribute;
-
-            Attributes.TryGetValue(skill.BaseSkill.PrimaryAttribute.Name, out primaryAttribute);
-
-            PlayerAttribute secondaryAttribute;
-            Attributes.TryGetValue(skill.BaseSkill.SecondaryAttribute.Name, out secondaryAttribute);
-
-            var checkValue = primaryAttribute.Value + secondaryAttribute.Bonus + skill.Value;
-
-            var roll = rnd.Next(1, 100);
-
-
-            Console.WriteLine($"Primary Attribute Value: {primaryAttribute.Value}");
-            Console.WriteLine($"Secondary Attribute Value: {secondaryAttribute.Bonus}");
-            Console.WriteLine($"Skill Value: {skill.Value}");
-            Console.WriteLine($"Check Value: {checkValue}");
-            Console.WriteLine($"Roll: {roll}");
-
-            return checkValue - roll;
         }
     }
 }

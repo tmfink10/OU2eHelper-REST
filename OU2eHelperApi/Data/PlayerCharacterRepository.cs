@@ -41,10 +41,10 @@ namespace OU2eHelperApi.Data
         public async Task<PlayerCharacter> AddPlayerCharacter(PlayerCharacter playerCharacter)
         {
             var result = await _dbContext.PlayerCharacters.AddAsync(playerCharacter);
-            _dbContext.Entry(playerCharacter.Strength.BaseAttribute).State = EntityState.Unchanged;
-            _dbContext.Entry(playerCharacter.Perception.BaseAttribute).State = EntityState.Unchanged;
-            _dbContext.Entry(playerCharacter.Empathy.BaseAttribute).State = EntityState.Unchanged;
-            _dbContext.Entry(playerCharacter.Willpower.BaseAttribute).State = EntityState.Unchanged;
+            foreach (var attribute in playerCharacter.PlayerAttributes)
+            {
+                _dbContext.Entry(attribute.BaseAttribute).State = EntityState.Unchanged;
+            }
             await _dbContext.SaveChangesAsync();
             return result.Entity;
         }
@@ -60,13 +60,8 @@ namespace OU2eHelperApi.Data
                 result.LastName = playerCharacter.LastName;
                 result.Age = playerCharacter.Age;
                 result.Sex = playerCharacter.Sex;
-                result.Attributes = playerCharacter.Attributes;
-                result.Strength = playerCharacter.Strength;
-                result.Perception = playerCharacter.Perception;
-                result.Empathy = playerCharacter.Empathy;
-                result.Willpower = playerCharacter.Willpower;
-                result.Skills = playerCharacter.Skills;
-                result.Abilities = playerCharacter.Abilities;
+                result.PlayerSkills = playerCharacter.PlayerSkills;
+                result.PlayerAbilities = playerCharacter.PlayerAbilities;
                 result.TrainingValues = playerCharacter.TrainingValues;
                 result.SurvivalPoints = playerCharacter.SurvivalPoints;
                 result.GestaltLevel = playerCharacter.GestaltLevel;

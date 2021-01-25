@@ -82,23 +82,16 @@ namespace OU2eHelperApi.Controllers
         public async Task<ActionResult<PlayerCharacter>> CreatePlayerCharacter(PlayerCharacter playerCharacter)
         {
 
-            try
-            {
-                if (playerCharacter != null)
-                {
-                    var newPlayerCharacter = await _playerCharacterRepository.AddPlayerCharacter(playerCharacter);
 
-                    return CreatedAtAction(nameof(GetPlayerCharacter), new { id = newPlayerCharacter.Id }, newPlayerCharacter);
-                }
-
-                return BadRequest();
-            }
-            catch (Exception e)
+            if (playerCharacter != null)
             {
-                var exception = e;
-                Console.WriteLine(e.StackTrace);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error posting data to the database.");
+                var newPlayerCharacter = await _playerCharacterRepository.AddPlayerCharacter(playerCharacter);
+
+                //This is the last line of code to execute before the web app crashes with Status Code 500. Executes fine and returns 201 from Swagger.
+                return CreatedAtAction(nameof(GetPlayerCharacter), new { id = newPlayerCharacter.Id }, newPlayerCharacter);
             }
+
+            return BadRequest();
         }
 
         //Update by Put
@@ -122,8 +115,9 @@ namespace OU2eHelperApi.Controllers
                 return await _playerCharacterRepository.UpdatePlayerCharacter(playerCharacter);
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.StackTrace);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error updating data in the database.");
             }
         }
