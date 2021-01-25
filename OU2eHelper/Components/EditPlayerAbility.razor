@@ -1,7 +1,24 @@
 ﻿@using OU2eHelper.Services
 @inject IPlayerAbilityService PlayerAbilityService
+@inject IBaseAbilityService BaseAbilityService
 
-<h3>Edit: @PlayerAbility</h3>
+@if (PlayerAbility != null)
+{
+    <h3>@BaseAbility.Name</h3>
+    <BSForm Model="PlayerAbility" OnValidSubmit="SavePlayerAbility">
+        <BSFormGroup>
+            <BSRow>
+                <BSCol>
+
+                </BSCol>
+            </BSRow>
+        </BSFormGroup>
+    </BSForm>
+
+
+
+
+}
 
 
 
@@ -12,10 +29,12 @@
     [Parameter] public int EditPlayerAbilityId { get; set; }
 
     PlayerAbility PlayerAbility { get; set; }
+    private BaseAbility BaseAbility { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         PlayerAbility = await PlayerAbilityService.GetPlayerAbility(EditPlayerAbilityId);
+        BaseAbility = await BaseAbilityService.GetBaseAbility(PlayerAbility.BaseAbilityId);
     }
 
     async Task SavePlayerAbility()

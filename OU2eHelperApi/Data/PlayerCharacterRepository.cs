@@ -60,8 +60,8 @@ namespace OU2eHelperApi.Data
                 result.LastName = playerCharacter.LastName;
                 result.Age = playerCharacter.Age;
                 result.Sex = playerCharacter.Sex;
-                result.Skills = playerCharacter.Skills;
-                result.Abilities = playerCharacter.Abilities;
+                result.PlayerSkills = playerCharacter.PlayerSkills;
+                result.PlayerAbilities = playerCharacter.PlayerAbilities;
                 result.TrainingValues = playerCharacter.TrainingValues;
                 result.SurvivalPoints = playerCharacter.SurvivalPoints;
                 result.GestaltLevel = playerCharacter.GestaltLevel;

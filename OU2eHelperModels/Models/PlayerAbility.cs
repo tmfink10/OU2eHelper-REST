@@ -8,6 +8,7 @@ namespace OU2eHelperModels.Models
     {
         public int Id { get; set; }
         public PlayerCharacter PlayerCharacter { get; set; }
+        public int BaseAbilityId { get; set; }
         public BaseAbility BaseAbility { get; set; }
         public string Type { get; set; }
         public string Notes { get; set; }

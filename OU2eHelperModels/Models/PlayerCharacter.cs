@@ -13,8 +13,8 @@ namespace OU2eHelperModels.Models
         public int Age { get; set; }
         public string Sex { get; set; }
         public ICollection<PlayerAttribute> PlayerAttributes { get; set; } = new List<PlayerAttribute>();
-        public ICollection<PlayerSkill> Skills { get; set; } = new List<PlayerSkill>();
-        public ICollection<PlayerAbility> Abilities { get; set; } = new List<PlayerAbility>();
+        public ICollection<PlayerSkill> PlayerSkills { get; set; } = new List<PlayerSkill>();
+        public ICollection<PlayerAbility> PlayerAbilities { get; set; } = new List<PlayerAbility>();
         public ICollection<PlayerTrainingValue> TrainingValues { get; set; } = new List<PlayerTrainingValue>();
         public int SurvivalPoints { get; set; } = 0;
         public int GestaltLevel { get; set; } = 0;

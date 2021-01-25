@@ -57,9 +57,9 @@ namespace OU2eHelperApi.Data
                 result.HtmlDescription = baseAbility.HtmlDescription;
                 result.AdvancesSkills = baseAbility.AdvancesSkills;
                 result.IsProfessional = baseAbility.IsProfessional;
-                result.Modifies = baseAbility.Modifies;
-                result.Supports = baseAbility.Supports;
-                result.Uses = baseAbility.Uses;
+                result.ModifiesBaseTrainingValues = baseAbility.ModifiesBaseTrainingValues;
+                result.SupportsBaseSkills = baseAbility.SupportsBaseSkills;
+                result.UsesBaseAttributes = baseAbility.UsesBaseAttributes;
                 result.Type = baseAbility.Type;
 
                 return result;

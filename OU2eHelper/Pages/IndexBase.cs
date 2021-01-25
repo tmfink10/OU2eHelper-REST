@@ -171,7 +171,7 @@ namespace OU2eHelper.Pages
             tempAbility.BaseAbility = BaseAbilities.FirstOrDefault(a => a.Id == Int32.Parse(Helper.FormString));
             tempAbility = await PlayerAbilityService.CreatePlayerAbility(tempAbility);
             
-            ThisCharacter.Abilities.Add(tempAbility);
+            ThisCharacter.PlayerAbilities.Add(tempAbility);
             
         }
 

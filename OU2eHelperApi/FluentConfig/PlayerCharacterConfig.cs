@@ -19,9 +19,9 @@ namespace OU2eHelperApi.FluentConfig
 
             //Notes intentionally omitted to be nvarchar(max)
 
-            builder.HasMany<PlayerSkill>(c => c.Skills)
+            builder.HasMany<PlayerSkill>(c => c.PlayerSkills)
                 .WithOne(s => s.PlayerCharacter);
-            builder.HasMany<PlayerAbility>(c => c.Abilities)
+            builder.HasMany<PlayerAbility>(c => c.PlayerAbilities)
                 .WithOne(a => a.PlayerCharacter);
             builder.HasMany<PlayerTrainingValue>(c => c.TrainingValues)
                 .WithOne(t => t.PlayerCharacter);

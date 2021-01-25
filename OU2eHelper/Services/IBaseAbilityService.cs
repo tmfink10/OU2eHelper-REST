@@ -9,5 +9,6 @@ namespace OU2eHelper.Services
     public interface IBaseAbilityService
     {
         Task<IEnumerable<BaseAbility>> GetBaseAbilities();
+        Task<BaseAbility> GetBaseAbility(int id);
     }
 }

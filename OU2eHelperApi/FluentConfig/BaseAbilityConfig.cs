@@ -28,13 +28,13 @@ namespace OU2eHelperApi.FluentConfig
                 .IsRequired();
 
             //attributes
-            builder.HasMany<BaseAttribute>(a => a.Uses);
+            builder.HasMany<BaseAttribute>(a => a.UsesBaseAttributes);
 
             //skills
-            builder.HasMany<BaseSkill>(a => a.Supports);
+            builder.HasMany<BaseSkill>(a => a.SupportsBaseSkills);
 
             //training values
-            builder.HasMany<BaseTrainingValue>(a => a.Modifies);
+            builder.HasMany<BaseTrainingValue>(a => a.ModifiesBaseTrainingValues);
 
             //seed data
             builder.HasData(new BaseAbility
