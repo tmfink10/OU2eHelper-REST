@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using OU2eHelper.Components
+@using InputType = BlazorStrap.InputType
 @inherits IndexBase
 
 <h1 style="margin-bottom: 20px">Outbreak Undead 2e: Character Creator</h1>
@@ -10,55 +11,55 @@
 }
 else
 {
-    <BSForm Model="ThisCharacter" OnValidSubmit="HandleOnValidSubmit" style="margin-bottom: 15px">
+    <BSForm Model="ThisCharacter" OnValidSubmit="HandleOnValidPlayerCharacterSubmit" style="margin-bottom: 15px">
+        
+        <BSValidationSummary/>
         <BSFormGroup>
             <h2 style="margin-bottom: 5px">Basic Information</h2>
             <BSRow Class="col-md-8" style="margin-bottom: 5px">
                 <BSCol>
                     <BSLabel For="characterFirstName">First Name</BSLabel>
-                    <BSBasicInput Id="characterFirstName" InputType="InputType.Text" PlaceHolder="First Name" @bind-Value="ThisCharacter.FirstName" />
-                    <BSTooltip Target="characterFirstName" Placement="Placement.Top">A character's given name</BSTooltip>
+                    <BSInput Id="characterFirstName" InputType="InputType.Text" PlaceHolder="First Name" @bind-Value="ThisCharacter.FirstName"/>
                 </BSCol>
                 <BSCol>
                     <BSLabel For="characterLastName">Last Name</BSLabel>
-                    <BSBasicInput Id="characterLastName" InputType="InputType.Text" PlaceHolder="Last Name" @bind-Value="ThisCharacter.LastName" />
-                    <BSTooltip Target="characterLastName" Placement="Placement.Top">A character's surname</BSTooltip>
+                    <BSBasicInput Id="characterLastName" InputType="InputType.Text" PlaceHolder="Last Name" @bind-Value="ThisCharacter.LastName"/>
                 </BSCol>
             </BSRow>
             <BSRow Class="col-md-8" style="margin-bottom: 15px">
                 <BSCol>
                     <BSLabel For="characterSex">Sex</BSLabel>
-                    <BSBasicInput Id="characterSex" InputType="InputType.Text" PlaceHolder="Sex" @bind-Value="ThisCharacter.Sex" />
+                    <BSBasicInput Id="characterSex" InputType="InputType.Text" PlaceHolder="Sex" @bind-Value="ThisCharacter.Sex"/>
                 </BSCol>
                 <BSCol>
                     <BSLabel For="characterAge">Age</BSLabel>
-                    <BSBasicInput Id="characterAge" InputType="InputType.Number" PlaceHolder="@ThisCharacter.Age" @bind-Value="ThisCharacter.Age" @onblur="SetGestalt" />
+                    <BSBasicInput Id="characterAge" InputType="InputType.Number" PlaceHolder="@ThisCharacter.Age" @bind-Value="ThisCharacter.Age" @onblur="SetGestalt"/>
                 </BSCol>
             </BSRow>
             <h2 style="margin-bottom: 5px">S.P.E.W. Attributes</h2>
             <BSRow Class="col-md-8" style="margin-bottom: 15px">
                 <BSCol>
                     <BSLabel For="characterStrength" @onclick="@onStrengthToggle">Strength</BSLabel>
-                    <BSBasicInput Id="characterStrength" InputType="InputType.Number" PlaceHolder="@StrengthService.Value" @bind-Value="StrengthService.Value" />
+                    <BSBasicInput Id="characterStrength" InputType="InputType.Number" PlaceHolder="@StrengthService.Value" @bind-Value="StrengthService.Value"/>
                 </BSCol>
                 <BSCol>
                     <BSLabel For="characterPerception" @onclick="@onPerceptionToggle">Perception</BSLabel>
-                    <BSBasicInput Id="characterPerception" InputType="InputType.Number" PlaceHolder="@PerceptionService.Value" @bind-Value="PerceptionService.Value" />
+                    <BSBasicInput Id="characterPerception" InputType="InputType.Number" PlaceHolder="@PerceptionService.Value" @bind-Value="PerceptionService.Value"/>
                 </BSCol>
                 <BSCol>
                     <BSLabel For="characterEmpathy" @onclick="@onEmpathyToggle">Empathy</BSLabel>
-                    <BSBasicInput Id="characterEmpathy" InputType="InputType.Number" PlaceHolder="@EmpathyService.Value" @bind-Value="EmpathyService.Value" />
+                    <BSBasicInput Id="characterEmpathy" InputType="InputType.Number" PlaceHolder="@EmpathyService.Value" @bind-Value="EmpathyService.Value"/>
                 </BSCol>
                 <BSCol>
                     <BSLabel For="characterWillpower" @onclick="@onWillpowerToggle">Willpower</BSLabel>
-                    <BSBasicInput Id="characterWillpower" InputType="InputType.Number" PlaceHolder="@WillpowerService.Value" @bind-Value="WillpowerService.Value" />
+                    <BSBasicInput Id="characterWillpower" InputType="InputType.Number" PlaceHolder="@WillpowerService.Value" @bind-Value="WillpowerService.Value"/>
                 </BSCol>
             </BSRow>
             <h3 style="margin-bottom: 5px">Character Resources</h3>
             <BSRow Class="col-md-8" style="margin-bottom: 15px">
                 <BSCol>
                     <BSLabel For="survivalPoints">Survival Points</BSLabel>
-                    <BSBasicInput Id="survivalPoints" InputType="InputType.Number" PlaceHolder="@ThisCharacter.SurvivalPoints" @bind-Value="ThisCharacter.SurvivalPoints" />
+                    <BSBasicInput Id="survivalPoints" InputType="InputType.Number" PlaceHolder="@ThisCharacter.SurvivalPoints" @bind-Value="ThisCharacter.SurvivalPoints"/>
                 </BSCol>
                 <BSCol>
                     <BSLabel For="gestaltLevel">Gestalt Level</BSLabel>
@@ -70,63 +71,65 @@ else
                 </BSCol>
             </BSRow>
         </BSFormGroup>
-        @if (_addAbilities == false)
-        {
-            <BSButton Color="Color.Primary" ButtonType="ButtonType.Submit" @onclick="@onConfirmationToggle">Save</BSButton>
-        }
+        <BSButton Color="Color.Primary" ButtonType="ButtonType.Submit" @onclick="@onConfirmationToggle" Class="align-right">Save</BSButton>
+        
     </BSForm>
 
     @if (_addAbilities == false)
     {
-        <button class="btn btn-primary" @onclick="HandleAbilitiesClick">Add Abilities</button>
+        <p>Save your character before continuing.</p>
     }
     else
     {
         <h2>Abilities</h2>
-        <BSTable class="col-md-8">
-            <thead>
-            <tr>
-                <th scope="col" style="width: 35%">Ability</th>
-                <th style="width: 15%">Tier</th>
-                <th style="width: 40%">Notes</th>
-                <th style="width: 10%"></th>
-            </tr>
-            </thead>
-            @foreach (var ability in ThisCharacter.PlayerAbilities)
-            {
-                <tbody>
-                    <tr>
-                        <th scope="row">@ability.BaseAbility.Name</th>
-                        <td>@ability.Tier</td>
-                        <td>@ability.Notes</td>
-                        <td><BSButton Color="Color.Primary" @onclick="@(()=>EditPlayerAbilityModal(ability.Id))">Edit</BSButton></td>
-                    </tr>
-                </tbody>
-            }
-            
-        </BSTable>
-        <BSForm Model="Helper" OnValidSubmit="HandleOnValidAbilitySubmit">
+        <BSForm Model="Helper" OnValidSubmit="HandleOnValidBaseAbilitySubmit">
             <BSFormGroup>
                 <BSRow class="col-md-8">
                     <BSCol>
                         <BSLabel For="baseAbility">Ability</BSLabel>
                         <BSBasicInput Id="baseAbility" InputType="InputType.Select" @bind-Value="Helper.FormString">
+                            <option value="">Select Ability</option>
                             @foreach (var ability in BaseAbilities)
-                                    {
+                            {
                                 <option value="@ability.Id">@ability.Name</option>
-                                    }
+                            }
                         </BSBasicInput>
                     </BSCol>
                 </BSRow>
             </BSFormGroup>
             <BSButton Color="Color.Primary" ButtonType="ButtonType.Submit">Add Ability</BSButton>
         </BSForm>
+
+        <BSForm Model="ThisPlayerAbility" OnValidSubmit="HandleOnValidPlayerAbilitySubmit">
+            <BSTable class="col-md-8">
+                <thead>
+                    <tr>
+                        <th scope ="col" style="width: 35%">Ability</th>
+                        <th style="width: 15%">Tier</th>
+                        <th style="width: 40%">Notes</th>
+                        <th style="width: 10%"></th>
+                    </tr>
+                </thead>
+                @foreach (var ability in ThisCharacter.PlayerAbilities)
+                {
+                    <tbody>
+                    <tr>
+                        <th scope="row" @onclick="@(()=> onBaseAbilityToggleOn(ability.BaseAbility))">@ability.BaseAbility.Name</th>
+                        <td><InputNumber id="baseAbility" class="form-control" @bind-Value="@ability.Tier" placeholder="@ability.Tier" @onfocus="(() => X = ability.Tier)" @onblur="@(()=>Y = ability.Tier)"/></td>
+                        <td><InputText class="form-control" @bind-Value="@ability.Notes" placeholder="@ability.Notes" /></td>
+                        <td><BSButton ButtonType="ButtonType.Submit" @onclick="@(() => ThisPlayerAbility = ability)">Save</BSButton></td>
+                    </tr>
+                    </tbody>
+                }
+                
+            </BSTable>
+        </BSForm>
     }
 
-    <BSModal @ref="Confirmation" IsCentered="true">
+   <BSModal @ref="Step1Confirmation" IsCentered="true">
         <BSModalHeader OnClick="@onConfirmationToggle">Saved</BSModalHeader>
         <BSModalBody>
-            <p>Your changes have been saved.</p>
+            <p>Your changes have been saved.<br/><br/>Next, add your Abilities. You can always add Abilities later, but selecting your Abilities now will give you the greatest bonuses to your Skills.</p>
         </BSModalBody>
         <BSModalFooter>
             <BSButton Color="Color.Primary" OnClick="@onConfirmationToggle">Ok</BSButton>
@@ -167,6 +170,15 @@ else
         </BSModalBody>
         <BSModalFooter>
             <BSButton Color="Color.Primary" OnClick="@onWillpowerToggle">Ok</BSButton>
+        </BSModalFooter>
+    </BSModal>
+    <BSModal @ref="BaseAbilityDescription" IsCentered="true">
+        <BSModalHeader OnClick="@onBaseAbilityToggleOff">@ThisBaseAbility.Name</BSModalHeader>
+        <BSModalBody>
+            <p>@((MarkupString) ThisBaseAbility.HtmlDescription)</p>
+        </BSModalBody>
+        <BSModalFooter>
+            <BSButton Color="Color.Primary" OnClick="@onStrengthToggle">Ok</BSButton>
         </BSModalFooter>
     </BSModal>
 }

@@ -41,6 +41,10 @@ namespace OU2eHelper.Pages
 
         protected bool _createNew;
         protected bool _addAbilities;
+        protected int X;
+        protected int Y;
+        protected int DeltaX;
+        [Parameter] public EventCallback<PlayerAbility> PlayerAbilityCallback { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -108,71 +112,63 @@ namespace OU2eHelper.Pages
             SetGestalt();
         }
         
-        protected async Task<PlayerCharacter> HandleOnValidSubmit()
+        protected async Task<PlayerCharacter> HandleOnValidPlayerCharacterSubmit()
         {
+            //Sync the attribute services with the attributes in the list
+            //Sync Strength
+            var strength = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Strength");
+            strength.Value = StrengthService.Value;
+            strength.Points = StrengthService.Points;
+            strength.Notes = StrengthService.Notes;
+            //Sync Perception
+            var perception = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Perception");
+            perception.Value = PerceptionService.Value;
+            perception.Points = PerceptionService.Points;
+            perception.Notes = PerceptionService.Notes;
+            //Sync Empathy
+            var empathy = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Empathy");
+            empathy.Value = EmpathyService.Value;
+            empathy.Points = EmpathyService.Points;
+            empathy.Notes = EmpathyService.Notes;
+            //Sync Willpower
+            var willpower = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Willpower");
+            willpower.Value = WillpowerService.Value;
+            willpower.Points = WillpowerService.Points;
+            willpower.Notes = WillpowerService.Notes;
+            //Update secondary characteristics
+            ThisCharacter.DamageThreshold = strength.Bonus + willpower.Bonus;
+            ThisCharacter.Morale = empathy.Bonus + willpower.Bonus;
+            ThisCharacter.CargoCapacity = strength.Bonus;
+
+            _addAbilities = true;
+
             if (ThisCharacter.Id != 0)
             {
-                //Sync the attribute services with the attributes in the list
-                //Sync Strength
-                var strength = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Strength");
-                strength.Value = StrengthService.Value;
-                strength.Points = StrengthService.Points;
-                strength.Notes = StrengthService.Notes;
-                //Sync Perception
-                var perception = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Perception");
-                perception.Value = PerceptionService.Value;
-                perception.Points = PerceptionService.Points;
-                perception.Notes = PerceptionService.Notes;
-                //Sync Empathy
-                var empathy = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Empathy");
-                empathy.Value = EmpathyService.Value;
-                empathy.Points = EmpathyService.Points;
-                empathy.Notes = EmpathyService.Notes;
-                //Sync Willpower
-                var willpower = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Willpower");
-                willpower.Value = WillpowerService.Value;
-                willpower.Points = WillpowerService.Points;
-                willpower.Notes = WillpowerService.Notes;
-
                 return await PlayerCharacterService.UpdatePlayerCharacter(ThisCharacter.Id, ThisCharacter);
             }
             else
             {
-                //Sync the attribute services with the attributes in the list
-                //Sync Strength
-                var strength = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Strength");
-                strength.Value = StrengthService.Value;
-                strength.Points = StrengthService.Points;
-                strength.Notes = StrengthService.Notes;
-                //Sync Perception
-                var perception = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Perception");
-                perception.Value = PerceptionService.Value;
-                perception.Points = PerceptionService.Points;
-                perception.Notes = PerceptionService.Notes;
-                //Sync Empathy
-                var empathy = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Empathy");
-                empathy.Value = EmpathyService.Value;
-                empathy.Points = EmpathyService.Points;
-                empathy.Notes = EmpathyService.Notes;
-                //Sync Willpower
-                var willpower = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Willpower");
-                willpower.Value = WillpowerService.Value;
-                willpower.Points = WillpowerService.Points;
-                willpower.Notes = WillpowerService.Notes;
-
                 return ThisCharacter = await PlayerCharacterService.CreatePlayerCharacter(ThisCharacter);
             }
         }
 
-        protected async Task HandleOnValidAbilitySubmit()
+        protected async Task HandleOnValidBaseAbilitySubmit()
         {
             Console.WriteLine($"{Helper.FormString}");
-            var tempAbility = new PlayerAbility();
-            tempAbility.BaseAbility = BaseAbilities.FirstOrDefault(a => a.Id == Int32.Parse(Helper.FormString));
+            var tempAbility = new PlayerAbility
+            {
+                BaseAbility = BaseAbilities.FirstOrDefault(a => a.Id == Int32.Parse(Helper.FormString))
+            };
             tempAbility = await PlayerAbilityService.CreatePlayerAbility(tempAbility);
             
             ThisCharacter.PlayerAbilities.Add(tempAbility);
-            
+        }
+
+        protected async Task<PlayerAbility> HandleOnValidPlayerAbilitySubmit()
+        {
+            DeltaX = Y - X;
+            UpdateGestalt();
+            return await PlayerAbilityService.UpdatePlayerAbility(ThisPlayerAbility.Id, ThisPlayerAbility);
         }
 
         protected void SetGestalt()
@@ -187,19 +183,40 @@ namespace OU2eHelper.Pages
             }
         }
 
-        protected BSModal Confirmation { get; set; }
-        protected void onConfirmationToggle(MouseEventArgs e)
+        protected void UpdateGestalt()
         {
-            Confirmation.Toggle();
+            var positiveCounter = 0;
+            var negativeCounter = 0;
+            
+            while (DeltaX>0)
+            {
+                X++;
+                positiveCounter += X;
+                DeltaX--;
+            }
+
+            while (DeltaX<0)
+            {
+                negativeCounter -= X;
+                X--;
+                DeltaX++;
+            }
+
+            if (positiveCounter > 0)
+            {
+                ThisCharacter.GestaltLevel -= positiveCounter;
+            }
+            else
+            {
+                ThisCharacter.GestaltLevel -= negativeCounter;
+            }
+            
         }
 
-        [CascadingParameter] public IModalService Modal { get; set; }
-        protected void EditPlayerAbilityModal(int playerAbilityId)
+        protected BSModal Step1Confirmation { get; set; }
+        protected void onConfirmationToggle(MouseEventArgs e)
         {
-            var parameters = new ModalParameters();
-            parameters.Add(nameof(EditPlayerAbility.EditPlayerAbilityId), playerAbilityId);
-
-            Modal.Show<EditPlayerAbility>("Edit Ability", parameters);
+            Step1Confirmation.Toggle();
         }
 
         protected BSModal StrengthDescription { get; set; }
@@ -226,14 +243,22 @@ namespace OU2eHelper.Pages
             WillpowerDescription.Toggle();
         }
 
+        protected BSModal BaseAbilityDescription { get; set; }
+
+        protected void onBaseAbilityToggleOn(BaseAbility ability)
+        {
+            ThisBaseAbility = ability;
+            BaseAbilityDescription.Toggle();
+        }
+        protected void onBaseAbilityToggleOff()
+        {
+            BaseAbilityDescription.Toggle();
+        }
+
         protected void HandleAbilitiesClick()
         {
             _addAbilities = !_addAbilities;
         }
 
-        protected void IncrementStrength()
-        {
-
-        }
     }
 }

@@ -14,5 +14,6 @@ namespace OU2eHelperModels.Models
         public string Notes { get; set; }
         public int Tier { get; set; }
         public List<BaseSkill> Supports { get; set; } = new List<BaseSkill>();
+        public bool IsEditing { get; set; }
     }
 }

@@ -45,6 +45,11 @@ namespace OU2eHelperApi.Data
             {
                 _dbContext.Entry(attribute.BaseAttribute).State = EntityState.Unchanged;
             }
+
+            foreach (var ability in playerCharacter.PlayerAbilities)
+            {
+                _dbContext.Entry(ability.BaseAbility).State = EntityState.Unchanged;
+            }
             await _dbContext.SaveChangesAsync();
             return result.Entity;
         }
@@ -79,8 +84,6 @@ namespace OU2eHelperApi.Data
 
             return null;
         }
-
-
 
         public async Task<PlayerCharacter> DeletePlayerCharacter(int playerCharacterId)
         {

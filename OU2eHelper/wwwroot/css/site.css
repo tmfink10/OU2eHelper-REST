@@ -48,3 +48,15 @@ a, .btn-link {
         right: 0.75rem;
         top: 0.5rem;
     }
+
+.hidden {
+    display: none;
+}
+
+.visible {
+    display: inline;
+}
+
+.align-right {
+    text-align: right;
+}
