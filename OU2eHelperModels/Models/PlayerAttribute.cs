@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace OU2eHelperModels.Models
@@ -15,11 +16,24 @@ namespace OU2eHelperModels.Models
         public int Bonus => Value / 10;
         public string Notes { get; set; } = "";
 
-        public void Advance(PlayerCharacter character)
+        public int Advance(int startingValue)
         {
             var rand = new Random();
-            Value += rand.Next(1, 3);
-            character.GestaltLevel -= Bonus;
+
+            if (startingValue < Value)
+            {
+                Value += rand.Next(1, 3);
+                Console.WriteLine($"{PlayerCharacterId}");
+                //PlayerCharacter.GestaltLevel -= Bonus;
+                return Value;
+            }
+            else if (startingValue > Value)
+            {
+                Value -= rand.Next(1, 3);
+                return Value;
+            }
+
+            return Value;
         }
     }
 }

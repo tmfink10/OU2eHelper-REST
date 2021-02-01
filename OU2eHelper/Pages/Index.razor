@@ -1,5 +1,4 @@
 ﻿@page "/"
-@using OU2eHelper.Components
 @using InputType = BlazorStrap.InputType
 @inherits IndexBase
 
@@ -11,15 +10,13 @@
 }
 else
 {
-    <BSForm Model="ThisCharacter" OnValidSubmit="HandleOnValidPlayerCharacterSubmit" style="margin-bottom: 15px">
-        
-        <BSValidationSummary/>
+    <EditForm Model="ThisCharacter" OnValidSubmit="HandleOnValidPlayerCharacterSubmit" style="margin-bottom: 15px">
         <BSFormGroup>
             <h2 style="margin-bottom: 5px">Basic Information</h2>
             <BSRow Class="col-md-8" style="margin-bottom: 5px">
                 <BSCol>
                     <BSLabel For="characterFirstName">First Name</BSLabel>
-                    <BSInput Id="characterFirstName" InputType="InputType.Text" PlaceHolder="First Name" @bind-Value="ThisCharacter.FirstName"/>
+                    <BSBasicInput class="form-control" Id="characterFirstName" InputType="InputType.Text" PlaceHolder="First Name" @bind-Value="ThisCharacter.FirstName"/>
                 </BSCol>
                 <BSCol>
                     <BSLabel For="characterLastName">Last Name</BSLabel>
@@ -40,19 +37,39 @@ else
             <BSRow Class="col-md-8" style="margin-bottom: 15px">
                 <BSCol>
                     <BSLabel For="characterStrength" @onclick="@onStrengthToggle">Strength</BSLabel>
-                    <BSBasicInput Id="characterStrength" InputType="InputType.Number" PlaceHolder="@StrengthService.Value" @bind-Value="StrengthService.Value"/>
+                    <BSBasicInput Id="characterStrength" 
+                                  PlaceHolder="@StrengthService.Value" 
+                                  InputType="InputType.Number"
+                                  @bind-Value="StrengthService.Value"
+                                  @onfocus="(() => X = StrengthService.Value)"
+                                  @onclick="(() => X = StrengthService.Advance(X))"/>
                 </BSCol>
                 <BSCol>
                     <BSLabel For="characterPerception" @onclick="@onPerceptionToggle">Perception</BSLabel>
-                    <BSBasicInput Id="characterPerception" InputType="InputType.Number" PlaceHolder="@PerceptionService.Value" @bind-Value="PerceptionService.Value"/>
+                    <BSBasicInput Id="characterPerception"
+                                  PlaceHolder="@PerceptionService.Value" 
+                                  InputType="InputType.Number" 
+                                  @bind-Value="PerceptionService.Value"
+                                  @onfocus="(() => X = PerceptionService.Value)"
+                                  @onclick="(() => X = PerceptionService.Advance(X))"/>
                 </BSCol>
                 <BSCol>
                     <BSLabel For="characterEmpathy" @onclick="@onEmpathyToggle">Empathy</BSLabel>
-                    <BSBasicInput Id="characterEmpathy" InputType="InputType.Number" PlaceHolder="@EmpathyService.Value" @bind-Value="EmpathyService.Value"/>
+                    <BSBasicInput Id="characterEmpathy" 
+                                  PlaceHolder="@EmpathyService.Value" 
+                                  InputType="InputType.Number" 
+                                  @bind-Value="EmpathyService.Value"
+                                  @onfocus="(() => X = EmpathyService.Value)"
+                                  @onclick="(() => X = EmpathyService.Advance(X))"/>
                 </BSCol>
                 <BSCol>
                     <BSLabel For="characterWillpower" @onclick="@onWillpowerToggle">Willpower</BSLabel>
-                    <BSBasicInput Id="characterWillpower" InputType="InputType.Number" PlaceHolder="@WillpowerService.Value" @bind-Value="WillpowerService.Value"/>
+                    <BSBasicInput Id="characterWillpower" 
+                                  PlaceHolder="@WillpowerService.Value" 
+                                  InputType="InputType.Number" 
+                                  @bind-Value="WillpowerService.Value"
+                                  @onfocus="(() => X = WillpowerService.Value)"
+                                  @onclick="(() => X = WillpowerService.Advance(X))"/>
                 </BSCol>
             </BSRow>
             <h3 style="margin-bottom: 5px">Character Resources</h3>
@@ -73,7 +90,7 @@ else
         </BSFormGroup>
         <BSButton Color="Color.Primary" ButtonType="ButtonType.Submit" @onclick="@onConfirmationToggle" Class="align-right">Save</BSButton>
         
-    </BSForm>
+    </EditForm>
 
     @if (_addAbilities == false)
     {
@@ -82,9 +99,10 @@ else
     else
     {
         <h2>Abilities</h2>
+
         <BSForm Model="Helper" OnValidSubmit="HandleOnValidBaseAbilitySubmit">
             <BSFormGroup>
-                <BSRow class="col-md-8">
+                <BSRow Class="col-md-8">
                     <BSCol>
                         <BSLabel For="baseAbility">Ability</BSLabel>
                         <BSBasicInput Id="baseAbility" InputType="InputType.Select" @bind-Value="Helper.FormString">
@@ -95,9 +113,20 @@ else
                             }
                         </BSBasicInput>
                     </BSCol>
+                    <BSCol Class="col-md-1">
+                        <BSLabel For="formSubmit">Add</BSLabel>
+                        <BSButton Id="formSubmit" 
+                                  Color="Color.Primary" 
+                                  ButtonType="ButtonType.Submit" >Add</BSButton>
+                    </BSCol>
+                    <BSCol Class="col-md-1">
+                        <BSLabel For="baseAbilityDetails">Details</BSLabel>
+                        <BSButton Id="baseAbilityDetails" 
+                                  ButtonType="ButtonType.Button" 
+                                  OnClick="(() => onBaseAbilityToggleOn(BaseAbilities.FirstOrDefault(a => a.Id == Int32.Parse(Helper.FormString))))">Description</BSButton>
+                    </BSCol>
                 </BSRow>
             </BSFormGroup>
-            <BSButton Color="Color.Primary" ButtonType="ButtonType.Submit">Add Ability</BSButton>
         </BSForm>
 
         <BSForm Model="ThisPlayerAbility" OnValidSubmit="HandleOnValidPlayerAbilitySubmit">
@@ -107,24 +136,36 @@ else
                         <th scope ="col" style="width: 35%">Ability</th>
                         <th style="width: 15%">Tier</th>
                         <th style="width: 40%">Notes</th>
-                        <th style="width: 10%"></th>
+                        <th style="width: 5%"></th>
+                        <th style="width: 5%"></th>
                     </tr>
                 </thead>
                 @foreach (var ability in ThisCharacter.PlayerAbilities)
                 {
                     <tbody>
                     <tr>
-                        <th scope="row" @onclick="@(()=> onBaseAbilityToggleOn(ability.BaseAbility))">@ability.BaseAbility.Name</th>
-                        <td><InputNumber id="baseAbility" class="form-control" @bind-Value="@ability.Tier" placeholder="@ability.Tier" @onfocus="(() => X = ability.Tier)" @onblur="@(()=>Y = ability.Tier)"/></td>
-                        <td><InputText class="form-control" @bind-Value="@ability.Notes" placeholder="@ability.Notes" /></td>
-                        <td><BSButton ButtonType="ButtonType.Submit" @onclick="@(() => ThisPlayerAbility = ability)">Save</BSButton></td>
+                        <th scope="row" @onclick="@(() => onBaseAbilityToggleOn(ability.BaseAbility))">@ability.BaseAbility.Name</th>
+                        <td><InputNumber 
+                                id="baseAbility" 
+                                class="form-control" 
+                                placeholder="@ability.Tier" 
+                                @bind-Value="ability.Tier"
+                                @onfocus="(() => X = ability.Tier)" 
+                                @onchange="(() => X = ability.Tier)"
+                                @onclick="(() => HandleIncrementAbility(ability))"/>
+                        </td>
+                        <td><InputText class="form-control" @bind-Value="@ability.Notes" placeholder="@ability.Notes"/></td>
+                        <td><BSButton ButtonType="ButtonType.Submit" @onclick="(() => ThisPlayerAbility = ability)">Save</BSButton></td>
+                        <td><BSButton ButtonType="ButtonType.Button" 
+                                      @onclick="(() => DeletePlayerAbility(ability))"
+                                      Class="btn-danger">X</BSButton></td>
                     </tr>
                     </tbody>
                 }
-                
             </BSTable>
         </BSForm>
     }
+    
 
    <BSModal @ref="Step1Confirmation" IsCentered="true">
         <BSModalHeader OnClick="@onConfirmationToggle">Saved</BSModalHeader>
@@ -178,7 +219,7 @@ else
             <p>@((MarkupString) ThisBaseAbility.HtmlDescription)</p>
         </BSModalBody>
         <BSModalFooter>
-            <BSButton Color="Color.Primary" OnClick="@onStrengthToggle">Ok</BSButton>
+            <BSButton Color="Color.Primary" OnClick="@onBaseAbilityToggleOff">Ok</BSButton>
         </BSModalFooter>
     </BSModal>
 }

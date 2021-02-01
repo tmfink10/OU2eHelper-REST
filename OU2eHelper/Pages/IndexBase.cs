@@ -109,6 +109,18 @@ namespace OU2eHelper.Pages
             ThisCharacter.CargoCapacity = strength.Bonus;
             ThisCharacter.SurvivalPoints = 25;
 
+            foreach (var skill in BaseSkills)
+            {
+                switch (skill.Type)
+                {
+                    case 
+                }
+                new PlayerSkill
+                {
+                    BaseSkill = skill,
+                };
+            }
+
             SetGestalt();
         }
         
@@ -154,7 +166,6 @@ namespace OU2eHelper.Pages
 
         protected async Task HandleOnValidBaseAbilitySubmit()
         {
-            Console.WriteLine($"{Helper.FormString}");
             var tempAbility = new PlayerAbility
             {
                 BaseAbility = BaseAbilities.FirstOrDefault(a => a.Id == Int32.Parse(Helper.FormString))
@@ -169,6 +180,22 @@ namespace OU2eHelper.Pages
             DeltaX = Y - X;
             UpdateGestalt();
             return await PlayerAbilityService.UpdatePlayerAbility(ThisPlayerAbility.Id, ThisPlayerAbility);
+        }
+
+        protected async Task<PlayerAbility> HandleIncrementAbility(PlayerAbility ability)
+        {
+            if (ability.Tier > X)
+            {
+                ThisCharacter.GestaltLevel -= ability.Tier;
+            }
+            else if (ability.Tier < X)
+            {
+                ThisCharacter.GestaltLevel += (ability.Tier + 1);
+            }
+
+            X = ability.Tier;
+
+            return await PlayerAbilityService.UpdatePlayerAbility(ability.Id, ability);
         }
 
         protected void SetGestalt()
@@ -213,6 +240,12 @@ namespace OU2eHelper.Pages
             
         }
 
+        protected void DeletePlayerAbility(PlayerAbility ability)
+        {
+            ThisCharacter.PlayerAbilities.Remove(ability);
+            ThisCharacter.GestaltLevel = ThisCharacter.GestaltLevel + (((ability.Tier - 1) * ability.Tier) / 2) + ability.Tier;
+        }
+
         protected BSModal Step1Confirmation { get; set; }
         protected void onConfirmationToggle(MouseEventArgs e)
         {
@@ -244,7 +277,6 @@ namespace OU2eHelper.Pages
         }
 
         protected BSModal BaseAbilityDescription { get; set; }
-
         protected void onBaseAbilityToggleOn(BaseAbility ability)
         {
             ThisBaseAbility = ability;
@@ -254,11 +286,5 @@ namespace OU2eHelper.Pages
         {
             BaseAbilityDescription.Toggle();
         }
-
-        protected void HandleAbilitiesClick()
-        {
-            _addAbilities = !_addAbilities;
-        }
-
     }
 }

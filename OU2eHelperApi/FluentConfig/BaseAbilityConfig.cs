@@ -740,7 +740,7 @@ namespace OU2eHelperApi.FluentConfig
             builder.HasData(new BaseAbility
             {
                 Id = 71,
-                Name = "Training Melee Weapons",
+                Name = "Training, Melee Weapons",
                 Description = "This character is trained with a specific kind of melee weapon, generally from the Bludgeoning, Piercing, or Slashing weapon categories.\r\n\r\nSkill Support: Select One {Melee Attack <Bludgeoning, Piercing, or Slashing>%}\r\n\r\nAdvancement Rate: Each Tier adds +1 to the Supported Skills\r\n\r\nTraining Value(s):\r\n (Pick One)\r\n -Bludgeon +1 per Tier\r\n -Piercing +1 per Tier\r\n -Slashing +1 per Tier\r\n\r\nMastery: Any {Melee Attack%} will add 1 Damage Die to the dice pool.",
                 HtmlDescription = "This character is trained with a specific kind of melee weapon, generally from the Bludgeoning, Piercing, or Slashing weapon categories.<br/><br/>Skill Support: Select One {Melee Attack <Bludgeoning, Piercing, or Slashing>%}<br/><br/>Advancement Rate: Each Tier adds +1 to the Supported Skills<br/><br/>Training Value(s):<br/> (Pick One)<br/> -Bludgeon +1 per Tier<br/> -Piercing +1 per Tier<br/> -Slashing +1 per Tier<br/><br/>Mastery: Any {Melee Attack%} will add 1 Damage Die to the dice pool.",
                 AdvancesSkills = true,
