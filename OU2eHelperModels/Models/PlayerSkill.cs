@@ -13,6 +13,9 @@ namespace OU2eHelperModels.Models
         public string Type { get; set; }
         public string Notes { get; set; }
         public int Advancements { get; set; }
-        public bool Supported { get; set; }
+        public List<int> AdvancementsList { get; set; }
+        public bool IsSupported { get; set; }
+        public bool IsSpecialized { get; set; }
+        
     }
 }

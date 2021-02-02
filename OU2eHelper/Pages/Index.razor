@@ -170,8 +170,14 @@ else
             {
                 <div class="card">
                     <BSForm Model="skill">
-                        <div class="card-title text-center">@skill.BaseSkill.Name</div>
-                        <BSInput InputType="InputType.Number" @bind-Value="skill.Value" placeholder="@skill.Value" class="text-center"/>
+                        <div class="card-title text-center">@skill.BaseSkill.Name : @skill.Advancements</div>
+                        <BSInput InputType="InputType.Number" 
+                                 @bind-Value="skill.Value"
+                                 @onfocus="(() => X = skill.Value)"
+                                 @onchange="(() => X = skill.Value)"
+                                 @onclick="(() => HandleIncrementPlayerSkill(skill))"
+                                 placeholder="@skill.Value" 
+                                 class="text-center"/>
                     </BSForm>
                 </div>
             }

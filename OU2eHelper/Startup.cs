@@ -55,6 +55,10 @@ namespace OU2eHelper
             {
                 client.BaseAddress = new Uri(uri);
             });
+            services.AddHttpClient<IPlayerSkillService, PlayerSkillService>(client =>
+            {
+                client.BaseAddress = new Uri(uri);
+            });
 
         }
 

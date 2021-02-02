@@ -41,6 +41,7 @@ namespace OU2eHelperApi
             services.AddScoped<IBaseTrainingValueRepository, BaseTrainingValueRepository>();
             services.AddScoped<IPlayerCharacterRepository, PlayerCharacterRepository>();
             services.AddScoped<IPlayerAbilityRepository, PlayerAbilityRepository>();
+            services.AddScoped<IPlayerSkillRepository, PlayerSkillRepository>();
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
             services.AddDbContext<OU2eHelperContext>(options => options.UseSqlServer(

@@ -39,6 +39,10 @@ namespace OU2eHelper.Pages
         public IPlayerAbilityService PlayerAbilityService { get; set; }
         public IEnumerable<PlayerAbility> PlayerAbilities { get; set; }
 
+        [Inject]
+        public IPlayerSkillService PlayerSkillService { get; set; }
+        public IEnumerable<PlayerSkill> PlayerSkills { get; set; }
+
         protected bool _createNew;
         protected bool _addAbilities;
         protected int X;
@@ -120,7 +124,7 @@ namespace OU2eHelper.Pages
 
         protected void InitializePlayerSkills(BaseSkill skill)
         {
-            var playerSkill = new PlayerSkill { Value = 0 };
+            var playerSkill = new PlayerSkill { Value = 0, AdvancementsList = new List<int>()};
             if (skill.Type == "Expert")
             {
                 if (skill.PrimaryAttributeBaseAttributeId == 1 || skill.SecondaryAttributeBaseAttributeId == 1)
@@ -263,6 +267,125 @@ namespace OU2eHelper.Pages
             X = ability.Tier;
 
             return await PlayerAbilityService.UpdatePlayerAbility(ability.Id, ability);
+        }
+
+        protected async Task<PlayerSkill> HandleIncrementPlayerSkill(PlayerSkill skill)
+        {
+            if (skill.Value > X)
+            {
+                if (skill.BaseSkill.Type == "Basic")
+                {
+                    if (skill.IsSupported)
+                    {
+                        var roll = RollD5("Highest");
+                        ThisCharacter.GestaltLevel -= 1;
+                        skill.Advancements += 1;
+                        skill.Value += roll;
+                        skill.AdvancementsList.Add(roll);
+                    }
+                    else
+                    {
+                        var roll = RollD5("Normal");
+                        ThisCharacter.GestaltLevel -= 1;
+                        skill.Advancements += 1;
+                        skill.Value += roll;
+                        skill.AdvancementsList.Add(roll);
+                    }
+                }
+
+                else if (skill.BaseSkill.Type == "Trained")
+                {
+                    if (skill.IsSpecialized)
+                    {
+                        var roll = RollD5("Highest");
+                        ThisCharacter.GestaltLevel -= 1;
+                        skill.Advancements += 1;
+                        skill.Value += roll;
+                        skill.AdvancementsList.Add(roll);
+                    }
+                    else if (skill.IsSupported)
+                    {
+                        var roll = RollD5("Normal");
+                        ThisCharacter.GestaltLevel -= 1;
+                        skill.Advancements += 1;
+                        skill.Value += roll;
+                        skill.AdvancementsList.Add(roll);
+                    }
+                    else
+                    {
+                        var roll = RollD5("Lowest");
+                        ThisCharacter.GestaltLevel -= 1;
+                        skill.Advancements += 1;
+                        skill.Value += roll;
+                        skill.AdvancementsList.Add(roll);
+                    }
+                }
+
+                else if (skill.BaseSkill.Type == "Expert")
+                {
+                    if (skill.IsSpecialized)
+                    {
+                        var roll = RollD5("Normal");
+                        ThisCharacter.GestaltLevel -= 1;
+                        skill.Advancements += 1;
+                        skill.Value += roll;
+                        skill.AdvancementsList.Add(roll);
+                    }
+                    if (skill.IsSupported)
+                    {
+                        var roll = RollD5("Lowest");
+                        ThisCharacter.GestaltLevel -= 1;
+                        skill.Advancements += 1;
+                        skill.Value += roll;
+                        skill.AdvancementsList.Add(roll);
+                    }
+                    else
+                    {
+                        skill.Value = X;
+                    }
+                }
+            }
+
+            else if (skill.Value < X)
+            {
+                var lastAdvancement = skill.AdvancementsList[^1];
+                ThisCharacter.GestaltLevel += 1;
+                skill.Advancements -= 1;
+                skill.Value -= lastAdvancement;
+                skill.AdvancementsList.Remove(skill.AdvancementsList[^1]);
+            }
+
+            X = skill.Value;
+
+            return await PlayerSkillService.UpdatePlayerSkill(skill.Id, skill);
+        }
+
+        protected int RollD5(string type)
+        {
+            var rand = new Random();
+            var rolls = new List<int>();
+
+            if (type == "Highest")
+            {
+                var roll1 = rand.Next(1, 5);
+                rolls.Add(roll1);
+                var roll2 = rand.Next(1, 5);
+                rolls.Add(roll2);
+
+                return rolls.Max();
+            }
+
+            if (type == "Lowest")
+            {
+                var roll1 = rand.Next(1, 5);
+                rolls.Add(roll1);
+                var roll2 = rand.Next(1, 5);
+                rolls.Add(roll2);
+
+                return rolls.Min();
+            }
+
+            return rand.Next(1, 5);
         }
 
         protected void SetGestalt()

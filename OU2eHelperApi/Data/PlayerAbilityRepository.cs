@@ -60,6 +60,7 @@ namespace OU2eHelperApi.Data
                 result.Supports = playerAbility.Supports;
                 result.Type = playerAbility.Type;
 
+                _dbContext.Entry(playerAbility.BaseAbility).State = EntityState.Unchanged;
                 _dbContext.PlayerAbilities.Update(result);
                 await _dbContext.SaveChangesAsync();
                 return result;
