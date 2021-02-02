@@ -14,7 +14,7 @@ namespace OU2eHelperModels.Models
         public int Value { get; set; } = 0;
         public int Points { get; set; } = 0;
         public int Bonus => Value / 10;
-        public string Notes { get; set; } = "";
+        public string Notes { get; set; } = ""; 
 
         public int Advance(int startingValue)
         {
