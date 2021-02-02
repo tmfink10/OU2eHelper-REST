@@ -346,13 +346,18 @@ namespace OU2eHelper.Pages
                 }
             }
 
-            else if (skill.Value < X)
+            else if (skill.Value < X && skill.AdvancementsList.Count != 0)
             {
                 var lastAdvancement = skill.AdvancementsList[^1];
                 ThisCharacter.GestaltLevel += 1;
                 skill.Advancements -= 1;
                 skill.Value -= lastAdvancement;
                 skill.AdvancementsList.Remove(skill.AdvancementsList[^1]);
+            }
+
+            else
+            {
+                skill.Value = X;
             }
 
             X = skill.Value;
