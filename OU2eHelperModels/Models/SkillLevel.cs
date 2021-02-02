@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace OU2eHelperModels.Models
 {
-    public enum SkillLevel
+    public class SkillLevel
     {
-        Basic,
-        Trained,
-        Expert
+
     }
 }

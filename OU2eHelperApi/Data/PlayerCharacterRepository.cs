@@ -50,6 +50,11 @@ namespace OU2eHelperApi.Data
             {
                 _dbContext.Entry(ability.BaseAbility).State = EntityState.Unchanged;
             }
+
+            foreach (var skill in playerCharacter.PlayerSkills)
+            {
+                _dbContext.Entry(skill.BaseSkill).State = EntityState.Unchanged;
+            }
             await _dbContext.SaveChangesAsync();
             return result.Entity;
         }

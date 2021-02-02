@@ -63,6 +63,7 @@ namespace OU2eHelper.Pages
         protected PlayerCharacter ThisCharacter = new PlayerCharacter();
         protected BaseAbility ThisBaseAbility = new BaseAbility();
         protected PlayerAbility ThisPlayerAbility = new PlayerAbility();
+        protected PlayerSkill ThisPlayerSkill = new PlayerSkill();
         protected HelperClass Helper = new HelperClass();
 
         protected PlayerAttribute StrengthService { get; set; }
@@ -111,10 +112,83 @@ namespace OU2eHelper.Pages
 
             foreach (var skill in BaseSkills)
             {
-
+                InitializePlayerSkills(skill);
             }
 
             SetGestalt();
+        }
+
+        protected void InitializePlayerSkills(BaseSkill skill)
+        {
+            var playerSkill = new PlayerSkill { Value = 0 };
+            if (skill.Type == "Expert")
+            {
+                if (skill.PrimaryAttributeBaseAttributeId == 1 || skill.SecondaryAttributeBaseAttributeId == 1)
+                {
+                    playerSkill.Value += StrengthService.Bonus;
+                }
+
+                if (skill.PrimaryAttributeBaseAttributeId == 2 || skill.SecondaryAttributeBaseAttributeId == 2)
+                {
+                    playerSkill.Value += PerceptionService.Bonus;
+                }
+
+                if (skill.PrimaryAttributeBaseAttributeId == 3 || skill.SecondaryAttributeBaseAttributeId == 3)
+                {
+                    playerSkill.Value += EmpathyService.Bonus;
+                }
+
+                if (skill.PrimaryAttributeBaseAttributeId == 4 || skill.SecondaryAttributeBaseAttributeId == 4)
+                {
+                    playerSkill.Value += WillpowerService.Bonus;
+                }
+            }
+            else
+            {
+                if (skill.PrimaryAttributeBaseAttributeId == 1)
+                {
+                    playerSkill.Value += StrengthService.Value;
+                }
+
+                if (skill.PrimaryAttributeBaseAttributeId == 2)
+                {
+                    playerSkill.Value += PerceptionService.Value;
+                }
+
+                if (skill.PrimaryAttributeBaseAttributeId == 3)
+                {
+                    playerSkill.Value += EmpathyService.Value;
+                }
+
+                if (skill.PrimaryAttributeBaseAttributeId == 4)
+                {
+                    playerSkill.Value += WillpowerService.Value;
+                }
+
+                if (skill.SecondaryAttributeBaseAttributeId == 1)
+                {
+                    playerSkill.Value += StrengthService.Bonus;
+                }
+
+                if (skill.SecondaryAttributeBaseAttributeId == 2)
+                {
+                    playerSkill.Value += PerceptionService.Bonus;
+                }
+
+                if (skill.SecondaryAttributeBaseAttributeId == 3)
+                {
+                    playerSkill.Value += EmpathyService.Bonus;
+                }
+
+                if (skill.SecondaryAttributeBaseAttributeId == 4)
+                {
+                    playerSkill.Value += WillpowerService.Bonus;
+                }
+            }
+
+            playerSkill.BaseSkill = skill;
+
+            ThisCharacter.PlayerSkills.Add(playerSkill);
         }
         
         protected async Task<PlayerCharacter> HandleOnValidPlayerCharacterSubmit()

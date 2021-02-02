@@ -88,7 +88,7 @@ else
                 </BSCol>
             </BSRow>
         </BSFormGroup>
-        <BSButton Color="Color.Primary" ButtonType="ButtonType.Submit" @onclick="@onConfirmationToggle" Class="align-right">Save</BSButton>
+        <BSButton Color="Color.Primary" ButtonType="ButtonType.Submit" @onclick="onConfirmationToggle" Class="align-right">Save</BSButton>
         
     </EditForm>
 
@@ -132,13 +132,13 @@ else
         <BSForm Model="ThisPlayerAbility" OnValidSubmit="HandleOnValidPlayerAbilitySubmit">
             <BSTable class="col-md-8">
                 <thead>
-                    <tr>
-                        <th scope ="col" style="width: 35%">Ability</th>
-                        <th style="width: 15%">Tier</th>
-                        <th style="width: 40%">Notes</th>
-                        <th style="width: 5%"></th>
-                        <th style="width: 5%"></th>
-                    </tr>
+                <tr>
+                    <th scope ="col" style="width: 35%">Ability</th>
+                    <th style="width: 15%">Tier</th>
+                    <th style="width: 40%">Notes</th>
+                    <th style="width: 5%"></th>
+                    <th style="width: 5%"></th>
+                </tr>
                 </thead>
                 @foreach (var ability in ThisCharacter.PlayerAbilities)
                 {
@@ -164,6 +164,19 @@ else
                 }
             </BSTable>
         </BSForm>
+        <h2>Skills</h2>
+        <div class="card-columns col-md-8">
+            @foreach (var skill in ThisCharacter.PlayerSkills)
+            {
+                <div class="card">
+                    <BSForm Model="skill">
+                        <div class="card-title text-center">@skill.BaseSkill.Name</div>
+                        <BSInput InputType="InputType.Number" @bind-Value="skill.Value" placeholder="@skill.Value" class="text-center"/>
+                    </BSForm>
+                </div>
+            }
+        </div>
+        
     }
     
 
