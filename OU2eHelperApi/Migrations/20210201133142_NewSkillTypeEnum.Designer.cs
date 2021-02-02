@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OU2eHelperApi.Data;
 
 namespace OU2eHelperApi.Migrations
 {
     [DbContext(typeof(OU2eHelperContext))]
-    partial class OU2eHelperContextModelSnapshot : ModelSnapshot
+    [Migration("20210201133142_NewSkillTypeEnum")]
+    partial class NewSkillTypeEnum
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -853,9 +855,8 @@ namespace OU2eHelperApi.Migrations
                     b.Property<int?>("SecondaryAttributeId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Type")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -878,7 +879,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Advanced Medicine",
                             PrimaryAttributeBaseAttributeId = 2,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Expert"
+                            Type = 2
                         },
                         new
                         {
@@ -888,7 +889,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Balance",
                             PrimaryAttributeBaseAttributeId = 2,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Basic"
+                            Type = 0
                         },
                         new
                         {
@@ -898,7 +899,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Bow/Crossbow",
                             PrimaryAttributeBaseAttributeId = 2,
                             SecondaryAttributeBaseAttributeId = 1,
-                            Type = "Trained"
+                            Type = 1
                         },
                         new
                         {
@@ -908,7 +909,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Brawl",
                             PrimaryAttributeBaseAttributeId = 1,
                             SecondaryAttributeBaseAttributeId = 2,
-                            Type = "Basic"
+                            Type = 0
                         },
                         new
                         {
@@ -918,7 +919,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Calm Other",
                             PrimaryAttributeBaseAttributeId = 3,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Trained"
+                            Type = 1
                         },
                         new
                         {
@@ -928,7 +929,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Climb",
                             PrimaryAttributeBaseAttributeId = 1,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Basic"
+                            Type = 0
                         },
                         new
                         {
@@ -938,7 +939,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Composure",
                             PrimaryAttributeBaseAttributeId = 4,
                             SecondaryAttributeBaseAttributeId = 3,
-                            Type = "Basic"
+                            Type = 0
                         },
                         new
                         {
@@ -948,7 +949,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Craft/Construct/Engineer",
                             PrimaryAttributeBaseAttributeId = 2,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Expert"
+                            Type = 2
                         },
                         new
                         {
@@ -958,7 +959,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Digital Systems",
                             PrimaryAttributeBaseAttributeId = 2,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Trained"
+                            Type = 1
                         },
                         new
                         {
@@ -968,7 +969,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Diplomacy <Barter/Bribe>",
                             PrimaryAttributeBaseAttributeId = 3,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Trained"
+                            Type = 1
                         },
                         new
                         {
@@ -978,7 +979,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Diplomacy <Command>",
                             PrimaryAttributeBaseAttributeId = 3,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Trained"
+                            Type = 1
                         },
                         new
                         {
@@ -988,7 +989,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Diplomacy <Determine Motives>",
                             PrimaryAttributeBaseAttributeId = 3,
                             SecondaryAttributeBaseAttributeId = 2,
-                            Type = "Trained"
+                            Type = 1
                         },
                         new
                         {
@@ -998,7 +999,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Diplomacy <Intimidate>",
                             PrimaryAttributeBaseAttributeId = 3,
                             SecondaryAttributeBaseAttributeId = 1,
-                            Type = "Trained"
+                            Type = 1
                         },
                         new
                         {
@@ -1008,7 +1009,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Diplomacy <Persuade>",
                             PrimaryAttributeBaseAttributeId = 3,
                             SecondaryAttributeBaseAttributeId = 2,
-                            Type = "Trained"
+                            Type = 1
                         },
                         new
                         {
@@ -1018,7 +1019,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Dodge",
                             PrimaryAttributeBaseAttributeId = 2,
                             SecondaryAttributeBaseAttributeId = 1,
-                            Type = "Basic"
+                            Type = 0
                         },
                         new
                         {
@@ -1028,7 +1029,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Endurance",
                             PrimaryAttributeBaseAttributeId = 1,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Basic"
+                            Type = 0
                         },
                         new
                         {
@@ -1038,7 +1039,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Expression",
                             PrimaryAttributeBaseAttributeId = 3,
                             SecondaryAttributeBaseAttributeId = 2,
-                            Type = "Basic"
+                            Type = 0
                         },
                         new
                         {
@@ -1048,7 +1049,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Firearms <Long Gun>",
                             PrimaryAttributeBaseAttributeId = 2,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Trained"
+                            Type = 1
                         },
                         new
                         {
@@ -1058,7 +1059,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Firearms <Pistol>",
                             PrimaryAttributeBaseAttributeId = 2,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Trained"
+                            Type = 1
                         },
                         new
                         {
@@ -1068,7 +1069,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "First Aid",
                             PrimaryAttributeBaseAttributeId = 2,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Trained"
+                            Type = 1
                         },
                         new
                         {
@@ -1078,7 +1079,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Grapple",
                             PrimaryAttributeBaseAttributeId = 1,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Basic"
+                            Type = 0
                         },
                         new
                         {
@@ -1088,7 +1089,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Hold",
                             PrimaryAttributeBaseAttributeId = 4,
                             SecondaryAttributeBaseAttributeId = 2,
-                            Type = "Basic"
+                            Type = 0
                         },
                         new
                         {
@@ -1098,7 +1099,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Jump/Leap",
                             PrimaryAttributeBaseAttributeId = 1,
                             SecondaryAttributeBaseAttributeId = 2,
-                            Type = "Basic"
+                            Type = 0
                         },
                         new
                         {
@@ -1108,7 +1109,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Lift/Pull",
                             PrimaryAttributeBaseAttributeId = 1,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Basic"
+                            Type = 0
                         },
                         new
                         {
@@ -1118,7 +1119,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Martial Arts",
                             PrimaryAttributeBaseAttributeId = 1,
                             SecondaryAttributeBaseAttributeId = 2,
-                            Type = "Expert"
+                            Type = 2
                         },
                         new
                         {
@@ -1128,7 +1129,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Melee Attack <Bludgeoning>",
                             PrimaryAttributeBaseAttributeId = 1,
                             SecondaryAttributeBaseAttributeId = 2,
-                            Type = "Trained"
+                            Type = 1
                         },
                         new
                         {
@@ -1138,7 +1139,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Melee Attack <Piercing>",
                             PrimaryAttributeBaseAttributeId = 1,
                             SecondaryAttributeBaseAttributeId = 2,
-                            Type = "Trained"
+                            Type = 1
                         },
                         new
                         {
@@ -1148,7 +1149,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Melee Attack <Slashing>",
                             PrimaryAttributeBaseAttributeId = 1,
                             SecondaryAttributeBaseAttributeId = 2,
-                            Type = "Trained"
+                            Type = 1
                         },
                         new
                         {
@@ -1158,7 +1159,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Navigation",
                             PrimaryAttributeBaseAttributeId = 2,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Trained"
+                            Type = 1
                         },
                         new
                         {
@@ -1168,7 +1169,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Pilot",
                             PrimaryAttributeBaseAttributeId = 2,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Expert"
+                            Type = 2
                         },
                         new
                         {
@@ -1178,7 +1179,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Resist Pain",
                             PrimaryAttributeBaseAttributeId = 4,
                             SecondaryAttributeBaseAttributeId = 1,
-                            Type = "Basic"
+                            Type = 0
                         },
                         new
                         {
@@ -1188,7 +1189,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Ride",
                             PrimaryAttributeBaseAttributeId = 3,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Expert"
+                            Type = 2
                         },
                         new
                         {
@@ -1198,7 +1199,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Science",
                             PrimaryAttributeBaseAttributeId = 2,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Expert"
+                            Type = 2
                         },
                         new
                         {
@@ -1208,7 +1209,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Search",
                             PrimaryAttributeBaseAttributeId = 2,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Basic"
+                            Type = 0
                         },
                         new
                         {
@@ -1218,7 +1219,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Spot/Listen",
                             PrimaryAttributeBaseAttributeId = 2,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Basic"
+                            Type = 0
                         },
                         new
                         {
@@ -1228,7 +1229,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Stealth",
                             PrimaryAttributeBaseAttributeId = 2,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Basic"
+                            Type = 0
                         },
                         new
                         {
@@ -1238,7 +1239,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Survival",
                             PrimaryAttributeBaseAttributeId = 2,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Expert"
+                            Type = 2
                         },
                         new
                         {
@@ -1248,7 +1249,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Swim",
                             PrimaryAttributeBaseAttributeId = 1,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Trained"
+                            Type = 1
                         },
                         new
                         {
@@ -1258,7 +1259,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Throw",
                             PrimaryAttributeBaseAttributeId = 2,
                             SecondaryAttributeBaseAttributeId = 1,
-                            Type = "Trained"
+                            Type = 1
                         },
                         new
                         {
@@ -1268,7 +1269,7 @@ namespace OU2eHelperApi.Migrations
                             Name = "Toughness",
                             PrimaryAttributeBaseAttributeId = 1,
                             SecondaryAttributeBaseAttributeId = 4,
-                            Type = "Expert"
+                            Type = 2
                         });
                 });
 

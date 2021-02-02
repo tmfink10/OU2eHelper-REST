@@ -111,14 +111,7 @@ namespace OU2eHelper.Pages
 
             foreach (var skill in BaseSkills)
             {
-                switch (skill.Type)
-                {
-                    case 
-                }
-                new PlayerSkill
-                {
-                    BaseSkill = skill,
-                };
+
             }
 
             SetGestalt();

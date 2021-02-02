@@ -10,7 +10,7 @@ namespace OU2eHelperModels.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public string HtmlDescription { get; set; }
-        public SkillLevel Type { get; set; }
+        public string Type { get; set; }
         public int PrimaryAttributeBaseAttributeId { get; set; }
         public BaseAttribute PrimaryAttribute { get; set; }
         public int SecondaryAttributeBaseAttributeId { get; set; }
