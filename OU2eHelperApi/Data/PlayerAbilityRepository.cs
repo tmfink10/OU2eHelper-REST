@@ -42,6 +42,11 @@ namespace OU2eHelperApi.Data
         public async Task<PlayerAbility> AddPlayerAbility(PlayerAbility playerAbility)
         {
             var result = await _dbContext.PlayerAbilities.AddAsync(playerAbility);
+            foreach (var skill in playerAbility.SupportsPlayerSkills)
+            {
+                _dbContext.Entry(skill).State = EntityState.Unchanged;
+                _dbContext.Entry(skill.BaseSkill).State = EntityState.Unchanged;
+            }
             _dbContext.Entry(playerAbility.BaseAbility).State = EntityState.Unchanged;
             await _dbContext.SaveChangesAsync();
             return result.Entity;
@@ -57,9 +62,13 @@ namespace OU2eHelperApi.Data
                 result.BaseAbility = playerAbility.BaseAbility;
                 result.Notes = playerAbility.Notes;
                 result.Tier = playerAbility.Tier;
-                result.Supports = playerAbility.Supports;
+                result.SupportsPlayerSkills = playerAbility.SupportsPlayerSkills;
                 result.Type = playerAbility.Type;
 
+                foreach (var skill in playerAbility.SupportsPlayerSkills)
+                {
+                    _dbContext.Entry(skill.BaseSkill).State = EntityState.Unchanged;
+                }
                 _dbContext.Entry(playerAbility.BaseAbility).State = EntityState.Unchanged;
                 _dbContext.PlayerAbilities.Update(result);
                 await _dbContext.SaveChangesAsync();

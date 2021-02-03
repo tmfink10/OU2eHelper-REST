@@ -16,6 +16,7 @@ namespace OU2eHelperApi.FluentConfig
 
             builder.Property(a => a.Notes)
                 .HasMaxLength(255);
+            builder.Ignore(a => a.AdvancementValues);
 
             builder.HasOne<BaseAttribute>(a => a.BaseAttribute);
 

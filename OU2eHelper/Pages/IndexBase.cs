@@ -45,9 +45,9 @@ namespace OU2eHelper.Pages
 
         protected bool _createNew;
         protected bool _addAbilities;
-        protected int X;
-        protected int Y;
-        protected int DeltaX;
+        protected int InitialValue;
+        protected int FinalValue;
+        protected int Delta;
         [Parameter] public EventCallback<PlayerAbility> PlayerAbilityCallback { get; set; }
 
         protected override async Task OnInitializedAsync()
@@ -113,11 +113,6 @@ namespace OU2eHelper.Pages
             ThisCharacter.Morale = empathy.Bonus + willpower.Bonus;
             ThisCharacter.CargoCapacity = strength.Bonus;
             ThisCharacter.SurvivalPoints = 25;
-
-            foreach (var skill in BaseSkills)
-            {
-                InitializePlayerSkills(skill);
-            }
 
             SetGestalt();
         }
@@ -225,6 +220,11 @@ namespace OU2eHelper.Pages
 
             _addAbilities = true;
 
+            foreach (var skill in BaseSkills)
+            {
+                InitializePlayerSkills(skill);
+            }
+
             if (ThisCharacter.Id != 0)
             {
                 return await PlayerCharacterService.UpdatePlayerCharacter(ThisCharacter.Id, ThisCharacter);
@@ -241,6 +241,53 @@ namespace OU2eHelper.Pages
             {
                 BaseAbility = BaseAbilities.FirstOrDefault(a => a.Id == Int32.Parse(Helper.FormString))
             };
+
+            if (tempAbility.BaseAbility.Description.Contains("Skill Support:"))
+            {
+                var end = tempAbility.BaseAbility.Description.IndexOf("}");
+
+                var rawSkillNames = tempAbility.BaseAbility.Description.Remove(end);
+                rawSkillNames = rawSkillNames.Remove(0, rawSkillNames.IndexOf("{") + 1);
+
+                var SkillNames = new List<string>();
+                var FinalList = new List<string>();
+
+                while (rawSkillNames.Length > 0)
+                {
+                    Console.WriteLine($"RawSkillNames:{rawSkillNames}");
+                    var tempString = rawSkillNames.Remove(rawSkillNames.IndexOf('%'));
+                    SkillNames.Add(tempString);
+                    tempString = "";
+                    rawSkillNames = rawSkillNames.Remove(0, rawSkillNames.IndexOf('%') + 1);
+                }
+
+                foreach (var name in SkillNames)
+                {
+                    if (name.Contains(','))
+                    {
+                        FinalList.Add(name.Remove(0, 2));
+                    }
+                    else
+                    {
+                        FinalList.Add(name);
+                    }
+                }
+
+                foreach (var name in FinalList)
+                {
+                    foreach (var skill in ThisCharacter.PlayerSkills)
+                    {
+                        if (skill.BaseSkill.Name == name)
+                        {
+                            skill.IsSupported = true;
+                            tempAbility.SupportsPlayerSkills.Add(skill);
+                        }
+
+                        Console.WriteLine($"Search for: {name}\tIn:{skill.BaseSkill.Name}\tSupported: {skill.IsSupported}");
+                    }
+                }
+            }
+
             tempAbility = await PlayerAbilityService.CreatePlayerAbility(tempAbility);
             
             ThisCharacter.PlayerAbilities.Add(tempAbility);
@@ -248,31 +295,34 @@ namespace OU2eHelper.Pages
 
         protected async Task<PlayerAbility> HandleOnValidPlayerAbilitySubmit()
         {
-            DeltaX = Y - X;
+            Delta = FinalValue - InitialValue;
             UpdateGestalt();
             return await PlayerAbilityService.UpdatePlayerAbility(ThisPlayerAbility.Id, ThisPlayerAbility);
         }
 
         protected async Task<PlayerAbility> HandleIncrementAbility(PlayerAbility ability)
         {
-            if (ability.Tier > X)
+            if (ability.Tier > InitialValue)
             {
                 ThisCharacter.GestaltLevel -= ability.Tier;
             }
-            else if (ability.Tier < X)
+            else if (ability.Tier < InitialValue)
             {
                 ThisCharacter.GestaltLevel += (ability.Tier + 1);
             }
 
-            X = ability.Tier;
+            InitialValue = ability.Tier;
 
             return await PlayerAbilityService.UpdatePlayerAbility(ability.Id, ability);
         }
 
         protected async Task<PlayerSkill> HandleIncrementPlayerSkill(PlayerSkill skill)
         {
-            if (skill.Value > X)
+            if (skill.Value > InitialValue)
             {
+                var supportValues = new List<int>();
+                var totalAdvancement = 0;
+
                 if (skill.BaseSkill.Type == "Basic")
                 {
                     if (skill.IsSupported)
@@ -280,12 +330,24 @@ namespace OU2eHelper.Pages
                         var roll = RollD5("Highest");
                         ThisCharacter.GestaltLevel -= 1;
                         skill.Advancements += 1;
-                        skill.Value += roll;
-                        skill.AdvancementsList.Add(roll);
+                        totalAdvancement += roll;
+                        foreach (var ability in ThisCharacter.PlayerAbilities)
+                        {
+                            foreach (var playerSkill in ability.SupportsPlayerSkills)
+                            {
+                                if (playerSkill.BaseSkill.Name == skill.BaseSkill.Name)
+                                {
+                                    supportValues.Add(playerSkill.Advancements);
+                                }
+                            }
+                        }
+                        totalAdvancement += supportValues.Max();
+                        skill.Value += totalAdvancement;
+                        skill.AdvancementsList.Add(totalAdvancement);
                     }
                     else
                     {
-                        var roll = RollD5("Normal");
+                        var roll = RollD5();
                         ThisCharacter.GestaltLevel -= 1;
                         skill.Advancements += 1;
                         skill.Value += roll;
@@ -300,16 +362,43 @@ namespace OU2eHelper.Pages
                         var roll = RollD5("Highest");
                         ThisCharacter.GestaltLevel -= 1;
                         skill.Advancements += 1;
-                        skill.Value += roll;
-                        skill.AdvancementsList.Add(roll);
+                        totalAdvancement += roll;
+                        if (skill.IsSupported)
+                        {
+                            foreach (var ability in ThisCharacter.PlayerAbilities)
+                            {
+                                foreach (var playerSkill in ability.SupportsPlayerSkills)
+                                {
+                                    if (playerSkill.BaseSkill.Name == skill.BaseSkill.Name)
+                                    {
+                                        supportValues.Add(ability.Tier);
+                                    }
+                                }
+                            }
+                            totalAdvancement += supportValues.Max();
+                        }
+                        skill.Value += totalAdvancement;
+                        skill.AdvancementsList.Add(totalAdvancement);
                     }
                     else if (skill.IsSupported)
                     {
-                        var roll = RollD5("Normal");
+                        var roll = RollD5();
                         ThisCharacter.GestaltLevel -= 1;
                         skill.Advancements += 1;
-                        skill.Value += roll;
-                        skill.AdvancementsList.Add(roll);
+                        totalAdvancement += roll;
+                        foreach (var ability in ThisCharacter.PlayerAbilities)
+                        {
+                            foreach (var playerSkill in ability.SupportsPlayerSkills)
+                            {
+                                if (playerSkill.BaseSkill.Name == skill.BaseSkill.Name)
+                                {
+                                    supportValues.Add(ability.Tier);
+                                }
+                            }
+                        }
+                        totalAdvancement += supportValues.Max();
+                        skill.Value += totalAdvancement;
+                        skill.AdvancementsList.Add(totalAdvancement);
                     }
                     else
                     {
@@ -325,28 +414,56 @@ namespace OU2eHelper.Pages
                 {
                     if (skill.IsSpecialized)
                     {
-                        var roll = RollD5("Normal");
+                        var roll = RollD5();
                         ThisCharacter.GestaltLevel -= 1;
                         skill.Advancements += 1;
-                        skill.Value += roll;
-                        skill.AdvancementsList.Add(roll);
+                        totalAdvancement += roll;
+                        if (skill.IsSupported)
+                        {
+                            foreach (var ability in ThisCharacter.PlayerAbilities)
+                            {
+                                foreach (var playerSkill in ability.SupportsPlayerSkills)
+                                {
+                                    if (playerSkill.BaseSkill.Name == skill.BaseSkill.Name)
+                                    {
+                                        supportValues.Add(ability.Tier);
+                                    }
+                                }
+                            }
+                            totalAdvancement += supportValues.Max();
+                        }
+
+                        skill.Value += totalAdvancement;
+                        skill.AdvancementsList.Add(totalAdvancement);
                     }
                     if (skill.IsSupported)
                     {
                         var roll = RollD5("Lowest");
                         ThisCharacter.GestaltLevel -= 1;
                         skill.Advancements += 1;
-                        skill.Value += roll;
-                        skill.AdvancementsList.Add(roll);
+                        totalAdvancement += roll;
+                        foreach (var ability in ThisCharacter.PlayerAbilities)
+                        {
+                            foreach (var playerSkill in ability.SupportsPlayerSkills)
+                            {
+                                if (playerSkill.BaseSkill.Name == skill.BaseSkill.Name)
+                                {
+                                    supportValues.Add(ability.Tier);
+                                }
+                            }
+                        }
+                        totalAdvancement += supportValues.Max();
+                        skill.Value += totalAdvancement;
+                        skill.AdvancementsList.Add(totalAdvancement);
                     }
                     else
                     {
-                        skill.Value = X;
+                        skill.Value = InitialValue;
                     }
                 }
             }
 
-            else if (skill.Value < X && skill.AdvancementsList.Count != 0)
+            else if (skill.Value < InitialValue && skill.AdvancementsList.Count != 0)
             {
                 var lastAdvancement = skill.AdvancementsList[^1];
                 ThisCharacter.GestaltLevel += 1;
@@ -357,15 +474,15 @@ namespace OU2eHelper.Pages
 
             else
             {
-                skill.Value = X;
+                skill.Value = InitialValue;
             }
 
-            X = skill.Value;
+            InitialValue = skill.Value;
 
             return await PlayerSkillService.UpdatePlayerSkill(skill.Id, skill);
         }
 
-        protected int RollD5(string type)
+        protected int RollD5(string type = "Default")
         {
             var rand = new Random();
             var rolls = new List<int>();
@@ -410,18 +527,18 @@ namespace OU2eHelper.Pages
             var positiveCounter = 0;
             var negativeCounter = 0;
             
-            while (DeltaX>0)
+            while (Delta>0)
             {
-                X++;
-                positiveCounter += X;
-                DeltaX--;
+                InitialValue++;
+                positiveCounter += InitialValue;
+                Delta--;
             }
 
-            while (DeltaX<0)
+            while (Delta<0)
             {
-                negativeCounter -= X;
-                X--;
-                DeltaX++;
+                negativeCounter -= InitialValue;
+                InitialValue--;
+                Delta++;
             }
 
             if (positiveCounter > 0)
@@ -438,7 +555,7 @@ namespace OU2eHelper.Pages
         protected void DeletePlayerAbility(PlayerAbility ability)
         {
             ThisCharacter.PlayerAbilities.Remove(ability);
-            ThisCharacter.GestaltLevel = ThisCharacter.GestaltLevel + (((ability.Tier - 1) * ability.Tier) / 2) + ability.Tier;
+            ThisCharacter.GestaltLevel = ThisCharacter.GestaltLevel + (((ability.Tier) * ability.Tier) / 2);
         }
 
         protected BSModal Step1Confirmation { get; set; }

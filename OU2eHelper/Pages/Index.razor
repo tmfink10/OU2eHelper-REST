@@ -41,8 +41,8 @@ else
                                   PlaceHolder="@StrengthService.Value" 
                                   InputType="InputType.Number"
                                   @bind-Value="StrengthService.Value"
-                                  @onfocus="(() => X = StrengthService.Value)"
-                                  @onclick="(() => X = StrengthService.Advance(X))"/>
+                                  @onfocus="(() => InitialValue = StrengthService.Value)"
+                                  @onclick="(() => InitialValue = StrengthService.Advance(InitialValue, ThisCharacter))"/>
                 </BSCol>
                 <BSCol>
                     <BSLabel For="characterPerception" @onclick="@onPerceptionToggle">Perception</BSLabel>
@@ -50,8 +50,8 @@ else
                                   PlaceHolder="@PerceptionService.Value" 
                                   InputType="InputType.Number" 
                                   @bind-Value="PerceptionService.Value"
-                                  @onfocus="(() => X = PerceptionService.Value)"
-                                  @onclick="(() => X = PerceptionService.Advance(X))"/>
+                                  @onfocus="(() => InitialValue = PerceptionService.Value)"
+                                  @onclick="(() => InitialValue = PerceptionService.Advance(InitialValue, ThisCharacter))"/>
                 </BSCol>
                 <BSCol>
                     <BSLabel For="characterEmpathy" @onclick="@onEmpathyToggle">Empathy</BSLabel>
@@ -59,8 +59,8 @@ else
                                   PlaceHolder="@EmpathyService.Value" 
                                   InputType="InputType.Number" 
                                   @bind-Value="EmpathyService.Value"
-                                  @onfocus="(() => X = EmpathyService.Value)"
-                                  @onclick="(() => X = EmpathyService.Advance(X))"/>
+                                  @onfocus="(() => InitialValue = EmpathyService.Value)"
+                                  @onclick="(() => InitialValue = EmpathyService.Advance(InitialValue, ThisCharacter))"/>
                 </BSCol>
                 <BSCol>
                     <BSLabel For="characterWillpower" @onclick="@onWillpowerToggle">Willpower</BSLabel>
@@ -68,8 +68,8 @@ else
                                   PlaceHolder="@WillpowerService.Value" 
                                   InputType="InputType.Number" 
                                   @bind-Value="WillpowerService.Value"
-                                  @onfocus="(() => X = WillpowerService.Value)"
-                                  @onclick="(() => X = WillpowerService.Advance(X))"/>
+                                  @onfocus="(() => InitialValue = WillpowerService.Value)"
+                                  @onclick="(() => InitialValue = WillpowerService.Advance(InitialValue, ThisCharacter))"/>
                 </BSCol>
             </BSRow>
             <h3 style="margin-bottom: 5px">Character Resources</h3>
@@ -88,7 +88,10 @@ else
                 </BSCol>
             </BSRow>
         </BSFormGroup>
-        <BSButton Color="Color.Primary" ButtonType="ButtonType.Submit" @onclick="onConfirmationToggle" Class="align-right">Save</BSButton>
+        @if (_addAbilities == false)
+        {
+            <BSButton Color="Color.Primary" ButtonType="ButtonType.Submit" @onclick="onConfirmationToggle" Class="align-right">Save</BSButton>
+        }
         
     </EditForm>
 
@@ -150,8 +153,8 @@ else
                                 class="form-control" 
                                 placeholder="@ability.Tier" 
                                 @bind-Value="ability.Tier"
-                                @onfocus="(() => X = ability.Tier)" 
-                                @onchange="(() => X = ability.Tier)"
+                                @onfocus="(() => InitialValue = ability.Tier)" 
+                                @onchange="(() => InitialValue = ability.Tier)"
                                 @onclick="(() => HandleIncrementAbility(ability))"/>
                         </td>
                         <td><InputText class="form-control" @bind-Value="@ability.Notes" placeholder="@ability.Notes"/></td>
@@ -173,8 +176,8 @@ else
                         <div class="card-title text-center">@skill.BaseSkill.Name : @skill.Advancements</div>
                         <BSInput InputType="InputType.Number" 
                                  @bind-Value="skill.Value"
-                                 @onfocus="(() => X = skill.Value)"
-                                 @onchange="(() => X = skill.Value)"
+                                 @onfocus="(() => InitialValue = skill.Value)"
+                                 @onchange="(() => InitialValue = skill.Value)"
                                  @onclick="(() => HandleIncrementPlayerSkill(skill))"
                                  placeholder="@skill.Value" 
                                  class="text-center"/>
