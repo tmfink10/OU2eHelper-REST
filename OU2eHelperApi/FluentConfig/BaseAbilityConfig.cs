@@ -61,8 +61,8 @@ namespace OU2eHelperApi.FluentConfig
             {
                 Id = 3,
                 Name = "Agility",
-                Description = "This character is nimble and gifted with quick reaction time. \r\n\r\nSkill Support: {Balance%, Dodge%,}\r\n\r\nAdvancement Rate: +1 per Tier to {Balance%, Dodge%}\r\n\r\nMastery: Add +1 Defense when targeted with Ranged Attacks.",
-                HtmlDescription = "This character is nimble and gifted with quick reaction time. <br/><br/>Skill Support: {Balance%, Dodge%,}<br/><br/>Advancement Rate: +1 per Tier to {Balance%, Dodge%}<br/><br/>Mastery: Add +1 Defense when targeted with Ranged Attacks.",
+                Description = "This character is nimble and gifted with quick reaction time. \r\n\r\nSkill Support: {Balance%, Dodge%}\r\n\r\nAdvancement Rate: +1 per Tier to {Balance%, Dodge%}\r\n\r\nMastery: Add +1 Defense when targeted with Ranged Attacks.",
+                HtmlDescription = "This character is nimble and gifted with quick reaction time. <br/><br/>Skill Support: {Balance%, Dodge%}<br/><br/>Advancement Rate: +1 per Tier to {Balance%, Dodge%}<br/><br/>Mastery: Add +1 Defense when targeted with Ranged Attacks.",
                 AdvancesSkills = true,
                 IsProfessional = false
             });

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OU2eHelperApi.Data;
 
 namespace OU2eHelperApi.Migrations
 {
     [DbContext(typeof(OU2eHelperContext))]
-    partial class OU2eHelperContextModelSnapshot : ModelSnapshot
+    [Migration("20210206004606_PlayerSkillUpdate")]
+    partial class PlayerSkillUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1584,6 +1586,9 @@ namespace OU2eHelperApi.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<int>("AdditionalValue")
+                        .HasColumnType("int");
+
                     b.Property<int>("Advancements")
                         .HasColumnType("int");
 
@@ -1612,9 +1617,6 @@ namespace OU2eHelperApi.Migrations
                     b.Property<string>("Type")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("Value")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
