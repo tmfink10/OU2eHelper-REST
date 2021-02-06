@@ -70,6 +70,7 @@ namespace OU2eHelper.Pages
 
         protected PlayerCharacter ThisCharacter = new PlayerCharacter();
         protected BaseAbility ThisBaseAbility = new BaseAbility();
+        protected BaseSkill ThisBaseSkill = new BaseSkill();
         protected PlayerAbility ThisPlayerAbility = new PlayerAbility();
         protected PlayerAttribute ThisPlayerAttribute = new PlayerAttribute();
         protected PlayerSkill ThisPlayerSkill = new PlayerSkill();
@@ -128,6 +129,7 @@ namespace OU2eHelper.Pages
 
             ThisCharacter = await PlayerCharacterService.CreatePlayerCharacter(ThisCharacter);
         }
+
         protected async Task<PlayerCharacter> HandleOnValidPlayerCharacterSubmit()
         {
             //Sync the attribute services with the attributes in the list
@@ -161,9 +163,234 @@ namespace OU2eHelper.Pages
             return await PlayerCharacterService.UpdatePlayerCharacter(ThisCharacter.Id, ThisCharacter);
         }
 
+        protected async Task<PlayerAttribute> HandleIncrementPlayerAttribute(PlayerAttribute attribute)
+        {
+            var rand = new Random();
+            var inListAttribute =
+                ThisCharacter.PlayerAttributes.FirstOrDefault(a =>
+                    a.BaseAttribute.Name == attribute.BaseAttribute.Name);
+            var valueToRemove = 0;
+
+            if (InitialValue < attribute.Value)
+            {
+                var advanceValue = 0;
+                advanceValue = rand.Next(1, 4);
+                ThisCharacter.GestaltLevel -= InitialValue/10;
+                attribute.Value = InitialValue + advanceValue;
+                inListAttribute.Value = attribute.Value;
+                attribute.AdvancementValues.Add(advanceValue);
+                inListAttribute.AdvancementValues = attribute.AdvancementValues;
+            }
+            else if (InitialValue > attribute.Value)
+            {
+                if (attribute.AdvancementValues.Count > 0)
+                {
+                    valueToRemove = attribute.AdvancementValues[^1];
+                    attribute.Value = InitialValue - valueToRemove;
+                    inListAttribute.Value = attribute.Value;
+                    attribute.AdvancementValues.Remove(attribute.AdvancementValues[^1]);
+                    inListAttribute.AdvancementValues = attribute.AdvancementValues;
+                    ThisCharacter.GestaltLevel += attribute.Bonus;
+                }
+            }
+            else
+            {
+                attribute.Value = InitialValue;
+            }
+
+            if (inListAttribute.Id == 0)
+            {
+                return await PlayerAttributeService.CreatePlayerAttribute(inListAttribute);
+            }
+
+            foreach (var skill in ThisCharacter.PlayerSkills)
+            {
+                var primaryAttribute = BaseAttributes.FirstOrDefault(a => a.Id == skill.BaseSkill.PrimaryAttributeBaseAttributeId);
+                var secondaryAttribute = BaseAttributes.FirstOrDefault(a => a.Id == skill.BaseSkill.SecondaryAttributeBaseAttributeId);
+
+                if (primaryAttribute.Name == attribute.BaseAttribute.Name)
+                {
+                    if (skill.BaseSkill.Type == "Basic" || skill.BaseSkill.Type == "Trained")
+                    {
+                        if (InitialValue < attribute.Value)
+                        {
+                            skill.Value += attribute.AdvancementValues[^1];
+                        }
+                        else
+                        {
+                            skill.Value -= valueToRemove;
+                        }
+                    }
+
+                    else if (skill.BaseSkill.Type == "Expert")
+                    {
+                        if (InitialValue/10 > attribute.Value/10)
+                        {
+                            skill.Value -= 1;
+                        }
+                        else if (InitialValue/10 < attribute.Value/10)
+                        {
+                            skill.Value += 1;
+                        }
+                    }
+                }
+                else if (secondaryAttribute.Name == attribute.BaseAttribute.Name)
+                {
+                    if (InitialValue / 10 > attribute.Value / 10)
+                    {
+                        skill.Value -= 1;
+                    }
+                    else if (InitialValue / 10 < attribute.Value / 10)
+                    {
+                        skill.Value += 1;
+                    }
+                }
+            }
+
+            InitialValue = attribute.Value;
+            return await PlayerAttributeService.UpdatePlayerAttribute(inListAttribute.Id, inListAttribute);
+        }
+
+        protected async Task HandleOnValidBaseAbilitySubmit()
+        {
+            var tempAbility = new PlayerAbility
+            {
+                BaseAbility = BaseAbilities.FirstOrDefault(a => a.Id == Int32.Parse(Helper.FormString))
+            };
+
+            if (tempAbility.BaseAbility.Description.Contains("Skill Support: {"))
+            {
+                var end = tempAbility.BaseAbility.Description.IndexOf("}");
+
+                var rawSkillNames = tempAbility.BaseAbility.Description.Remove(end);
+                rawSkillNames = rawSkillNames.Remove(0, rawSkillNames.IndexOf("{") + 1);
+
+                var SkillNames = new List<string>();
+                var FinalList = new List<string>();
+
+                while (rawSkillNames.Length > 0)
+                {
+                    Console.WriteLine($"RawSkillNames:{rawSkillNames}");
+                    var tempString = rawSkillNames.Remove(rawSkillNames.IndexOf('%'));
+                    SkillNames.Add(tempString);
+                    tempString = "";
+                    rawSkillNames = rawSkillNames.Remove(0, rawSkillNames.IndexOf('%') + 1);
+                }
+
+                foreach (var name in SkillNames)
+                {
+                    if (name.Contains(','))
+                    {
+                        FinalList.Add(name.Remove(0, 2));
+                    }
+                    else
+                    {
+                        FinalList.Add(name);
+                    }
+                }
+
+                foreach (var name in FinalList)
+                {
+                    foreach (var skill in ThisCharacter.PlayerSkills)
+                    {
+                        if (skill.BaseSkill.Name == name)
+                        {
+                            skill.IsSupported = true;
+                            tempAbility.SupportsPlayerSkills.Add(skill);
+                        }
+                    }
+                }
+            }
+
+            tempAbility = await PlayerAbilityService.CreatePlayerAbility(tempAbility);
+            
+            ThisCharacter.PlayerAbilities.Add(tempAbility);
+        }
+
+        protected async Task<PlayerAbility> HandleOnValidPlayerAbilitySubmit()
+        {
+            Delta = FinalValue - InitialValue;
+            UpdateGestalt();
+            return await PlayerAbilityService.UpdatePlayerAbility(ThisPlayerAbility.Id, ThisPlayerAbility);
+        }
+
+        protected async Task<PlayerAbility> HandleIncrementPlayerAbility(PlayerAbility ability)
+        {
+            if (ability.Tier < 0)
+            {
+                if (InitialValue == 0)
+                {
+                    ability.Tier = 0;
+                }
+                if (InitialValue == 1)
+                {
+                    ThisCharacter.GestaltLevel += 1;
+                    ability.Tier = 0;
+                }
+                if (InitialValue == 2)
+                {
+                    ThisCharacter.GestaltLevel += 3;
+                    ability.Tier = 0;
+                }
+                if (InitialValue == 3)
+                {
+                    ThisCharacter.GestaltLevel += 6;
+                    ability.Tier = 0;
+                }
+                if (InitialValue == 4)
+                {
+                    ThisCharacter.GestaltLevel += 10;
+                    ability.Tier = 0;
+                }
+                if (InitialValue == 5)
+                {
+                    ThisCharacter.GestaltLevel += 15;
+                    ability.Tier = 0;
+                }
+                return await PlayerAbilityService.UpdatePlayerAbility(ability.Id, ability);
+            }
+
+            if (ability.Tier == 6)
+            {
+                ability.Tier = 5;
+                return await PlayerAbilityService.UpdatePlayerAbility(ability.Id, ability);
+            }
+
+            if (ability.Tier > 6)
+            {
+                if (InitialValue == 0)
+                {
+                    ability.Tier = 0;
+                }
+                else
+                {
+                    ThisCharacter.GestaltLevel += (((InitialValue - 1) * InitialValue) / 2) + InitialValue - 1;
+                    ability.Tier = 0;
+                }
+            }
+            if (ability.Tier > InitialValue)
+            {
+                ThisCharacter.GestaltLevel -= ability.Tier;
+            }
+            else if (ability.Tier < InitialValue)
+            {
+                ThisCharacter.GestaltLevel += (ability.Tier + 1);
+            }
+
+            InitialValue = ability.Tier;
+
+            return await PlayerAbilityService.UpdatePlayerAbility(ability.Id, ability);
+        }
+        
+        protected void DeletePlayerAbility(PlayerAbility ability)
+        {
+            ThisCharacter.PlayerAbilities.Remove(ability);
+            ThisCharacter.GestaltLevel = ThisCharacter.GestaltLevel + (((ability.Tier) * ability.Tier) / 2);
+        }
+
         protected void InitializePlayerSkills(BaseSkill skill)
         {
-            var playerSkill = new PlayerSkill { Value = 0, AdvancementsList = new List<int>()};
+            var playerSkill = new PlayerSkill { Value = 0, AdvancementsList = new List<int>() };
             if (skill.Type == "Expert")
             {
                 if (skill.PrimaryAttributeBaseAttributeId == 1 || skill.SecondaryAttributeBaseAttributeId == 1)
@@ -420,198 +647,19 @@ namespace OU2eHelper.Pages
             return await PlayerSkillService.UpdatePlayerSkill(skill.Id, skill);
         }
         
-        protected async Task<PlayerAttribute> HandleIncrementPlayerAttribute(PlayerAttribute attribute)
-        {
-            var rand = new Random();
-            var inListAttribute =
-                ThisCharacter.PlayerAttributes.FirstOrDefault(a =>
-                    a.BaseAttribute.Name == attribute.BaseAttribute.Name);
-
-            if (InitialValue < attribute.Value)
-            {
-                var advanceValue = new int();
-                advanceValue = rand.Next(1, 3);
-                ThisCharacter.GestaltLevel -= InitialValue/10;
-                attribute.Value += advanceValue;
-                inListAttribute.Value = attribute.Value;
-                attribute.AdvancementValues.Add(advanceValue);
-                inListAttribute.AdvancementValues = attribute.AdvancementValues;
-            }
-            else if (InitialValue > attribute.Value)
-            {
-                if (attribute.AdvancementValues.Count > 0)
-                {
-                    attribute.Value -= attribute.AdvancementValues[^1];
-                    inListAttribute.Value = attribute.Value;
-                    attribute.AdvancementValues.Remove(attribute.AdvancementValues[^1]);
-                    inListAttribute.AdvancementValues = attribute.AdvancementValues;
-                    ThisCharacter.GestaltLevel += InitialValue/10;
-                }
-            }
-            else
-            {
-                attribute.Value = InitialValue;
-            }
-
-            if (inListAttribute.Id == 0)
-            {
-                return await PlayerAttributeService.CreatePlayerAttribute(inListAttribute);
-            }
-
-            InitialValue = attribute.Value;
-            return await PlayerAttributeService.UpdatePlayerAttribute(inListAttribute.Id, inListAttribute);
-        }
-
-        protected async Task HandleOnValidBaseAbilitySubmit()
-        {
-            var tempAbility = new PlayerAbility
-            {
-                BaseAbility = BaseAbilities.FirstOrDefault(a => a.Id == Int32.Parse(Helper.FormString))
-            };
-
-            if (tempAbility.BaseAbility.Description.Contains("Skill Support: {"))
-            {
-                var end = tempAbility.BaseAbility.Description.IndexOf("}");
-
-                var rawSkillNames = tempAbility.BaseAbility.Description.Remove(end);
-                rawSkillNames = rawSkillNames.Remove(0, rawSkillNames.IndexOf("{") + 1);
-
-                var SkillNames = new List<string>();
-                var FinalList = new List<string>();
-
-                while (rawSkillNames.Length > 0)
-                {
-                    Console.WriteLine($"RawSkillNames:{rawSkillNames}");
-                    var tempString = rawSkillNames.Remove(rawSkillNames.IndexOf('%'));
-                    SkillNames.Add(tempString);
-                    tempString = "";
-                    rawSkillNames = rawSkillNames.Remove(0, rawSkillNames.IndexOf('%') + 1);
-                }
-
-                foreach (var name in SkillNames)
-                {
-                    if (name.Contains(','))
-                    {
-                        FinalList.Add(name.Remove(0, 2));
-                    }
-                    else
-                    {
-                        FinalList.Add(name);
-                    }
-                }
-
-                foreach (var name in FinalList)
-                {
-                    foreach (var skill in ThisCharacter.PlayerSkills)
-                    {
-                        if (skill.BaseSkill.Name == name)
-                        {
-                            skill.IsSupported = true;
-                            tempAbility.SupportsPlayerSkills.Add(skill);
-                        }
-                    }
-                }
-            }
-
-            tempAbility = await PlayerAbilityService.CreatePlayerAbility(tempAbility);
-            
-            ThisCharacter.PlayerAbilities.Add(tempAbility);
-        }
-
-        protected async Task<PlayerAbility> HandleOnValidPlayerAbilitySubmit()
-        {
-            Delta = FinalValue - InitialValue;
-            UpdateGestalt();
-            return await PlayerAbilityService.UpdatePlayerAbility(ThisPlayerAbility.Id, ThisPlayerAbility);
-        }
-
-        protected void DeletePlayerAbility(PlayerAbility ability)
-        {
-            ThisCharacter.PlayerAbilities.Remove(ability);
-            ThisCharacter.GestaltLevel = ThisCharacter.GestaltLevel + (((ability.Tier) * ability.Tier) / 2);
-        }
-        
-        protected async Task<PlayerAbility> HandleIncrementPlayerAbility(PlayerAbility ability)
-        {
-            if (ability.Tier < 0)
-            {
-                if (InitialValue == 0)
-                {
-                    ability.Tier = 0;
-                }
-                if (InitialValue == 1)
-                {
-                    ThisCharacter.GestaltLevel += 1;
-                    ability.Tier = 0;
-                }
-                if (InitialValue == 2)
-                {
-                    ThisCharacter.GestaltLevel += 3;
-                    ability.Tier = 0;
-                }
-                if (InitialValue == 3)
-                {
-                    ThisCharacter.GestaltLevel += 6;
-                    ability.Tier = 0;
-                }
-                if (InitialValue == 4)
-                {
-                    ThisCharacter.GestaltLevel += 10;
-                    ability.Tier = 0;
-                }
-                if (InitialValue == 5)
-                {
-                    ThisCharacter.GestaltLevel += 15;
-                    ability.Tier = 0;
-                }
-                return await PlayerAbilityService.UpdatePlayerAbility(ability.Id, ability);
-            }
-
-            if (ability.Tier == 6)
-            {
-                ability.Tier = 5;
-                return await PlayerAbilityService.UpdatePlayerAbility(ability.Id, ability);
-            }
-
-            if (ability.Tier > 6)
-            {
-                if (InitialValue == 0)
-                {
-                    ability.Tier = 0;
-                }
-                else
-                {
-                    ThisCharacter.GestaltLevel += (((InitialValue - 1) * InitialValue) / 2) + InitialValue - 1;
-                    ability.Tier = 0;
-                }
-            }
-            if (ability.Tier > InitialValue)
-            {
-                ThisCharacter.GestaltLevel -= ability.Tier;
-            }
-            else if (ability.Tier < InitialValue)
-            {
-                ThisCharacter.GestaltLevel += (ability.Tier + 1);
-            }
-
-            InitialValue = ability.Tier;
-
-            return await PlayerAbilityService.UpdatePlayerAbility(ability.Id, ability);
-        }
-
         protected int RollD5(string type = "Default")
         {
             var rand = new Random();
             var rolls = new List<int>();
 
-            var roll1 = rand.Next(1, 6);
+            var roll1 = rand.Next(1, 7);
             if (roll1 == 6)
             {
                 roll1 = 5;
             }
             rolls.Add(roll1);
 
-            var roll2 = rand.Next(1, 6);
+            var roll2 = rand.Next(1, 7);
             if (roll2 == 6)
             {
                 roll2 = 5;
@@ -723,6 +771,17 @@ namespace OU2eHelper.Pages
         protected void onBaseAbilityToggleOff()
         {
             BaseAbilityDescription.Toggle();
+        }
+
+        protected BSModal BaseSkillDescription { get; set; }
+        protected void onBaseSkillToggleOn(BaseSkill skill)
+        {
+            ThisBaseSkill = skill;
+            BaseSkillDescription.Toggle();
+        }
+        protected void onBaseSkillToggleOff()
+        {
+            BaseSkillDescription.Toggle();
         }
     }
 }

@@ -9,5 +9,6 @@ namespace OU2eHelper.Services
     public interface IBaseAttributeService
     {
         Task<IEnumerable<BaseAttribute>> GetBaseAttributes();
+        Task<BaseAttribute> GetBaseAttribute(int id);
     }
 }

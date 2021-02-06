@@ -218,7 +218,7 @@ else
                 {
                     <div class="card">
                         <BSForm Model="skill">
-                            <div class="card-title text-center">@skill.BaseSkill.Name : @skill.Advancements</div>
+                            <div class="card-title text-center" @onclick="@(() => onBaseSkillToggleOn(skill.BaseSkill))">@skill.BaseSkill.Name : @skill.Advancements</div>
                             <BSInput InputType="InputType.Number"
                                      @bind-Value="skill.Value"
                                      @onfocus="(() => InitialValue = skill.Value)"
@@ -287,6 +287,15 @@ else
         </BSModalBody>
         <BSModalFooter>
             <BSButton Color="Color.Primary" OnClick="@onBaseAbilityToggleOff">Ok</BSButton>
+        </BSModalFooter>
+    </BSModal>
+    <BSModal @ref="BaseSkillDescription" IsCentered="true">
+        <BSModalHeader OnClick="@onBaseSkillToggleOff">@ThisBaseSkill.Name</BSModalHeader>
+        <BSModalBody>
+            <p>@((MarkupString) ThisBaseSkill.HtmlDescription)</p>
+        </BSModalBody>
+        <BSModalFooter>
+            <BSButton Color="Color.Primary" OnClick="@onBaseSkillToggleOff">Ok</BSButton>
         </BSModalFooter>
     </BSModal>
 
