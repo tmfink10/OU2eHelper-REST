@@ -48,6 +48,10 @@ namespace OU2eHelperApi.Data
                 _dbContext.Entry(skill.BaseSkill).State = EntityState.Unchanged;
             }
             _dbContext.Entry(playerAbility.BaseAbility).State = EntityState.Unchanged;
+            foreach (var attribute in playerAbility.BaseAbility.UsesBaseAttributes)
+            {
+                _dbContext.Entry(attribute).State = EntityState.Unchanged;
+            }
             await _dbContext.SaveChangesAsync();
             return result.Entity;
         }
@@ -68,6 +72,10 @@ namespace OU2eHelperApi.Data
                 foreach (var skill in playerAbility.SupportsPlayerSkills)
                 {
                     _dbContext.Entry(skill.BaseSkill).State = EntityState.Unchanged;
+                }
+                foreach (var attribute in playerAbility.BaseAbility.UsesBaseAttributes)
+                {
+                    _dbContext.Entry(attribute).State = EntityState.Unchanged;
                 }
                 _dbContext.Entry(playerAbility.BaseAbility).State = EntityState.Unchanged;
                 _dbContext.PlayerAbilities.Update(result);

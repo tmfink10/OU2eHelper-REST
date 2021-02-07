@@ -61,6 +61,7 @@ namespace OU2eHelper.Pages
             BaseSkills = (await BaseSkillService.GetBaseSkills()).ToArray();
             BaseTrainingValues = (await BaseTrainingValueService.GetTrainingValues()).ToArray();
             PlayerCharacters = (await PlayerCharacterService.GetPlayerCharacters()).ToArray();
+            
         }
 
         public class HelperClass
@@ -126,6 +127,29 @@ namespace OU2eHelper.Pages
             }
 
             SetGestalt();
+
+            foreach (var ability in BaseAbilities)
+            {
+                if (ability.UsesBaseAttributesCoded.Contains("S"))
+                {
+                    ability.UsesBaseAttributes.Add(StrengthService.BaseAttribute);
+                }
+
+                if (ability.UsesBaseAttributesCoded.Contains("P"))
+                {
+                    ability.UsesBaseAttributes.Add(PerceptionService.BaseAttribute);
+                }
+
+                if (ability.UsesBaseAttributesCoded.Contains("E"))
+                {
+                    ability.UsesBaseAttributes.Add(EmpathyService.BaseAttribute);
+                }
+
+                if (ability.UsesBaseAttributesCoded.Contains("W"))
+                {
+                    ability.UsesBaseAttributes.Add(WillpowerService.BaseAttribute);
+                }
+            }
 
             ThisCharacter = await PlayerCharacterService.CreatePlayerCharacter(ThisCharacter);
         }
