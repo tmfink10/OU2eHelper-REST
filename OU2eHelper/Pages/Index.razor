@@ -184,7 +184,7 @@ else
                 {
                     <tbody>
                     <tr>
-                        <th scope="row" @onclick="@(() => onBaseAbilityToggleOn(ability.BaseAbility))">@ability.BaseAbility.Name</th>
+                        <th scope="row" @onclick="@(() => onBaseAbilityToggleOn(ability.BaseAbility))">@ability.BaseAbility.Name (@ability.AddedUsingBaseAttributeCode)</th>
                         <td>
                             <InputNumber id="baseAbility"
                                          class="form-control"
@@ -219,12 +219,19 @@ else
                     <div class="card">
                         <BSForm Model="skill">
                             <div class="card-title text-center" @onclick="@(() => onBaseSkillToggleOn(skill.BaseSkill))">@skill.BaseSkill.Name : @skill.Advancements</div>
-                            <BSInput InputType="InputType.Number"
-                                     @bind-Value="skill.Value"
-                                     @onfocus="(() => InitialValue = skill.Value)"
-                                     @onchange="(() => InitialValue = skill.Value)"
-                                     @onclick="(() => HandleIncrementPlayerSkill(skill))"
-                                     class="text-center" />
+                            <div class="card-body">
+                                @*<div class="row">
+                                    <BSInput InputType="InputType.Checkbox" @bind-Value="skill.IsSpecialized">Specialize</BSInput>
+                                </div>*@
+                                <div class="row">
+                                    <BSInput InputType="InputType.Number"
+                                             @bind-Value="skill.Value"
+                                             @onfocus="(() => InitialValue = skill.Value)"
+                                             @onchange="(() => InitialValue = skill.Value)"
+                                             @onclick="(() => HandleIncrementPlayerSkill(skill))"
+                                             class="text-center" />
+                                </div>
+                            </div>
                         </BSForm>
                     </div>
                 }
@@ -244,6 +251,7 @@ else
             <BSButton Color="Color.Primary" OnClick="@onConfirmationToggle">Ok</BSButton>
         </BSModalFooter>
     </BSModal>
+
     <BSModal @ref="StrengthDescription" IsCentered="true">
         <BSModalHeader OnClick="@onStrengthToggle">Strength</BSModalHeader>
         <BSModalBody>
@@ -253,6 +261,7 @@ else
             <BSButton Color="Color.Primary" OnClick="@onStrengthToggle">Ok</BSButton>
         </BSModalFooter>
     </BSModal>
+
     <BSModal @ref="PerceptionDescription" IsCentered="true">
         <BSModalHeader OnClick="@onPerceptionToggle">Perception</BSModalHeader>
         <BSModalBody>
@@ -262,6 +271,7 @@ else
             <BSButton Color="Color.Primary" OnClick="@onPerceptionToggle">Ok</BSButton>
         </BSModalFooter>
     </BSModal>
+
     <BSModal @ref="EmpathyDescription" IsCentered="true">
         <BSModalHeader OnClick="@onEmpathyToggle">Empathy</BSModalHeader>
         <BSModalBody>
@@ -271,6 +281,7 @@ else
             <BSButton Color="Color.Primary" OnClick="@onEmpathyToggle">Ok</BSButton>
         </BSModalFooter>
     </BSModal>
+
     <BSModal @ref="WillpowerDescription" IsCentered="true">
         <BSModalHeader OnClick="@onWillpowerToggle">Willpower</BSModalHeader>
         <BSModalBody>
@@ -280,6 +291,7 @@ else
             <BSButton Color="Color.Primary" OnClick="@onWillpowerToggle">Ok</BSButton>
         </BSModalFooter>
     </BSModal>
+
     <BSModal @ref="BaseAbilityDescription" IsCentered="true">
         <BSModalHeader OnClick="@onBaseAbilityToggleOff">@ThisBaseAbility.Name</BSModalHeader>
         <BSModalBody>
@@ -289,6 +301,31 @@ else
             <BSButton Color="Color.Primary" OnClick="@onBaseAbilityToggleOff">Ok</BSButton>
         </BSModalFooter>
     </BSModal>
+
+    <BSModal @ref="PlayerAbilityAttributeSelection" IsCentered="true">
+        <BSModalHeader OnClick="@onPlayerAbilityToggleOff">Select Attribute with which to add @ThisBaseAbility.Name</BSModalHeader>
+        <EditForm Model="ThisPlayerAbility" OnValidSubmit="AbilityBindAttribute">
+            <BSModalBody>
+                @if (ThisPlayerAbility.BaseAbility != null)
+                    {
+                        <InputRadioGroup @bind-Value="ThisPlayerAbility.AddedUsingBaseAttributeCode">
+                            @foreach (var attributeX in ThisPlayerAbility.BaseAbility.UsesBaseAttributes)
+                            {
+                                <InputRadio Value="attributeX.Name" /> @attributeX.Name <br />
+                            }
+                        </InputRadioGroup>
+                    }
+            </BSModalBody>
+            <BSModalFooter>
+                @if (ThisPlayerAbility.AddedUsingBaseAttributeCode != null)
+                {
+                    <BSButton ButtonType="ButtonType.Submit" OnClick="@onPlayerAbilityToggleOff">Ok</BSButton>
+                }
+            </BSModalFooter>
+        </EditForm>
+
+    </BSModal>
+
     <BSModal @ref="BaseSkillDescription" IsCentered="true">
         <BSModalHeader OnClick="@onBaseSkillToggleOff">@ThisBaseSkill.Name</BSModalHeader>
         <BSModalBody>

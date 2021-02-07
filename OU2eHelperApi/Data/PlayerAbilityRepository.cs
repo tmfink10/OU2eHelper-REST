@@ -68,6 +68,7 @@ namespace OU2eHelperApi.Data
                 result.Tier = playerAbility.Tier;
                 result.SupportsPlayerSkills = playerAbility.SupportsPlayerSkills;
                 result.Type = playerAbility.Type;
+                result.AddedUsingBaseAttributeCode = playerAbility.AddedUsingBaseAttributeCode;
 
                 foreach (var skill in playerAbility.SupportsPlayerSkills)
                 {

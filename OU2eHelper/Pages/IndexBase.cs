@@ -53,6 +53,7 @@ namespace OU2eHelper.Pages
         protected int InitialValue;
         protected int FinalValue;
         protected int Delta;
+        protected string AbilityAttributeSelectionValue;
 
         protected override async Task OnInitializedAsync()
         {
@@ -67,6 +68,7 @@ namespace OU2eHelper.Pages
         public class HelperClass
         {
             public string FormString;
+            public string FormString2;
         }
 
         protected PlayerCharacter ThisCharacter = new PlayerCharacter();
@@ -327,8 +329,14 @@ namespace OU2eHelper.Pages
             }
 
             tempAbility = await PlayerAbilityService.CreatePlayerAbility(tempAbility);
-            
+
+            if (tempAbility.AddedUsingBaseAttributeCode == null)
+            {
+                onPlayerAbilityToggleOn(tempAbility);
+            }
+
             ThisCharacter.PlayerAbilities.Add(tempAbility);
+
         }
 
         protected async Task<PlayerAbility> HandleOnValidPlayerAbilitySubmit()
@@ -795,6 +803,22 @@ namespace OU2eHelper.Pages
         protected void onBaseAbilityToggleOff()
         {
             BaseAbilityDescription.Toggle();
+        }
+
+        protected BSModal PlayerAbilityAttributeSelection { get; set; }
+        protected void onPlayerAbilityToggleOn(PlayerAbility ability)
+        {
+            ThisPlayerAbility = ability;
+            PlayerAbilityAttributeSelection.Toggle();
+        }
+        protected void onPlayerAbilityToggleOff()
+        {
+            PlayerAbilityAttributeSelection.Toggle();
+        }
+
+        protected async Task<PlayerAbility> AbilityBindAttribute()
+        {
+            return await PlayerAbilityService.UpdatePlayerAbility(ThisPlayerAbility.Id, ThisPlayerAbility);
         }
 
         protected BSModal BaseSkillDescription { get; set; }

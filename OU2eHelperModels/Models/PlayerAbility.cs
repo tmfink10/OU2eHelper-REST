@@ -15,5 +15,6 @@ namespace OU2eHelperModels.Models
         public int Tier { get; set; }
         public List<PlayerSkill> SupportsPlayerSkills { get; set; } = new List<PlayerSkill>();
         public bool IsEditing { get; set; }
+        public string AddedUsingBaseAttributeCode { get; set; }
     }
 }
