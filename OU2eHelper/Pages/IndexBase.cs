@@ -92,28 +92,28 @@ namespace OU2eHelper.Pages
 
             var strength = new PlayerAttribute
             {
-                Value = 30, BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Strength")
+                Value = 30, BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Strength"), Points = 3
             };
             ThisCharacter.PlayerAttributes.Add(strength);
             StrengthService = strength;
 
             var perception = new PlayerAttribute
             {
-                Value = 30, BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Perception")
+                Value = 30, BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Perception"), Points = 3
             };
             ThisCharacter.PlayerAttributes.Add(perception);
             PerceptionService = perception;
 
             var empathy = new PlayerAttribute
             {
-                Value = 30, BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Empathy")
+                Value = 30, BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Empathy"), Points = 3
             };
             ThisCharacter.PlayerAttributes.Add(empathy);
             EmpathyService = empathy;
 
             var willpower = new PlayerAttribute
             {
-                Value = 30, BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Willpower")
+                Value = 30, BaseAttribute = BaseAttributes.FirstOrDefault(a => a.Name == "Willpower"), Points = 3
             };
             ThisCharacter.PlayerAttributes.Add(willpower);
             WillpowerService = willpower;
@@ -206,6 +206,23 @@ namespace OU2eHelper.Pages
                 inListAttribute.Value = attribute.Value;
                 attribute.AdvancementValues.Add(advanceValue);
                 inListAttribute.AdvancementValues = attribute.AdvancementValues;
+                if (attribute.Points < attribute.Bonus)
+                {
+                    attribute.Points = attribute.Bonus;
+                    inListAttribute.Points = inListAttribute.Bonus;
+                    if (ThisCharacter.PlayerAbilities != null)
+                    {
+                        foreach (var ability in ThisCharacter.PlayerAbilities)
+                        {
+                            if (ability.AddedUsingBaseAttributeCode == attribute.BaseAttribute.Name)
+                            {
+                                attribute.Points -= 1;
+                                inListAttribute.Points -= 1;
+                            }
+                        }
+                    }
+                    
+                }
             }
             else if (InitialValue > attribute.Value)
             {
@@ -218,10 +235,17 @@ namespace OU2eHelper.Pages
                     inListAttribute.AdvancementValues = attribute.AdvancementValues;
                     ThisCharacter.GestaltLevel += attribute.Bonus;
                 }
+                if (attribute.Bonus < InitialValue / 10)
+                {
+                    attribute.Points -= 1;
+                    inListAttribute.Points -= 1;
+                }
+
             }
             else
             {
                 attribute.Value = InitialValue;
+                inListAttribute.Value = InitialValue;
             }
 
             if (inListAttribute.Id == 0)
@@ -332,7 +356,16 @@ namespace OU2eHelper.Pages
 
             if (tempAbility.AddedUsingBaseAttributeCode == null)
             {
-                onPlayerAbilityToggleOn(tempAbility);
+                if (tempAbility.BaseAbility.UsesBaseAttributes.Count == 1)
+                {
+                    tempAbility.AddedUsingBaseAttributeCode = tempAbility.BaseAbility.UsesBaseAttributes[0].Name;
+                    ThisCharacter.PlayerAttributes
+                        .FirstOrDefault(a => a.BaseAttribute.Name == tempAbility.AddedUsingBaseAttributeCode).Points -= 1;
+                }
+                else
+                {
+                    onPlayerAbilityToggleOn(tempAbility);
+                }
             }
 
             ThisCharacter.PlayerAbilities.Add(tempAbility);
@@ -418,6 +451,8 @@ namespace OU2eHelper.Pages
         {
             ThisCharacter.PlayerAbilities.Remove(ability);
             ThisCharacter.GestaltLevel = ThisCharacter.GestaltLevel + (((ability.Tier) * ability.Tier) / 2);
+            ThisCharacter.PlayerAttributes
+                .FirstOrDefault(a => a.BaseAttribute.Name == ability.AddedUsingBaseAttributeCode).Points += 1;
         }
 
         protected void InitializePlayerSkills(BaseSkill skill)
@@ -811,8 +846,10 @@ namespace OU2eHelper.Pages
             ThisPlayerAbility = ability;
             PlayerAbilityAttributeSelection.Toggle();
         }
-        protected void onPlayerAbilityToggleOff()
+        protected void onPlayerAbilityToggleOff(PlayerAbility ability)
         {
+            ThisCharacter.PlayerAttributes
+                .FirstOrDefault(a => a.BaseAttribute.Name == ability.AddedUsingBaseAttributeCode).Points -= 1;
             PlayerAbilityAttributeSelection.Toggle();
         }
 

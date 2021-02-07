@@ -73,7 +73,7 @@ else
             <h2 style="margin-bottom: 5px">S.P.E.W. Attributes</h2>
             <BSRow Class="col-md-8" style="margin-bottom: 15px">
                 <BSCol>
-                    <BSLabel For="characterStrength" @onclick="@onStrengthToggle">Strength</BSLabel>
+                    <BSLabel For="characterStrength" @onclick="@onStrengthToggle">Strength    (Points: @ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Strength").Points)</BSLabel>
                     <BSBasicInput Id="characterStrength"
                                   PlaceHolder="@StrengthService.Value"
                                   InputType="InputType.Number"
@@ -82,7 +82,7 @@ else
                                   @onclick="@(() => HandleIncrementPlayerAttribute(StrengthService))" />
                 </BSCol>
                 <BSCol>
-                    <BSLabel For="characterPerception" @onclick="@onPerceptionToggle">Perception</BSLabel>
+                    <BSLabel For="characterPerception" @onclick="@onPerceptionToggle">Perception    (Points: @ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Perception").Points)</BSLabel>
                     <BSBasicInput Id="characterPerception"
                                   PlaceHolder="@PerceptionService.Value"
                                   InputType="InputType.Number"
@@ -91,7 +91,7 @@ else
                                   @onclick="(() => HandleIncrementPlayerAttribute(PerceptionService))" />
                 </BSCol>
                 <BSCol>
-                    <BSLabel For="characterEmpathy" @onclick="@onEmpathyToggle">Empathy</BSLabel>
+                    <BSLabel For="characterEmpathy" @onclick="@onEmpathyToggle">Empathy    (Points: @ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Empathy").Points)</BSLabel>
                     <BSBasicInput Id="characterEmpathy"
                                   PlaceHolder="@EmpathyService.Value"
                                   InputType="InputType.Number"
@@ -100,7 +100,7 @@ else
                                   @onclick="(() => HandleIncrementPlayerAttribute(EmpathyService))" />
                 </BSCol>
                 <BSCol>
-                    <BSLabel For="characterWillpower" @onclick="@onWillpowerToggle">Willpower</BSLabel>
+                    <BSLabel For="characterWillpower" @onclick="@onWillpowerToggle">Willpower    (Points: @ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Willpower").Points)</BSLabel>
                     <BSBasicInput Id="characterWillpower"
                                   PlaceHolder="@WillpowerService.Value"
                                   InputType="InputType.Number"
@@ -303,7 +303,7 @@ else
     </BSModal>
 
     <BSModal @ref="PlayerAbilityAttributeSelection" IsCentered="true">
-        <BSModalHeader OnClick="@onPlayerAbilityToggleOff">Select Attribute with which to add @ThisBaseAbility.Name</BSModalHeader>
+        <BSModalHeader>Select Attribute with which to add @ThisBaseAbility.Name</BSModalHeader>
         <EditForm Model="ThisPlayerAbility" OnValidSubmit="AbilityBindAttribute">
             <BSModalBody>
                 @if (ThisPlayerAbility.BaseAbility != null)
@@ -319,7 +319,7 @@ else
             <BSModalFooter>
                 @if (ThisPlayerAbility.AddedUsingBaseAttributeCode != null)
                 {
-                    <BSButton ButtonType="ButtonType.Submit" OnClick="@onPlayerAbilityToggleOff">Ok</BSButton>
+                    <BSButton ButtonType="ButtonType.Submit" OnClick="@(()=>onPlayerAbilityToggleOff(ThisPlayerAbility))">Ok</BSButton>
                 }
             </BSModalFooter>
         </EditForm>
