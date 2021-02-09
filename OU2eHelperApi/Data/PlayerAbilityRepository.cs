@@ -42,6 +42,10 @@ namespace OU2eHelperApi.Data
         public async Task<PlayerAbility> AddPlayerAbility(PlayerAbility playerAbility)
         {
             var result = await _dbContext.PlayerAbilities.AddAsync(playerAbility);
+            foreach (var value in playerAbility.BaseAbility.ModifiesBaseTrainingValues)
+            {
+                _dbContext.Entry(value).State = EntityState.Unchanged;
+            }
             foreach (var skill in playerAbility.SupportsPlayerSkills)
             {
                 _dbContext.Entry(skill).State = EntityState.Unchanged;
@@ -70,6 +74,7 @@ namespace OU2eHelperApi.Data
                 result.Type = playerAbility.Type;
                 result.AddedUsingBaseAttributeCode = playerAbility.AddedUsingBaseAttributeCode;
 
+
                 foreach (var skill in playerAbility.SupportsPlayerSkills)
                 {
                     _dbContext.Entry(skill.BaseSkill).State = EntityState.Unchanged;
@@ -77,6 +82,10 @@ namespace OU2eHelperApi.Data
                 foreach (var attribute in playerAbility.BaseAbility.UsesBaseAttributes)
                 {
                     _dbContext.Entry(attribute).State = EntityState.Unchanged;
+                }
+                foreach (var value in playerAbility.BaseAbility.ModifiesBaseTrainingValues)
+                {
+                    _dbContext.Entry(value).State = EntityState.Unchanged;
                 }
                 _dbContext.Entry(playerAbility.BaseAbility).State = EntityState.Unchanged;
                 _dbContext.PlayerAbilities.Update(result);

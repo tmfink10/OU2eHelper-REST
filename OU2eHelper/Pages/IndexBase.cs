@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.util;
 using Blazored.Modal;
 using Blazored.Modal.Services;
 using BlazorStrap;
+using ceTe.DynamicPDF;
+using ceTe.DynamicPDF.Merger;
+using ceTe.DynamicPDF.PageElements;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using OU2eHelper.Components;
@@ -62,7 +67,30 @@ namespace OU2eHelper.Pages
             BaseSkills = (await BaseSkillService.GetBaseSkills()).ToArray();
             BaseTrainingValues = (await BaseTrainingValueService.GetTrainingValues()).ToArray();
             PlayerCharacters = (await PlayerCharacterService.GetPlayerCharacters()).ToArray();
-            
+
+            foreach (var ability in BaseAbilities)
+            {
+                if (ability.ModifiesTrainingValuesCoded != null)
+                {
+                    var searchValues = CsvStringToArray(ability.ModifiesTrainingValuesCoded);
+
+                    foreach (var value in searchValues)
+                    {
+                        ability.ModifiesBaseTrainingValues.Add(BaseTrainingValues.FirstOrDefault(t => t.Name == value.ToString()));
+                    }
+
+                    foreach (var item in ability.ModifiesBaseTrainingValues)
+                    {
+                        Console.WriteLine(item.Name);
+                    }
+                }
+            }
+
+        }
+
+        protected Array CsvStringToArray(string values)
+        {
+            return values.Split(',');
         }
 
         public class HelperClass
@@ -126,6 +154,11 @@ namespace OU2eHelper.Pages
             foreach (var skill in BaseSkills)
             {
                 InitializePlayerSkills(skill);
+            }
+
+            foreach (var trainingValue in BaseTrainingValues)
+            {
+                InitializePlayerTrainingValues(trainingValue);
             }
 
             SetGestalt();
@@ -381,6 +414,7 @@ namespace OU2eHelper.Pages
 
         protected async Task<PlayerAbility> HandleIncrementPlayerAbility(PlayerAbility ability)
         {
+            
             if (ability.Tier < 0)
             {
                 if (InitialValue == 0)
@@ -436,10 +470,36 @@ namespace OU2eHelper.Pages
             if (ability.Tier > InitialValue)
             {
                 ThisCharacter.GestaltLevel -= ability.Tier;
+                if (ThisCharacter.TrainingValues != null)
+                {
+                    foreach (var trainingValue in ThisCharacter.TrainingValues)
+                    {
+                        foreach (var baseTrainingValue in ability.BaseAbility.ModifiesBaseTrainingValues)
+                        {
+                            if (trainingValue.BaseTrainingValue.Name == baseTrainingValue.Name)
+                            {
+                                trainingValue.Value += 1;
+                            }
+                        }
+                    }
+                }
             }
             else if (ability.Tier < InitialValue)
             {
                 ThisCharacter.GestaltLevel += (ability.Tier + 1);
+                if (ThisCharacter.TrainingValues != null)
+                {
+                    foreach (var trainingValue in ThisCharacter.TrainingValues)
+                    {
+                        foreach (var baseTrainingValue in ability.BaseAbility.ModifiesBaseTrainingValues)
+                        {
+                            if (trainingValue.BaseTrainingValue.Name == baseTrainingValue.Name)
+                            {
+                                trainingValue.Value -= 1;
+                            }
+                        }
+                    }
+                }
             }
 
             InitialValue = ability.Tier;
@@ -450,7 +510,7 @@ namespace OU2eHelper.Pages
         protected void DeletePlayerAbility(PlayerAbility ability)
         {
             ThisCharacter.PlayerAbilities.Remove(ability);
-            ThisCharacter.GestaltLevel = ThisCharacter.GestaltLevel + (((ability.Tier) * ability.Tier) / 2);
+            ThisCharacter.GestaltLevel = ThisCharacter.GestaltLevel + (((ability.Tier-1) * ability.Tier) / 2) + ability.Tier;
             ThisCharacter.PlayerAttributes
                 .FirstOrDefault(a => a.BaseAttribute.Name == ability.AddedUsingBaseAttributeCode).Points += 1;
         }
@@ -565,7 +625,10 @@ namespace OU2eHelper.Pages
                             {
                                 if (playerSkill.BaseSkill.Name == skill.BaseSkill.Name)
                                 {
-                                    totalAdvancement += ability.Tier;
+                                    if (ability.BaseAbility.AdvancesSkills)
+                                    {
+                                        totalAdvancement += ability.Tier;
+                                    }
                                 }
                             }
                         }
@@ -598,7 +661,10 @@ namespace OU2eHelper.Pages
                                 {
                                     if (playerSkill.BaseSkill.Name == skill.BaseSkill.Name)
                                     {
-                                        totalAdvancement += ability.Tier;
+                                        if (ability.BaseAbility.AdvancesSkills)
+                                        {
+                                            totalAdvancement += ability.Tier;
+                                        }
                                     }
                                 }
                             }
@@ -618,7 +684,10 @@ namespace OU2eHelper.Pages
                             {
                                 if (playerSkill.BaseSkill.Name == skill.BaseSkill.Name)
                                 {
-                                    totalAdvancement += ability.Tier;
+                                    if (ability.BaseAbility.AdvancesSkills)
+                                    {
+                                        totalAdvancement += ability.Tier;
+                                    }
                                 }
                             }
                         }
@@ -651,7 +720,10 @@ namespace OU2eHelper.Pages
                                 {
                                     if (playerSkill.BaseSkill.Name == skill.BaseSkill.Name)
                                     {
-                                        totalAdvancement += ability.Tier;
+                                        if (ability.BaseAbility.AdvancesSkills)
+                                        {
+                                            totalAdvancement += ability.Tier;
+                                        }
                                     }
                                 }
                             }
@@ -672,7 +744,10 @@ namespace OU2eHelper.Pages
                             {
                                 if (playerSkill.BaseSkill.Name == skill.BaseSkill.Name)
                                 {
-                                    totalAdvancement += ability.Tier;
+                                    if (ability.BaseAbility.AdvancesSkills)
+                                    {
+                                        totalAdvancement += ability.Tier;
+                                    }
                                 }
                             }
                         }
@@ -712,6 +787,12 @@ namespace OU2eHelper.Pages
             InitialValue = skill.Value;
 
             return await PlayerSkillService.UpdatePlayerSkill(skill.Id, skill);
+        }
+
+        protected void InitializePlayerTrainingValues(BaseTrainingValue value)
+        {
+            var tempPlayerTrainingValue = new PlayerTrainingValue {BaseTrainingValue = value, Value = 0};
+            ThisCharacter.TrainingValues.Add(tempPlayerTrainingValue);
         }
         
         protected int RollD5(string type = "Default")
@@ -793,10 +874,22 @@ namespace OU2eHelper.Pages
             _addSkills = !_addSkills;
         }
 
-        protected BSModal Step1Confirmation { get; set; }
-        protected void onConfirmationToggle(MouseEventArgs e)
+        protected BSModal GestaltDescription { get; set; }
+        protected void ToggleGestaltDescription(MouseEventArgs e)
         {
-            Step1Confirmation.Toggle();
+            GestaltDescription.Toggle();
+        }
+
+        protected BSModal SurvivalPointsDescription { get; set; }
+        protected void ToggleSurvivalPointsDescription(MouseEventArgs e)
+        {
+            SurvivalPointsDescription.Toggle();
+        }
+
+        protected BSModal CompetencePointsDescription { get; set; }
+        protected void ToggleCompetencePointsDescription(MouseEventArgs e)
+        {
+            CompetencePointsDescription.Toggle();
         }
 
         protected BSModal StrengthDescription { get; set; }
@@ -853,7 +946,7 @@ namespace OU2eHelper.Pages
             PlayerAbilityAttributeSelection.Toggle();
         }
 
-        protected async Task<PlayerAbility> AbilityBindAttribute()
+        protected async Task<PlayerAbility> UpdateThisPlayerAttribute()
         {
             return await PlayerAbilityService.UpdatePlayerAbility(ThisPlayerAbility.Id, ThisPlayerAbility);
         }
@@ -867,6 +960,210 @@ namespace OU2eHelper.Pages
         protected void onBaseSkillToggleOff()
         {
             BaseSkillDescription.Toggle();
+        }
+
+        protected void GeneratePdf()
+        {
+            var spewFontSize = 20;
+            var headerFontSize = 13;
+            var resourcesFontSize = 12;
+            var skillsFontSize = 10;
+            var trainingValueFontSize = 12;
+            var skillIndentLeft = 151;
+            var skillIndentRight = 302;
+            var trainingValueIndentTopLeft = 438;
+            var trainingValueIndentTopRight = 519;
+            var trainingValueIndentBottomLeft = 399;
+            var trainingValueIndentBottomMiddle = 479;
+            var trainingValueIndentBottomRight = 559;
+
+            Label name = new Label(ThisCharacter.FullName, 100, 30, 504, 100, Font.Helvetica, headerFontSize, TextAlign.Left);
+
+            Label strengthBonus = new Label(ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Strength").Value.ToString().Substring(0,1), 70, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left);
+            Label strengthTens = new Label(ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Strength").Value.ToString().Substring(1, 1), 94, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left);
+            Label perceptionBonus = new Label(ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Perception").Value.ToString().Substring(0, 1), 128, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left);
+            Label perceptionTens = new Label(ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Perception").Value.ToString().Substring(1, 1), 152, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left);
+            Label empathyBonus = new Label(ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Empathy").Value.ToString().Substring(0, 1), 187, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left);
+            Label empathyTens = new Label(ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Empathy").Value.ToString().Substring(1, 1), 211, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left);
+            Label willpowerBonus = new Label(ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Willpower").Value.ToString().Substring(0, 1), 245, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left);
+            Label willpowerTens = new Label(ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Willpower").Value.ToString().Substring(1, 1), 269, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left);
+
+            Label survivalPoints = new Label(ThisCharacter.SurvivalPoints.ToString(), 104, 224, 504, 100, Font.Helvetica, resourcesFontSize, TextAlign.Left);
+            Label gestaltLevel = new Label(ThisCharacter.GestaltLevel.ToString(), 193, 224, 504, 100, Font.Helvetica, resourcesFontSize, TextAlign.Left);
+            Label competencePoints = new Label(ThisCharacter.CompetencePoints.ToString(), 277, 224, 504, 100, Font.Helvetica, resourcesFontSize, TextAlign.Left);
+
+            Label balance = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Balance").Value.ToString(), skillIndentLeft, 291, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label brawl = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Brawl").Value.ToString(), skillIndentLeft, 307, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label climb = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Climb").Value.ToString(), skillIndentLeft, 323, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label composure = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Composure").Value.ToString(), skillIndentLeft, 339, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label dodge = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Dodge").Value.ToString(), skillIndentLeft, 355, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label endurance = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Endurance").Value.ToString(), skillIndentLeft, 371, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label expression = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Expression").Value.ToString(), skillIndentLeft, 387, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label grapple = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Grapple").Value.ToString(), skillIndentLeft, 403, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label bow = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Bow/Crossbow").Value.ToString(), skillIndentLeft, 439, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label calmOther = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Calm Other").Value.ToString(), skillIndentLeft, 455, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label diplomacy = new Label("", skillIndentLeft, 471, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label barter = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Diplomacy <Barter/Bribe>").Value.ToString(), skillIndentLeft, 487, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label command = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Diplomacy <Command>").Value.ToString(), skillIndentLeft, 503, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label determineMotives = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Diplomacy <Determine Motives>").Value.ToString(), skillIndentLeft, 519, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label intimidate = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Diplomacy <Intimidate>").Value.ToString(), skillIndentLeft, 535, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label persuade = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Diplomacy <Persuade>").Value.ToString(), skillIndentLeft, 550, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label digitalSystems = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Digital Systems").Value.ToString(), skillIndentLeft, 566, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label advancedMedicine = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Advanced Medicine").Value.ToString(), skillIndentLeft, 601, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label constructionEngineering = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Craft/Construct/Engineer").Value.ToString(), skillIndentLeft, 617, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label s1 = new Label("", skillIndentLeft, 633, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label s2 = new Label("", skillIndentLeft, 649, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label s3 = new Label("", skillIndentLeft, 665, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label s4 = new Label("", skillIndentLeft, 681, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label martialArts = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Martial Arts").Value.ToString(), skillIndentLeft, 697, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label pilot = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Pilot").Value.ToString(), skillIndentLeft, 713, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label s5 = new Label("", skillIndentLeft, 729, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label s6 = new Label("", skillIndentLeft, 745, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+
+            Label hold = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Hold").Value.ToString(), skillIndentRight, 291, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label jumpLeap = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Jump/Leap").Value.ToString(), skillIndentRight, 307, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label liftPull = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Lift/Pull").Value.ToString(), skillIndentRight, 323, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label resistPain = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Resist Pain").Value.ToString(), skillIndentRight, 339, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label search = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Search").Value.ToString(), skillIndentRight, 355, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label spotListen = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Spot/Listen").Value.ToString(), skillIndentRight, 371, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label stealth = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Stealth").Value.ToString(), skillIndentRight, 387, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label empty = new Label("", skillIndentRight, 403, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label longGun = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Firearms <Long Gun>").Value.ToString(), skillIndentRight, 439, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label pistol = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Firearms <Pistol>").Value.ToString(), skillIndentRight, 455, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label firstAid = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "First Aid").Value.ToString(), skillIndentRight, 471, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label bludgeon = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Melee Attack <Bludgeoning>").Value.ToString(), skillIndentRight, 487, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label pierce = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Melee Attack <Piercing>").Value.ToString(), skillIndentRight, 503, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label slash = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Melee Attack <Slashing>").Value.ToString(), skillIndentRight, 519, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label navigation = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Navigation").Value.ToString(), skillIndentRight, 535, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label swim = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Swim").Value.ToString(), skillIndentRight, 550, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label thrw = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Throw").Value.ToString(), skillIndentRight, 566, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label ride = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Ride").Value.ToString(), skillIndentRight, 601, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label s7 = new Label("", skillIndentRight, 617, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label science = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Science").Value.ToString(), skillIndentRight, 633, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label s8 = new Label("", skillIndentRight, 649, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label s9 = new Label("", skillIndentRight, 665, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label survival = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Survival").Value.ToString(), skillIndentRight, 681, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label s10 = new Label("", skillIndentRight, 697, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label s11 = new Label("", skillIndentRight, 713, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label s12 = new Label("", skillIndentRight, 729, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label toughness = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Toughness").Value.ToString(), skillIndentRight, 745, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+
+            Label damageThreshold = new Label(ThisCharacter.DamageThreshold.ToString(), 520, 132, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            Label psyche = new Label(ThisCharacter.Morale.ToString(), 445, 313, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+
+            Label archeryGearTV = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Archery Gear").Value.ToString(), trainingValueIndentTopLeft, 450, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+            Label bludgeonTV = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Bludgeon").Value.ToString(), trainingValueIndentTopLeft, 490, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+            Label pierceTV = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Piercing").Value.ToString(), trainingValueIndentTopLeft, 531, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+            Label slashTV = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Slashing").Value.ToString(), trainingValueIndentTopLeft, 571, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+
+            Label longGunTV = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Long Gun").Value.ToString(), trainingValueIndentTopRight, 450, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+            Label pistolTV = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Pistol").Value.ToString(), trainingValueIndentTopRight, 490, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+            Label throwingTV = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Throwing").Value.ToString(), trainingValueIndentTopRight, 531, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+            Label martialArtsTV = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Martial Arts").Value.ToString(), trainingValueIndentTopRight, 571, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+
+            Label athleticGear = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Athletic Gear").Value.ToString(), trainingValueIndentBottomLeft, 614, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+            Label climbingGear = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Climbing Gear").Value.ToString(), trainingValueIndentBottomLeft, 655, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+            Label commandApp = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Command Apparatus").Value.ToString(), trainingValueIndentBottomLeft, 695, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+            Label firefighting = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Firefighting").Value.ToString(), trainingValueIndentBottomLeft, 735, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+
+            Label firstAidKit = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "First Aid Kit").Value.ToString(), trainingValueIndentBottomMiddle, 614, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+            Label medicalGear = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Medical Gear").Value.ToString(), trainingValueIndentBottomMiddle, 655, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+            Label reconGear = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Reconnaissance Gear").Value.ToString(), trainingValueIndentBottomMiddle, 695, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+            Label survivalKit = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Survival Kit").Value.ToString(), trainingValueIndentBottomMiddle, 735, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+
+            Label swimmingDiving = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Swimming/Diving").Value.ToString(), trainingValueIndentBottomRight, 614, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+            Label tools = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Tools").Value.ToString(), trainingValueIndentBottomRight, 655, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+            Label value = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Value").Value.ToString(), trainingValueIndentBottomRight, 695, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+            Label vehicles = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Vehicles").Value.ToString(), trainingValueIndentBottomRight, 735, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+
+            MergeDocument mergeDoc = new MergeDocument(GetPath("Resources/OU2eCharacterSheet.pdf"));
+
+            Page page0 = mergeDoc.Pages[0];
+
+            page0.Elements.Add(name);
+            page0.Elements.Add(strengthBonus);
+            page0.Elements.Add(strengthTens);
+            page0.Elements.Add(perceptionBonus);
+            page0.Elements.Add(perceptionTens);
+            page0.Elements.Add(empathyBonus);
+            page0.Elements.Add(empathyTens);
+            page0.Elements.Add(willpowerBonus);
+            page0.Elements.Add(willpowerTens);
+            page0.Elements.Add(survivalPoints);
+            page0.Elements.Add(gestaltLevel);
+            page0.Elements.Add(competencePoints);
+            page0.Elements.Add(balance);
+            page0.Elements.Add(brawl);
+            page0.Elements.Add(climb);
+            page0.Elements.Add(composure);
+            page0.Elements.Add(dodge);
+            page0.Elements.Add(endurance);
+            page0.Elements.Add(expression);
+            page0.Elements.Add(grapple);
+            page0.Elements.Add(bow);
+            page0.Elements.Add(calmOther);
+            page0.Elements.Add(barter);
+            page0.Elements.Add(command);
+            page0.Elements.Add(determineMotives);
+            page0.Elements.Add(intimidate);
+            page0.Elements.Add(persuade);
+            page0.Elements.Add(digitalSystems);
+            page0.Elements.Add(advancedMedicine);
+            page0.Elements.Add(constructionEngineering);
+            page0.Elements.Add(martialArts);
+            page0.Elements.Add(pilot);
+            page0.Elements.Add(hold);
+            page0.Elements.Add(jumpLeap);
+            page0.Elements.Add(liftPull);
+            page0.Elements.Add(resistPain);
+            page0.Elements.Add(search);
+            page0.Elements.Add(spotListen);
+            page0.Elements.Add(stealth);
+            page0.Elements.Add(longGun);
+            page0.Elements.Add(pistol);
+            page0.Elements.Add(firstAid);
+            page0.Elements.Add(bludgeon);
+            page0.Elements.Add(pierce);
+            page0.Elements.Add(slash);
+            page0.Elements.Add(navigation);
+            page0.Elements.Add(swim);
+            page0.Elements.Add(thrw);
+            page0.Elements.Add(ride);
+            page0.Elements.Add(science);
+            page0.Elements.Add(survival);
+            page0.Elements.Add(toughness);
+            page0.Elements.Add(damageThreshold);
+            page0.Elements.Add(psyche);
+            page0.Elements.Add(archeryGearTV);
+            page0.Elements.Add(bludgeonTV);
+            page0.Elements.Add(pierceTV);
+            page0.Elements.Add(slashTV);
+            page0.Elements.Add(longGunTV);
+            page0.Elements.Add(pistolTV);
+            page0.Elements.Add(throwingTV);
+            page0.Elements.Add(martialArtsTV);
+            page0.Elements.Add(athleticGear);
+            page0.Elements.Add(climbingGear);
+            page0.Elements.Add(commandApp);
+            page0.Elements.Add(firefighting);
+            page0.Elements.Add(firstAidKit);
+            page0.Elements.Add(medicalGear);
+            page0.Elements.Add(reconGear);
+            page0.Elements.Add(survivalKit);
+            page0.Elements.Add(swimmingDiving);
+            page0.Elements.Add(tools);
+            page0.Elements.Add(value);
+            page0.Elements.Add(vehicles);
+
+            mergeDoc.Draw(@"G:\Dump\Output.pdf");
+        }
+
+        internal static string GetPath(string filePath)
+        {
+            var exePath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            Regex appPathMatcher = new Regex(@"(?<!fil)[A-Za-z]:\\+[\S\s]*?(?=\\+bin)");
+            var appRoot = appPathMatcher.Match(exePath).Value;
+            return System.IO.Path.Combine(appRoot, filePath);
         }
     }
 }

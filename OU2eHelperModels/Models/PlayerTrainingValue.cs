@@ -10,7 +10,6 @@ namespace OU2eHelperModels.Models
         public PlayerCharacter PlayerCharacter { get; set; }
         public BaseTrainingValue BaseTrainingValue { get; set; }
         public int Value { get; set; }
-        public int BonusValue => Value / 10;
         public string Type { get; set; }
         public string Notes { get; set; }
     }

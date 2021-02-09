@@ -59,6 +59,12 @@ namespace OU2eHelperApi.Data
             {
                 _dbContext.Entry(skill.BaseSkill).State = EntityState.Unchanged;
             }
+
+            foreach (var value in playerCharacter.TrainingValues)
+            {
+                _dbContext.Entry(value.BaseTrainingValue).State = EntityState.Unchanged;
+            }
+
             await _dbContext.SaveChangesAsync();
             return result.Entity;
         }
@@ -102,6 +108,12 @@ namespace OU2eHelperApi.Data
                 {
                     _dbContext.Entry(skill.BaseSkill).State = EntityState.Unchanged;
                 }
+
+                foreach (var value in playerCharacter.TrainingValues)
+                {
+                    _dbContext.Entry(value.BaseTrainingValue).State = EntityState.Unchanged;
+                }
+
                 await _dbContext.SaveChangesAsync();
                 return result;
             }

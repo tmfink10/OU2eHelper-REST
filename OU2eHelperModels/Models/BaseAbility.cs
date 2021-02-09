@@ -17,5 +17,8 @@ namespace OU2eHelperModels.Models
         public string Type { get; set; }
         public bool IsProfessional { get; set; }
         public string UsesBaseAttributesCoded { get; set; }
+        public string ModifiesTrainingValuesCoded { get; set; }
+        public string ModifiesTrainingValuesOptionsCoded { get; set; }
+
     }
 }
