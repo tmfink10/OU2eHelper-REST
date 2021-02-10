@@ -963,6 +963,53 @@ namespace OU2eHelper.Pages
             BaseSkillDescription.Toggle();
         }
 
+        protected string getAttributeValueByBaseAttributeName(string baseAttributeName)
+        {
+            var playerAttribute = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == baseAttributeName);
+            if (playerAttribute == null)
+            {
+                return 0.ToString();
+            }
+
+            return playerAttribute.Value.ToString();
+        }
+
+        protected string getPlayerSkillAdvancementsByBaseSkillName(string baseSkillName)
+        {
+            var skill = ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == baseSkillName);
+
+            if (skill == null || skill.Advancements == 0)
+            {
+                return "";
+            }
+            
+            return skill.Advancements.ToString();
+        }
+
+        protected string getPlayerSkillValueByBaseSkillName(string baseSkillName)
+        {
+            var skill = ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == baseSkillName);
+
+            if (skill == null || skill.Value == 0)
+            {
+                return "";
+            }
+
+            return skill.Value.ToString();
+        }
+
+        protected string getPlayerTrainingValueValueByBaseTrainingValueName(string baseTrainingValueName)
+        {
+            var playerTrainingValue = ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == baseTrainingValueName);
+
+            if (playerTrainingValue == null || playerTrainingValue.Value == 0)
+            {
+                return "";
+            }
+
+            return playerTrainingValue.Value.ToString();
+        }
+
         protected void GeneratePdf()
         {
             var spewFontSize = 20;
@@ -985,168 +1032,167 @@ namespace OU2eHelper.Pages
             var abilitiesNameIndent = 330;
             var abilitiesTierIndent = 440;
 
-            Label name = new Label(ThisCharacter.FullName, 100, 30, 504, 100, Font.Helvetica, headerFontSize, TextAlign.Left);
+            List<Label> page0Labels = new List<Label>();
+            List<Label> page1Labels = new List<Label>();
 
-            Label strengthBonus = new Label(ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Strength").Value.ToString().Substring(0,1), 70, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left);
-            Label strengthTens = new Label(ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Strength").Value.ToString().Substring(1, 1), 94, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left);
-            Label perceptionBonus = new Label(ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Perception").Value.ToString().Substring(0, 1), 128, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left);
-            Label perceptionTens = new Label(ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Perception").Value.ToString().Substring(1, 1), 152, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left);
-            Label empathyBonus = new Label(ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Empathy").Value.ToString().Substring(0, 1), 187, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left);
-            Label empathyTens = new Label(ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Empathy").Value.ToString().Substring(1, 1), 211, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left);
-            Label willpowerBonus = new Label(ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Willpower").Value.ToString().Substring(0, 1), 245, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left);
-            Label willpowerTens = new Label(ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == "Willpower").Value.ToString().Substring(1, 1), 269, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left);
+            page0Labels.Add(new Label(ThisCharacter.FullName, 100, 30, 504, 100, Font.Helvetica, headerFontSize, TextAlign.Left));
 
-            Label survivalPoints = new Label(ThisCharacter.SurvivalPoints.ToString(), 104, 224, 504, 100, Font.Helvetica, resourcesFontSize, TextAlign.Left);
-            Label gestaltLevel = new Label(ThisCharacter.GestaltLevel.ToString(), 193, 224, 504, 100, Font.Helvetica, resourcesFontSize, TextAlign.Left);
-            Label competencePoints = new Label(ThisCharacter.CompetencePoints.ToString(), 277, 224, 504, 100, Font.Helvetica, resourcesFontSize, TextAlign.Left);
+            page0Labels.Add(new Label(getAttributeValueByBaseAttributeName("Strength").Substring(0,1), 70, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getAttributeValueByBaseAttributeName("Strength").Substring(1, 1), 94, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getAttributeValueByBaseAttributeName("Perception").Substring(0, 1), 128, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getAttributeValueByBaseAttributeName("Perception").Substring(1, 1), 152, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getAttributeValueByBaseAttributeName("Empathy").Substring(0, 1), 187, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getAttributeValueByBaseAttributeName("Empathy").Substring(1, 1), 211, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getAttributeValueByBaseAttributeName("Willpower").Substring(0, 1), 245, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getAttributeValueByBaseAttributeName("Willpower").Substring(1, 1), 269, 175, 504, 100, Font.Helvetica, spewFontSize, TextAlign.Left));
 
-            Label balanceTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Balance").Advancements.ToString(), skillAdvancementsIndentLeft, 293, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label brawlTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Brawl").Advancements.ToString(), skillAdvancementsIndentLeft, 309, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label climbTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Climb").Advancements.ToString(), skillAdvancementsIndentLeft, 325, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label composureTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Composure").Advancements.ToString(), skillAdvancementsIndentLeft, 341, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label dodgeTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Dodge").Advancements.ToString(), skillAdvancementsIndentLeft, 357, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label enduranceTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Endurance").Advancements.ToString(), skillAdvancementsIndentLeft, 373, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label expressionTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Expression").Advancements.ToString(), skillAdvancementsIndentLeft, 389, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label grappleTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Grapple").Advancements.ToString(), skillAdvancementsIndentLeft, 405, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label bowTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Bow/Crossbow").Advancements.ToString(), skillAdvancementsIndentLeft, 441, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label calmOtherTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Calm Other").Advancements.ToString(), skillAdvancementsIndentLeft, 457, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label diplomacyTier = new Label("", skillAdvancementsIndentLeft, 473, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label barterTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Diplomacy <Barter/Bribe>").Advancements.ToString(), skillAdvancementsIndentLeft, 489, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label commandTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Diplomacy <Command>").Advancements.ToString(), skillAdvancementsIndentLeft, 505, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label determineMotivesTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Diplomacy <Determine Motives>").Advancements.ToString(), skillAdvancementsIndentLeft, 521, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label intimidateTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Diplomacy <Intimidate>").Advancements.ToString(), skillAdvancementsIndentLeft, 537, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label persuadeTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Diplomacy <Persuade>").Advancements.ToString(), skillAdvancementsIndentLeft, 553, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label digitalSystemsTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Digital Systems").Advancements.ToString(), skillAdvancementsIndentLeft, 569, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label advancedMedicineTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Advanced Medicine").Advancements.ToString(), skillAdvancementsIndentLeft, 603, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label constructionEngineeringTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Craft/Construct/Engineer").Advancements.ToString(), skillAdvancementsIndentLeft, 619, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label s1Tier = new Label("", skillAdvancementsIndentLeft, 635, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label s2Tier = new Label("", skillAdvancementsIndentLeft, 651, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label s3Tier = new Label("", skillAdvancementsIndentLeft, 667, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label s4Tier = new Label("", skillAdvancementsIndentLeft, 683, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label martialArtsTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Martial Arts").Advancements.ToString(), skillAdvancementsIndentLeft, 699, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label pilotTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Pilot").Advancements.ToString(), skillAdvancementsIndentLeft, 715, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label s5Tier = new Label("", skillAdvancementsIndentLeft, 731, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label s6Tier = new Label("", skillAdvancementsIndentLeft, 747, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
+            page0Labels.Add(new Label(ThisCharacter.SurvivalPoints.ToString(), 104, 224, 504, 100, Font.Helvetica, resourcesFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(ThisCharacter.GestaltLevel.ToString(), 193, 224, 504, 100, Font.Helvetica, resourcesFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(ThisCharacter.CompetencePoints.ToString(), 277, 224, 504, 100, Font.Helvetica, resourcesFontSize, TextAlign.Left));
 
-            Label balance = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Balance").Value.ToString(), skillIndentLeft, 291, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label brawl = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Brawl").Value.ToString(), skillIndentLeft, 307, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label climb = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Climb").Value.ToString(), skillIndentLeft, 323, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label composure = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Composure").Value.ToString(), skillIndentLeft, 339, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label dodge = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Dodge").Value.ToString(), skillIndentLeft, 355, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label endurance = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Endurance").Value.ToString(), skillIndentLeft, 371, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label expression = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Expression").Value.ToString(), skillIndentLeft, 387, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label grapple = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Grapple").Value.ToString(), skillIndentLeft, 403, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label bow = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Bow/Crossbow").Value.ToString(), skillIndentLeft, 439, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label calmOther = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Calm Other").Value.ToString(), skillIndentLeft, 455, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label diplomacy = new Label("", skillIndentLeft, 471, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label barter = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Diplomacy <Barter/Bribe>").Value.ToString(), skillIndentLeft, 487, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label command = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Diplomacy <Command>").Value.ToString(), skillIndentLeft, 503, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label determineMotives = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Diplomacy <Determine Motives>").Value.ToString(), skillIndentLeft, 519, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label intimidate = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Diplomacy <Intimidate>").Value.ToString(), skillIndentLeft, 535, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label persuade = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Diplomacy <Persuade>").Value.ToString(), skillIndentLeft, 550, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label digitalSystems = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Digital Systems").Value.ToString(), skillIndentLeft, 566, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label advancedMedicine = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Advanced Medicine").Value.ToString(), skillIndentLeft, 601, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label constructionEngineering = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Craft/Construct/Engineer").Value.ToString(), skillIndentLeft, 617, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label s1 = new Label("", skillIndentLeft, 633, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label s2 = new Label("", skillIndentLeft, 649, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label s3 = new Label("", skillIndentLeft, 665, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label s4 = new Label("", skillIndentLeft, 681, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label martialArts = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Martial Arts").Value.ToString(), skillIndentLeft, 697, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label pilot = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Pilot").Value.ToString(), skillIndentLeft, 713, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label s5 = new Label("", skillIndentLeft, 729, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label s6 = new Label("", skillIndentLeft, 745, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Balance"), skillAdvancementsIndentLeft, 293, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Brawl"), skillAdvancementsIndentLeft, 309, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Climb"), skillAdvancementsIndentLeft, 325, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Composure"), skillAdvancementsIndentLeft, 341, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Dodge"), skillAdvancementsIndentLeft, 357, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Endurance"), skillAdvancementsIndentLeft, 373, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Expression"), skillAdvancementsIndentLeft, 389, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Grapple"), skillAdvancementsIndentLeft, 405, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Bow/Crossbow"), skillAdvancementsIndentLeft, 441, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Calm Other"), skillAdvancementsIndentLeft, 457, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Diplomacy"), skillAdvancementsIndentLeft, 473, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Diplomacy <Barter/Bribe>"), skillAdvancementsIndentLeft, 489, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Diplomacy <Command>"), skillAdvancementsIndentLeft, 505, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Diplomacy <Determine Motives>"), skillAdvancementsIndentLeft, 521, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Diplomacy <Intimidate>"), skillAdvancementsIndentLeft, 537, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Diplomacy <Persuade>"), skillAdvancementsIndentLeft, 553, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Digital Systems"), skillAdvancementsIndentLeft, 569, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Advanced Medicine"), skillAdvancementsIndentLeft, 603, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Craft/Construct/Engineer"), skillAdvancementsIndentLeft, 619, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillAdvancementsIndentLeft, 635, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillAdvancementsIndentLeft, 651, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillAdvancementsIndentLeft, 667, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillAdvancementsIndentLeft, 683, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Martial Arts"), skillAdvancementsIndentLeft, 699, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Pilot"), skillAdvancementsIndentLeft, 715, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillAdvancementsIndentLeft, 731, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillAdvancementsIndentLeft, 747, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
 
-            Label holdTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Hold").Advancements.ToString(), skillAdvancementsIndentRight, 293, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label jumpLeapTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Jump/Leap").Advancements.ToString(), skillAdvancementsIndentRight, 309, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label liftPullTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Lift/Pull").Advancements.ToString(), skillAdvancementsIndentRight, 325, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label resistPainTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Resist Pain").Advancements.ToString(), skillAdvancementsIndentRight, 341, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label searchTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Search").Advancements.ToString(), skillAdvancementsIndentRight, 357, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label spotListenTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Spot/Listen").Advancements.ToString(), skillAdvancementsIndentRight, 373, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label stealthTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Stealth").Advancements.ToString(), skillAdvancementsIndentRight, 389, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label emptyTier = new Label("", skillAdvancementsIndentRight, 405, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label longGunTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Firearms <Long Gun>").Advancements.ToString(), skillAdvancementsIndentRight, 441, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label pistolTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Firearms <Pistol>").Advancements.ToString(), skillAdvancementsIndentRight, 457, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label firstAidTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "First Aid").Advancements.ToString(), skillAdvancementsIndentRight, 473, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label bludgeonTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Melee Attack <Bludgeoning>").Advancements.ToString(), skillAdvancementsIndentRight, 489, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label pierceTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Melee Attack <Piercing>").Advancements.ToString(), skillAdvancementsIndentRight, 505, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label slashTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Melee Attack <Slashing>").Advancements.ToString(), skillAdvancementsIndentRight, 521, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label navigationTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Navigation").Advancements.ToString(), skillAdvancementsIndentRight, 537, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label swimTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Swim").Advancements.ToString(), skillAdvancementsIndentRight, 553, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label thrwTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Throw").Advancements.ToString(), skillAdvancementsIndentRight, 569, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label rideTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Ride").Advancements.ToString(), skillAdvancementsIndentRight, 603, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label s7Tier = new Label("", skillAdvancementsIndentRight, 619, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label scienceTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Science").Advancements.ToString(), skillAdvancementsIndentRight, 635, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label s8Tier = new Label("", skillAdvancementsIndentRight, 651, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label s9Tier = new Label("", skillAdvancementsIndentRight, 667, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label survivalTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Survival").Advancements.ToString(), skillAdvancementsIndentRight, 683, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label s10Tier = new Label("", skillAdvancementsIndentRight, 699, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label s11Tier = new Label("", skillAdvancementsIndentRight, 715, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label s12Tier = new Label("", skillAdvancementsIndentRight, 731, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
-            Label toughnessTier = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Toughness").Advancements.ToString(), skillAdvancementsIndentRight, 747, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left);
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Balance"), skillIndentLeft, 291, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Brawl"), skillIndentLeft, 307, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Climb"), skillIndentLeft, 323, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Composure"), skillIndentLeft, 339, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Dodge"), skillIndentLeft, 355, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Endurance"), skillIndentLeft, 371, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Expression"), skillIndentLeft, 387, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Grapple"), skillIndentLeft, 403, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Bow/Crossbow"), skillIndentLeft, 439, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Calm Other"), skillIndentLeft, 455, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillIndentLeft, 471, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Diplomacy <Barter/Bribe>"), skillIndentLeft, 487, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Diplomacy <Command>"), skillIndentLeft, 503, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Diplomacy <Determine Motives>"), skillIndentLeft, 519, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Diplomacy <Intimidate>"), skillIndentLeft, 535, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Diplomacy <Persuade>"), skillIndentLeft, 550, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Digital Systems"), skillIndentLeft, 566, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Advanced Medicine"), skillIndentLeft, 601, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Craft/Construct/Engineer"), skillIndentLeft, 617, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillIndentLeft, 633, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillIndentLeft, 649, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillIndentLeft, 665, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillIndentLeft, 681, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Martial Arts"), skillIndentLeft, 697, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Pilot"), skillIndentLeft, 713, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillIndentLeft, 729, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillIndentLeft, 745, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
 
-            Label hold = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Hold").Value.ToString(), skillIndentRight, 291, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label jumpLeap = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Jump/Leap").Value.ToString(), skillIndentRight, 307, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label liftPull = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Lift/Pull").Value.ToString(), skillIndentRight, 323, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label resistPain = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Resist Pain").Value.ToString(), skillIndentRight, 339, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label search = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Search").Value.ToString(), skillIndentRight, 355, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label spotListen = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Spot/Listen").Value.ToString(), skillIndentRight, 371, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label stealth = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Stealth").Value.ToString(), skillIndentRight, 387, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label empty = new Label("", skillIndentRight, 403, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label longGun = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Firearms <Long Gun>").Value.ToString(), skillIndentRight, 439, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label pistol = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Firearms <Pistol>").Value.ToString(), skillIndentRight, 455, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label firstAid = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "First Aid").Value.ToString(), skillIndentRight, 471, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label bludgeon = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Melee Attack <Bludgeoning>").Value.ToString(), skillIndentRight, 487, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label pierce = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Melee Attack <Piercing>").Value.ToString(), skillIndentRight, 503, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label slash = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Melee Attack <Slashing>").Value.ToString(), skillIndentRight, 519, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label navigation = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Navigation").Value.ToString(), skillIndentRight, 535, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label swim = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Swim").Value.ToString(), skillIndentRight, 550, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label thrw = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Throw").Value.ToString(), skillIndentRight, 566, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label ride = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Ride").Value.ToString(), skillIndentRight, 601, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label s7 = new Label("", skillIndentRight, 617, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label science = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Science").Value.ToString(), skillIndentRight, 633, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label s8 = new Label("", skillIndentRight, 649, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label s9 = new Label("", skillIndentRight, 665, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label survival = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Survival").Value.ToString(), skillIndentRight, 681, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label s10 = new Label("", skillIndentRight, 697, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label s11 = new Label("", skillIndentRight, 713, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label s12 = new Label("", skillIndentRight, 729, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label toughness = new Label(ThisCharacter.PlayerSkills.FirstOrDefault(s => s.BaseSkill.Name == "Toughness").Value.ToString(), skillIndentRight, 745, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Hold"), skillAdvancementsIndentRight, 293, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Jump/Leap"), skillAdvancementsIndentRight, 309, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Lift/Pull"), skillAdvancementsIndentRight, 325, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Resist Pain"), skillAdvancementsIndentRight, 341, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Search"), skillAdvancementsIndentRight, 357, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Spot/Listen"), skillAdvancementsIndentRight, 373, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Stealth"), skillAdvancementsIndentRight, 389, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillAdvancementsIndentRight, 405, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Firearms <Long Gun>"), skillAdvancementsIndentRight, 441, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Firearms <Pistol>"), skillAdvancementsIndentRight, 457, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("First Aid"), skillAdvancementsIndentRight, 473, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Melee Attack <Bludgeoning>"), skillAdvancementsIndentRight, 489, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Melee Attack <Piercing>"), skillAdvancementsIndentRight, 505, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Melee Attack <Slashing>"), skillAdvancementsIndentRight, 521, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Navigation"), skillAdvancementsIndentRight, 537, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Swim"), skillAdvancementsIndentRight, 553, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Throw"), skillAdvancementsIndentRight, 569, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Ride"), skillAdvancementsIndentRight, 603, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillAdvancementsIndentRight, 619, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Science"), skillAdvancementsIndentRight, 635, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillAdvancementsIndentRight, 651, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillAdvancementsIndentRight, 667, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Survival"), skillAdvancementsIndentRight, 683, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillAdvancementsIndentRight, 699, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillAdvancementsIndentRight, 715, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillAdvancementsIndentRight, 731, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillAdvancementsByBaseSkillName("Toughness"), skillAdvancementsIndentRight, 747, 504, 100, Font.Helvetica, skillsAdvancementsSize, TextAlign.Left));
 
-            Label damageThreshold = new Label(ThisCharacter.DamageThreshold.ToString(), 520, 132, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
-            Label psyche = new Label(ThisCharacter.Morale.ToString(), 445, 313, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left);
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Hold"), skillIndentRight, 291, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Jump/Leap"), skillIndentRight, 307, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Lift/Pull"), skillIndentRight, 323, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Resist Pain"), skillIndentRight, 339, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Search"), skillIndentRight, 355, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Spot/Listen"), skillIndentRight, 371, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Stealth"), skillIndentRight, 387, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillIndentRight, 403, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Firearms <Long Gun>"), skillIndentRight, 439, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Firearms <Pistol>"), skillIndentRight, 455, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("First Aid"), skillIndentRight, 471, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Melee Attack <Bludgeoning>"), skillIndentRight, 487, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Melee Attack <Piercing>"), skillIndentRight, 503, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Melee Attack <Slashing>"), skillIndentRight, 519, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Navigation"), skillIndentRight, 535, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Swim"), skillIndentRight, 550, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Throw"), skillIndentRight, 566, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Ride"), skillIndentRight, 601, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillIndentRight, 617, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Science"), skillIndentRight, 633, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillIndentRight, 649, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillIndentRight, 665, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Survival"), skillIndentRight, 681, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillIndentRight, 697, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillIndentRight, 713, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label("", skillIndentRight, 729, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerSkillValueByBaseSkillName("Toughness"), skillIndentRight, 745, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
 
-            Label archeryGearTV = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Archery Gear").Value.ToString(), trainingValueIndentTopLeft, 450, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
-            Label bludgeonTV = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Bludgeon").Value.ToString(), trainingValueIndentTopLeft, 490, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
-            Label pierceTV = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Piercing").Value.ToString(), trainingValueIndentTopLeft, 531, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
-            Label slashTV = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Slashing").Value.ToString(), trainingValueIndentTopLeft, 571, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+            page0Labels.Add(new Label(ThisCharacter.DamageThreshold.ToString(), 520, 132, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(ThisCharacter.Morale.ToString(), 445, 313, 504, 100, Font.Helvetica, skillsFontSize, TextAlign.Left));
 
-            Label longGunTV = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Long Gun").Value.ToString(), trainingValueIndentTopRight, 450, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
-            Label pistolTV = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Pistol").Value.ToString(), trainingValueIndentTopRight, 490, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
-            Label throwingTV = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Throwing").Value.ToString(), trainingValueIndentTopRight, 531, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
-            Label martialArtsTV = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Martial Arts").Value.ToString(), trainingValueIndentTopRight, 571, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+            page0Labels.Add(new Label(getPlayerTrainingValueValueByBaseTrainingValueName("Archery Gear"), trainingValueIndentTopLeft, 450, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerTrainingValueValueByBaseTrainingValueName("Bludgeon"), trainingValueIndentTopLeft, 490, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerTrainingValueValueByBaseTrainingValueName("Piercing"), trainingValueIndentTopLeft, 531, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerTrainingValueValueByBaseTrainingValueName("Slashing"), trainingValueIndentTopLeft, 571, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left));
 
-            Label athleticGear = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Athletic Gear").Value.ToString(), trainingValueIndentBottomLeft, 614, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
-            Label climbingGear = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Climbing Gear").Value.ToString(), trainingValueIndentBottomLeft, 655, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
-            Label commandApp = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Command Apparatus").Value.ToString(), trainingValueIndentBottomLeft, 695, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
-            Label firefighting = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Firefighting").Value.ToString(), trainingValueIndentBottomLeft, 735, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+            page0Labels.Add(new Label(getPlayerTrainingValueValueByBaseTrainingValueName("Long Gun"), trainingValueIndentTopRight, 450, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerTrainingValueValueByBaseTrainingValueName("Pistol"), trainingValueIndentTopRight, 490, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerTrainingValueValueByBaseTrainingValueName("Throwing"), trainingValueIndentTopRight, 531, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerTrainingValueValueByBaseTrainingValueName("Martial Arts"), trainingValueIndentTopRight, 571, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left));
 
-            Label firstAidKit = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "First Aid Kit").Value.ToString(), trainingValueIndentBottomMiddle, 614, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
-            Label medicalGear = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Medical Gear").Value.ToString(), trainingValueIndentBottomMiddle, 655, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
-            Label reconGear = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Reconnaissance Gear").Value.ToString(), trainingValueIndentBottomMiddle, 695, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
-            Label survivalKit = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Survival Kit").Value.ToString(), trainingValueIndentBottomMiddle, 735, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+            page0Labels.Add(new Label(getPlayerTrainingValueValueByBaseTrainingValueName("Athletic Gear"), trainingValueIndentBottomLeft, 614, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerTrainingValueValueByBaseTrainingValueName("Climbing Gear"), trainingValueIndentBottomLeft, 655, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerTrainingValueValueByBaseTrainingValueName("Command Apparatus"), trainingValueIndentBottomLeft, 695, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerTrainingValueValueByBaseTrainingValueName("Firefighting"), trainingValueIndentBottomLeft, 735, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left));
 
-            Label swimmingDiving = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Swimming/Diving").Value.ToString(), trainingValueIndentBottomRight, 614, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
-            Label tools = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Tools").Value.ToString(), trainingValueIndentBottomRight, 655, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
-            Label value = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Value").Value.ToString(), trainingValueIndentBottomRight, 695, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
-            Label vehicles = new Label(ThisCharacter.TrainingValues.FirstOrDefault(t => t.BaseTrainingValue.Name == "Vehicles").Value.ToString(), trainingValueIndentBottomRight, 735, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left);
+            page0Labels.Add(new Label(getPlayerTrainingValueValueByBaseTrainingValueName("First Aid Kit"), trainingValueIndentBottomMiddle, 614, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerTrainingValueValueByBaseTrainingValueName("Medical Gear"), trainingValueIndentBottomMiddle, 655, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerTrainingValueValueByBaseTrainingValueName("Reconnaissance Gear"), trainingValueIndentBottomMiddle, 695, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerTrainingValueValueByBaseTrainingValueName("Survival Kit"), trainingValueIndentBottomMiddle, 735, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left));
 
-            List<Label> abilityLabels = new List<Label>();
-            int initY = 102;
+            page0Labels.Add(new Label(getPlayerTrainingValueValueByBaseTrainingValueName("Swimming/Diving"), trainingValueIndentBottomRight, 614, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerTrainingValueValueByBaseTrainingValueName("Tools"), trainingValueIndentBottomRight, 655, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerTrainingValueValueByBaseTrainingValueName("Value"), trainingValueIndentBottomRight, 695, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left));
+            page0Labels.Add(new Label(getPlayerTrainingValueValueByBaseTrainingValueName("Vehicles"), trainingValueIndentBottomRight, 735, 504, 100, Font.Helvetica, trainingValueFontSize, TextAlign.Left));
 
             if (ThisCharacter.PlayerAbilities != null)
             {
-                var Y = initY;
-                var count = 0;
+                var Y = 102;
 
                 foreach (var ability in ThisCharacter.PlayerAbilities)
                 {
@@ -1157,10 +1203,10 @@ namespace OU2eHelper.Pages
                         abilityNameMaxLength = ability.BaseAbility.Name.Length;
                     }
                     Label tempLabel = new Label(ability.BaseAbility.Name.Substring(0, abilityNameMaxLength), abilitiesNameIndent, Y, 504, 100, Font.Helvetica, abilitiesFontSize, TextAlign.Left);
-                    abilityLabels.Add(tempLabel);
+                    page1Labels.Add(tempLabel);
 
                     Label tempLabel2 = new Label(ability.Tier.ToString(), abilitiesTierIndent, Y, 504, 100, Font.Helvetica, abilitiesFontSize, TextAlign.Left);
-                    abilityLabels.Add(tempLabel2);
+                    page1Labels.Add(tempLabel2);
 
                     Y += 16;
                 }
@@ -1171,131 +1217,12 @@ namespace OU2eHelper.Pages
             Page page0 = mergeDoc.Pages[0];
             Page page1 = mergeDoc.Pages[1];
 
-            page0.Elements.Add(name);
-            page0.Elements.Add(strengthBonus);
-            page0.Elements.Add(strengthTens);
-            page0.Elements.Add(perceptionBonus);
-            page0.Elements.Add(perceptionTens);
-            page0.Elements.Add(empathyBonus);
-            page0.Elements.Add(empathyTens);
-            page0.Elements.Add(willpowerBonus);
-            page0.Elements.Add(willpowerTens);
-            page0.Elements.Add(survivalPoints);
-            page0.Elements.Add(gestaltLevel);
-            page0.Elements.Add(competencePoints);
-            page0.Elements.Add(balance);
-            page0.Elements.Add(brawl);
-            page0.Elements.Add(climb);
-            page0.Elements.Add(composure);
-            page0.Elements.Add(dodge);
-            page0.Elements.Add(endurance);
-            page0.Elements.Add(expression);
-            page0.Elements.Add(grapple);
-            page0.Elements.Add(bow);
-            page0.Elements.Add(calmOther);
-            page0.Elements.Add(barter);
-            page0.Elements.Add(command);
-            page0.Elements.Add(determineMotives);
-            page0.Elements.Add(intimidate);
-            page0.Elements.Add(persuade);
-            page0.Elements.Add(digitalSystems);
-            page0.Elements.Add(advancedMedicine);
-            page0.Elements.Add(constructionEngineering);
-            page0.Elements.Add(martialArts);
-            page0.Elements.Add(pilot);
-            page0.Elements.Add(hold);
-            page0.Elements.Add(jumpLeap);
-            page0.Elements.Add(liftPull);
-            page0.Elements.Add(resistPain);
-            page0.Elements.Add(search);
-            page0.Elements.Add(spotListen);
-            page0.Elements.Add(stealth);
-            page0.Elements.Add(longGun);
-            page0.Elements.Add(pistol);
-            page0.Elements.Add(firstAid);
-            page0.Elements.Add(bludgeon);
-            page0.Elements.Add(pierce);
-            page0.Elements.Add(slash);
-            page0.Elements.Add(navigation);
-            page0.Elements.Add(swim);
-            page0.Elements.Add(thrw);
-            page0.Elements.Add(ride);
-            page0.Elements.Add(science);
-            page0.Elements.Add(survival);
-            page0.Elements.Add(toughness);
-            page0.Elements.Add(damageThreshold);
-            page0.Elements.Add(psyche);
-            page0.Elements.Add(archeryGearTV);
-            page0.Elements.Add(bludgeonTV);
-            page0.Elements.Add(pierceTV);
-            page0.Elements.Add(slashTV);
-            page0.Elements.Add(longGunTV);
-            page0.Elements.Add(pistolTV);
-            page0.Elements.Add(throwingTV);
-            page0.Elements.Add(martialArtsTV);
-            page0.Elements.Add(athleticGear);
-            page0.Elements.Add(climbingGear);
-            page0.Elements.Add(commandApp);
-            page0.Elements.Add(firefighting);
-            page0.Elements.Add(firstAidKit);
-            page0.Elements.Add(medicalGear);
-            page0.Elements.Add(reconGear);
-            page0.Elements.Add(survivalKit);
-            page0.Elements.Add(swimmingDiving);
-            page0.Elements.Add(tools);
-            page0.Elements.Add(value);
-            page0.Elements.Add(vehicles);
-            page0.Elements.Add(balanceTier);
-            page0.Elements.Add(brawlTier);
-            page0.Elements.Add(climbTier);
-            page0.Elements.Add(composureTier);
-            page0.Elements.Add(dodgeTier);
-            page0.Elements.Add(enduranceTier);
-            page0.Elements.Add(expressionTier);
-            page0.Elements.Add(grappleTier);
-            page0.Elements.Add(bowTier);
-            page0.Elements.Add(calmOtherTier);
-            page0.Elements.Add(diplomacyTier);
-            page0.Elements.Add(barterTier);
-            page0.Elements.Add(commandTier);
-            page0.Elements.Add(determineMotivesTier);
-            page0.Elements.Add(intimidateTier);
-            page0.Elements.Add(persuadeTier);
-            page0.Elements.Add(digitalSystemsTier);
-            page0.Elements.Add(advancedMedicineTier);
-            page0.Elements.Add(constructionEngineeringTier);
-            page0.Elements.Add(martialArtsTier);
-            page0.Elements.Add(pilotTier);
-            page0.Elements.Add(holdTier);
-            page0.Elements.Add(jumpLeapTier);
-            page0.Elements.Add(liftPullTier);
-            page0.Elements.Add(resistPainTier);
-            page0.Elements.Add(searchTier);
-            page0.Elements.Add(spotListenTier);
-            page0.Elements.Add(stealthTier);
-            page0.Elements.Add(emptyTier);
-            page0.Elements.Add(longGunTier);
-            page0.Elements.Add(pistolTier);
-            page0.Elements.Add(firstAidTier);
-            page0.Elements.Add(bludgeonTier);
-            page0.Elements.Add(pierceTier);
-            page0.Elements.Add(slashTier);
-            page0.Elements.Add(navigationTier);
-            page0.Elements.Add(swimTier);
-            page0.Elements.Add(thrwTier);
-            page0.Elements.Add(rideTier);
-            page0.Elements.Add(s7Tier);
-            page0.Elements.Add(scienceTier);
-            page0.Elements.Add(s8Tier);
-            page0.Elements.Add(s9Tier);
-            page0.Elements.Add(survivalTier);
-            page0.Elements.Add(s10Tier);
-            page0.Elements.Add(s11Tier);
-            page0.Elements.Add(s12Tier);
-            page0.Elements.Add(toughnessTier);
+            foreach (var label in page0Labels)
+            {
+                page0.Elements.Add(label);
+            }
 
-
-            foreach (var label in abilityLabels)
+            foreach (var label in page1Labels)
             {
                 page1.Elements.Add(label);
             }
