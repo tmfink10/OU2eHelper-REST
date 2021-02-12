@@ -2,19 +2,34 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>7eb11e87-a667-42b7-9283-c505c9bdf99f</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\CharacterSheets\OU2eCharacterSheet.pdf" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Blazored.FluentValidation" Version="1.3.2" />
     <PackageReference Include="Blazored.Modal" Version="6.0.1" />
     <PackageReference Include="BlazorStrap" Version="1.5.0-preview-03" />
     <PackageReference Include="ceTe.DynamicPDF.CoreSuite.NET" Version="11.6.0" />
-    <PackageReference Include="iTextSharp" Version="5.5.13.2" />
     <PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.2.0-preview3.20168.3" />
+    <PackageReference Include="Microsoft.Azure.SignalR" Version="1.4.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Syncfusion.Blazor" Version="18.4.0.42" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\OU2eHelperModels\OU2eHelperModels.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\CharacterSheets\OU2eCharacterSheet.pdf" />
   </ItemGroup>
 
 </Project>
