@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using OU2eHelper.Services;
+using Syncfusion.Blazor;
 
 namespace OU2eHelper
 {
@@ -31,6 +32,8 @@ namespace OU2eHelper
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddBootstrapCss();
+            services.AddSyncfusionBlazor();
+            services.AddServerSideBlazor().AddHubOptions(o => { o.MaximumReceiveMessageSize = 10485761; });
             services.AddHttpClient<IBaseAbilityService, BaseAbilityService>(client =>
             {
                 client.BaseAddress = new Uri(uri);
@@ -69,6 +72,7 @@ namespace OU2eHelper
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Mzk3MjM0QDMxMzgyZTM0MmUzMGxiTFliWVRHbTVua0VnZ3pVeE9hUWpJc2d0YUhKRE54U2VLelRtTkxPdWM9;Mzk3MjM1QDMxMzgyZTM0MmUzMFhJc1hUUmF6dHlZRk1vTm9zUFVYN0dUY09Od3dHcDhwWUFXbHZ1Q1ZHTjg9");
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

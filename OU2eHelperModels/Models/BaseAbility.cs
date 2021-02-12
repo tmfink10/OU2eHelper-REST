@@ -8,6 +8,7 @@ namespace OU2eHelperModels.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string ShortName { get; set; }
         public string Description { get; set; }
         public string HtmlDescription { get; set; }
         public List<BaseAttribute> UsesBaseAttributes { get; set; } = new List<BaseAttribute>();

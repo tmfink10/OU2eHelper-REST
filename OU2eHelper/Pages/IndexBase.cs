@@ -3,19 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.util;
 using Blazored.Modal;
 using Blazored.Modal.Services;
 using BlazorStrap;
 using ceTe.DynamicPDF;
 using ceTe.DynamicPDF.Merger;
 using ceTe.DynamicPDF.PageElements;
-using iTextSharp.xmp.impl;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using OU2eHelper.Components;
 using OU2eHelper.Services;
 using OU2eHelperModels.Models;
+using Page = ceTe.DynamicPDF.Page;
+
 
 namespace OU2eHelper.Pages
 {
@@ -53,6 +55,8 @@ namespace OU2eHelper.Pages
         public IPlayerAttributeService PlayerAttributeService { get; set; }
         public IEnumerable<PlayerAttribute> PlayerAttributes { get; set; }
 
+        protected NavigationManager Navigator;
+
         protected bool _createNew;
         protected bool _addAbilities;
         protected bool _addSkills;
@@ -89,24 +93,20 @@ namespace OU2eHelper.Pages
 
         }
 
-        protected Array CsvStringToArray(string values)
-        {
-            return values.Split(',');
-        }
-
         public class HelperClass
         {
             public string FormString;
             public string FormString2;
         }
 
-        protected PlayerCharacter ThisCharacter = new PlayerCharacter();
+        public PlayerCharacter ThisCharacter = new PlayerCharacter();
         protected BaseAbility ThisBaseAbility = new BaseAbility();
         protected BaseSkill ThisBaseSkill = new BaseSkill();
         protected PlayerAbility ThisPlayerAbility = new PlayerAbility();
         protected PlayerAttribute ThisPlayerAttribute = new PlayerAttribute();
         protected PlayerSkill ThisPlayerSkill = new PlayerSkill();
         protected HelperClass Helper = new HelperClass();
+        public string CharacterSheetLocation;
 
         protected PlayerAttribute StrengthService { get; set; }
         protected PlayerAttribute PerceptionService { get; set; }
@@ -963,6 +963,11 @@ namespace OU2eHelper.Pages
             BaseSkillDescription.Toggle();
         }
 
+        protected Array CsvStringToArray(string values)
+        {
+            return values.Split(',');
+        }
+
         protected string getAttributeValueByBaseAttributeName(string baseAttributeName)
         {
             var playerAttribute = ThisCharacter.PlayerAttributes.FirstOrDefault(a => a.BaseAttribute.Name == baseAttributeName);
@@ -1010,7 +1015,7 @@ namespace OU2eHelper.Pages
             return playerTrainingValue.Value.ToString();
         }
 
-        protected void GeneratePdf()
+        public void GeneratePdf()
         {
             var spewFontSize = 20;
             var headerFontSize = 13;
@@ -1030,7 +1035,7 @@ namespace OU2eHelper.Pages
             var trainingValueIndentBottomMiddle = 479;
             var trainingValueIndentBottomRight = 559;
             var abilitiesNameIndent = -90;
-            var abilitiesTierIndent = 440;
+            var abilitiesTierIndent = 430;
             var abilitiesNotesIndent = 450;
 
             List<Label> page0Labels = new List<Label>();
@@ -1199,22 +1204,17 @@ namespace OU2eHelper.Pages
 
                 foreach (var ability in ThisCharacter.PlayerAbilities)
                 {
-                    var abilityNameMaxLength = 22;
                     var abilityNotesMaxLength = 35;
 
-                    if (ability.BaseAbility.Name.Length < abilityNameMaxLength)
-                    {
-                        abilityNameMaxLength = ability.BaseAbility.Name.Length;
-                    }
-
-                    if (ability.Notes.Length < abilityNotesMaxLength)
+                    if (ability.Notes != null && ability.Notes.Length < abilityNotesMaxLength)
                     {
                         abilityNotesMaxLength = ability.Notes.Length;
+                        page1TransparencyGroup.Add(new Label(ability.Notes.Substring(0, abilityNotesMaxLength), abilitiesNotesIndent, Y, 504, 100, Font.Helvetica, abilitiesFontSize, TextAlign.Left));
+
                     }
 
-                    page1Labels.Add(new Label(ability.BaseAbility.Name.Substring(0, abilityNameMaxLength), abilitiesNameIndent, Y, 504, 100, Font.Helvetica, abilitiesFontSize, TextAlign.Right));
+                    page1Labels.Add(new Label(ability.BaseAbility.ShortName, abilitiesNameIndent, Y, 504, 100, Font.Helvetica, abilitiesFontSize, TextAlign.Right));
                     page1TransparencyGroup.Add(new Label(ability.Tier.ToString(), abilitiesTierIndent, Y, 504, 100, Font.Helvetica, abilitiesFontSize, TextAlign.Left));
-                    page1TransparencyGroup.Add(new Label(ability.Notes.Substring(0, abilityNotesMaxLength), abilitiesNotesIndent, Y, 504, 100, Font.Helvetica, abilitiesFontSize, TextAlign.Left));
 
                     Y += 16;
                 }
@@ -1238,7 +1238,11 @@ namespace OU2eHelper.Pages
             page0.Elements.Add(page0TransparencyGroup);
             page1.Elements.Add(page1TransparencyGroup);
 
-            mergeDoc.Draw(@"G:\Dump\Output.pdf");
+            var rand = new Random().Next(1, 1000000000);
+            var path = $@".\wwwroot\CharacterSheets\{rand}.pdf";
+            mergeDoc.Draw(path);
+
+            CharacterSheetLocation = $"/CharacterSheets/{rand}.pdf";
         }
 
         internal static string GetPath(string filePath)
@@ -1248,5 +1252,6 @@ namespace OU2eHelper.Pages
             var appRoot = appPathMatcher.Match(exePath).Value;
             return System.IO.Path.Combine(appRoot, filePath);
         }
+
     }
 }
