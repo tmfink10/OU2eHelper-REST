@@ -20,5 +20,9 @@ namespace OU2eHelper.Services
         {
             return await _httpClient.GetJsonAsync<BaseAttribute[]>("/api/BaseAttributes");
         }
+        public async Task<BaseAttribute> GetBaseAttribute(int id)
+        {
+            return await _httpClient.GetJsonAsync<BaseAttribute>($"/api/PlayerAttributes/{id}");
+        }
     }
 }

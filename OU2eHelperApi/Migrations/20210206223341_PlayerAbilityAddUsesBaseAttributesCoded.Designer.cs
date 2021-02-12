@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OU2eHelperApi.Data;
 
 namespace OU2eHelperApi.Migrations
 {
     [DbContext(typeof(OU2eHelperContext))]
-    partial class OU2eHelperContextModelSnapshot : ModelSnapshot
+    [Migration("20210206223341_PlayerAbilityAddUsesBaseAttributesCoded")]
+    partial class PlayerAbilityAddUsesBaseAttributesCoded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,12 +44,6 @@ namespace OU2eHelperApi.Migrations
                     b.Property<bool>("IsProfessional")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ModifiesTrainingValuesCoded")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ModifiesTrainingValuesOptionsCoded")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -58,8 +54,7 @@ namespace OU2eHelperApi.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("UsesBaseAttributesCoded")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -83,7 +78,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "With medical training and a cool head as part of the job, this training allows first-responders to keep calm and keep their patients alive. \r\n \r\nSkill Support: {Composure%, First Aid%}\r\n \r\nAdvancement Rate: +1 per Tier to {Composure%, First Aid%}\r\n \r\nTraining Value(s): +1 per Level\r\n -First Aid Kits \r\n -Medical Gear\r\n \r\nMastery: First Aid Kits can be used to remove Damage Dice assigned to a character or Injury that is “Heal (+1)”.",
                             HtmlDescription = "With medical training and a cool head as part of the job, this training allows first-responders to keep calm and keep their patients alive. <br/> <br/>Skill Support: {Composure%, First Aid%}<br/> <br/>Advancement Rate: +1 per Tier to {Composure%, First Aid%}<br/> <br/>Training Value(s): +1 per Level<br/> -First Aid Kits <br/> -Medical Gear<br/> <br/>Mastery: First Aid Kits can be used to remove Damage Dice assigned to a character or Injury that is “Heal (+1)”.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "First Aid Kit,Medical Gear",
                             Name = "Advanced Cardiac Life Support (ACLS)",
                             UsesBaseAttributesCoded = "W"
                         },
@@ -124,7 +118,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character is capable of deep and meaningful artistic expression in their preferred medium. This can include drawing, photography, writing and acting.\r\n\r\nSkill Support: {Expression%}\r\n\r\nAdvancement Rate: +1 per Tier to {Expression%}\r\n\r\nTraining Value(s):\r\n “Drawing/Musical/Photography/Writing” (pick one)\r\n\r\nMastery: Any Mission that uses {Expression%} to check against Work will count as spending Time per + instead of the normal Time 1.",
                             HtmlDescription = "This character is capable of deep and meaningful artistic expression in their preferred medium. This can include drawing, photography, writing and acting.<br/><br/>Skill Support: {Expression%}<br/><br/>Advancement Rate: +1 per Tier to {Expression%}<br/><br/>Training Value(s):<br/> “Drawing/Musical/Photography/Writing” (pick one)<br/><br/>Mastery: Any Mission that uses {Expression%} to check against Work will count as spending Time per + instead of the normal Time 1.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Tools",
                             Name = "Artistic",
                             UsesBaseAttributesCoded = "P,E"
                         },
@@ -135,7 +128,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character is highly athletic and plays some sort of organized sport regularly.\r\n\r\nSkill Support: The nature of the sport will determine what pair of Skills count as Supported by this Ability:\r\n -Archery {Bow% and Spot/Listen%}\r\n -Baseball/Cricket {Melee Attack <Bludgeoning>% and Throw%}\r\n -Basketball {Jump/Leap% and Throw%}\r\n -Boxing {Brawl%, and Toughness%}\r\n -Football/Rugby {Resist Pain% and Grapple% or Throw%}\r\n -Golf {Melee Attack <Bludgeoning>% and Hold%}\r\n -Gymnastics {Balance% and Jump/Leap%}\r\n -Hockey {Balance% and Melee Attack <Bludgeoning>%}\r\n -Soccer {Brawl% and Endurance%}\r\n\r\nAdvancement Rate: +1 per Tier to Supported {SC%}\r\n\r\nTraining Value(s):\r\nAthletic  Equipment +1 per Tier\r\n\r\nMastery: Increase any Multiplier when using “Athletic Gear” by 1x to a maximum of 5x.",
                             HtmlDescription = "This character is highly athletic and plays some sort of organized sport regularly.<br/><br/>Skill Support: The nature of the sport will determine what pair of Skills count as Supported by this Ability:<br/> -Archery {Bow% and Spot/Listen%}<br/> -Baseball/Cricket {Melee Attack <Bludgeoning>% and Throw%}<br/> -Basketball {Jump/Leap% and Throw%}<br/> -Boxing {Brawl%, and Toughness%}<br/> -Football/Rugby {Resist Pain% and Grapple% or Throw%}<br/> -Golf {Melee Attack <Bludgeoning>% and Hold%}<br/> -Gymnastics {Balance% and Jump/Leap%}<br/> -Hockey {Balance% and Melee Attack <Bludgeoning>%}<br/> -Soccer {Brawl% and Endurance%}<br/><br/>Advancement Rate: +1 per Tier to Supported {SC%}<br/><br/>Training Value(s):<br/>Athletic  Equipment +1 per Tier<br/><br/>Mastery: Increase any Multiplier when using “Athletic Gear” by 1x to a maximum of 5x.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Athletic Gear",
                             Name = "Athletic Conditioning <Sport>",
                             UsesBaseAttributesCoded = "S,W"
                         },
@@ -156,7 +148,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character has basic first aid training that is extremely useful in survival situations. The ease of instruction is offset by the relatively shallow range of applications.\r\n\r\nSkill Support: {First Aid%}\r\nAdvancement Rate: +1 per Tier to {First Aid%}\r\n\r\nTraining Value(s):\r\nFirst Aid +1 per Tier\r\n\r\nMastery: Triggered Effects and Missions that allow for up to Heal 2 can target Damage Dice assigned to an Injury instead of just a character.",
                             HtmlDescription = "This character has basic first aid training that is extremely useful in survival situations. The ease of instruction is offset by the relatively shallow range of applications.<br/><br/>Skill Support: {First Aid%}<br/>Advancement Rate: +1 per Tier to {First Aid%}<br/><br/>Training Value(s):<br/>First Aid +1 per Tier<br/><br/>Mastery: Triggered Effects and Missions that allow for up to Heal 2 can target Damage Dice assigned to an Injury instead of just a character.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "First Aid Kit",
                             Name = "Basic First Aid",
                             UsesBaseAttributesCoded = "W"
                         },
@@ -167,7 +158,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character is comfortable with motorcycles and can perform high-speed maneuvers with them in (relative) safety.\r\n\r\nSkill Support: {Pilot <Motorcycle>%}\r\n\r\nAdvancement Rate: +1 per Tier to {Pilot <Motorcycle>%}\r\n\r\nTraining Value(s):\r\nMotorcycles +1 per Tier\r\n\r\nMastery: Add +1x Multiplier when determining how far a character can travel on a motorcycle.",
                             HtmlDescription = "This character is comfortable with motorcycles and can perform high-speed maneuvers with them in (relative) safety.<br/><br/>Skill Support: {Pilot <Motorcycle>%}<br/><br/>Advancement Rate: +1 per Tier to {Pilot <Motorcycle>%}<br/><br/>Training Value(s):<br/>Motorcycles +1 per Tier<br/><br/>Mastery: Add +1x Multiplier when determining how far a character can travel on a motorcycle.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Vehicles",
                             Name = "Biker",
                             UsesBaseAttributesCoded = "P"
                         },
@@ -188,7 +178,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character is skilled with bicycle riding and can traverse even rough terrain while on a bike.\r\n\r\nSkill Support: {Pilot <Bicycle>%}\r\nAdvancement Rate: +1 per Tier to {Pilot <Bicycle>%}\r\n\r\nTraining Value(s):\r\nBicycles +1 per Tier\r\n\r\nMastery: Add +d5! to the Sb when determining how long a character can travel per period of Time when “Traveling”.",
                             HtmlDescription = "This character is skilled with bicycle riding and can traverse even rough terrain while on a bike.<br/><br/>Skill Support: {Pilot <Bicycle>%}<br/>Advancement Rate: +1 per Tier to {Pilot <Bicycle>%}<br/><br/>Training Value(s):<br/>Bicycles +1 per Tier<br/><br/>Mastery: Add +d5! to the Sb when determining how long a character can travel per period of Time when “Traveling”.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Vehicles",
                             Name = "BMX",
                             UsesBaseAttributesCoded = "S"
                         },
@@ -219,8 +208,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "Incarceration is not an ideal position to be in, but a character that has done hard time has a crash course in many hard life lessons and exercises a level of ingenuity that could be useful in a survival situation. \r\n\r\nSkill Support: Select One {Diplomacy <Intimidate>%, Melee Attack <Any>%, Brawl%, or Composure%}\r\n\r\nTraining Value(s): +1 per Tier\r\nPick One:\r\n -Bludgeon\r\n -Piercing\r\n -Slashing\r\n -Any category of Work\r\n\r\nMastery: All {Diplomacy <Intimidate>%} checks targeting this character get 1 Difficulty Die.",
                             HtmlDescription = "Incarceration is not an ideal position to be in, but a character that has done hard time has a crash course in many hard life lessons and exercises a level of ingenuity that could be useful in a survival situation. <br/><br/>Skill Support: Select One {Diplomacy <Intimidate>%, Melee Attack <Any>%, Brawl%, or Composure%}<br/><br/>Training Value(s): +1 per Tier<br/>Pick One:<br/> -Bludgeon<br/> -Piercing<br/> -Slashing<br/> -Any category of Work<br/><br/>Mastery: All {Diplomacy <Intimidate>%} checks targeting this character get 1 Difficulty Die.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Tools",
-                            ModifiesTrainingValuesOptionsCoded = "Bludgeon,Piercing,Slashing",
                             Name = "Caged Wisdom",
                             UsesBaseAttributesCoded = "S,P,E,W"
                         },
@@ -228,8 +215,8 @@ namespace OU2eHelperApi.Migrations
                         {
                             Id = 16,
                             AdvancesSkills = true,
-                            Description = "Call it stage presence, charm, wit, bedside manner or any combination thereof; this character has an uncommon charm about their person that makes them well liked, personable, and (seemingly) trustworthy. \r\n\r\nSpecial Feature(s): \r\nEach Tier allows a character to add 1 to Morale whenever they are in a Formation where they are the “Point” position.\r\n\r\nA character with this Ability will be sorely missed should anything happen to them. Any Checks made to resist the loss of Morale due to this character’s death or peril will get 1 Difficulty Die per Tier.\r\n\r\nSkill Support: {Diplomacy <Barter/Bribe>%, Diplomacy <Command>%, Diplomacy <Determine Motives>%, Diplomacy <Persuade>%, Expression%}.\r\n\r\nMastery: This character can substitute any Wb with Eb. Also, this character will prevent the addition of 1 Governance per Eb when utilizing Mobilized Workforce around a Stronghold.",
-                            HtmlDescription = "Call it stage presence, charm, wit, bedside manner or any combination thereof; this character has an uncommon charm about their person that makes them well liked, personable, and (seemingly) trustworthy. <br/><br/>Special Feature(s): <br/>Each Tier allows a character to add 1 to Morale whenever they are in a Formation where they are the “Point” position.<br/><br/>A character with this Ability will be sorely missed should anything happen to them. Any Checks made to resist the loss of Morale due to this character’s death or peril will get 1 Difficulty Die per Tier.<br/><br/>Skill Support: {Diplomacy <Barter/Bribe>%, Diplomacy <Command>%, Diplomacy <Determine Motives>%, Diplomacy <Persuade>%, Expression%}.<br/><br/>Mastery: This character can substitute any Wb with Eb. Also, this character will prevent the addition of 1 Governance per Eb when utilizing Mobilized Workforce around a Stronghold.",
+                            Description = "Call it stage presence, charm, wit, bedside manner or any combination thereof; this character has an uncommon charm about their person that makes them well liked, personable, and (seemingly) trustworthy. \r\n\r\nSpecial Feature(s): \r\nEach Tier allows a character to add 1 to Morale whenever they are in a Formation where they are the “Point” position.\r\n\r\nA character with this Ability will be sorely missed should anything happen to them. Any Checks made to resist the loss of Morale due to this character’s death or peril will get 1 Difficulty Die per Tier.\r\n\r\nSkill Support: {Diplomacy <any but Intimidate>, Expression%}.\r\n\r\nMastery: This character can substitute any Wb with Eb. Also, this character will prevent the addition of 1 Governance per Eb when utilizing Mobilized Workforce around a Stronghold.",
+                            HtmlDescription = "Call it stage presence, charm, wit, bedside manner or any combination thereof; this character has an uncommon charm about their person that makes them well liked, personable, and (seemingly) trustworthy. <br/><br/>Special Feature(s): <br/>Each Tier allows a character to add 1 to Morale whenever they are in a Formation where they are the “Point” position.<br/><br/>A character with this Ability will be sorely missed should anything happen to them. Any Checks made to resist the loss of Morale due to this character’s death or peril will get 1 Difficulty Die per Tier.<br/><br/>Skill Support: {Diplomacy <any but Intimidate>, Expression%}.<br/><br/>Mastery: This character can substitute any Wb with Eb. Also, this character will prevent the addition of 1 Governance per Eb when utilizing Mobilized Workforce around a Stronghold.",
                             IsProfessional = false,
                             Name = "Charisma",
                             UsesBaseAttributesCoded = "E"
@@ -261,7 +248,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "Those skilled in medicine can identify illness, treat common ailments, and provide care to sustain life in all states of acuity.\r\n\r\nSkill Support: {First Aid%}\r\n\r\nAdvancement Rate: +1 per Tier to {First Aid%}\r\n\r\nTraining Value(s):\r\n -First Aid: +1 per Tier\r\n -Medical Supplies: 1+ per Tier\r\n -“Medical Supplies” with one form of Injury specificity \r\n\r\nMastery: A character can increase what Result on any Damage Dice a medicine or medical tool can target by +1 on both a character and Injury. All other rules still apply for removing Damage Dice from both.",
                             HtmlDescription = "Those skilled in medicine can identify illness, treat common ailments, and provide care to sustain life in all states of acuity.<br/><br/>Skill Support: {First Aid%}<br/><br/>Advancement Rate: +1 per Tier to {First Aid%}<br/><br/>Training Value(s):<br/> -First Aid: +1 per Tier<br/> -Medical Supplies: 1+ per Tier<br/> -“Medical Supplies” with one form of Injury specificity <br/><br/>Mastery: A character can increase what Result on any Damage Dice a medicine or medical tool can target by +1 on both a character and Injury. All other rules still apply for removing Damage Dice from both.",
                             IsProfessional = true,
-                            ModifiesTrainingValuesCoded = "First Aid Kit,Medical Gear",
                             Name = "Clinical Skills - Profession",
                             UsesBaseAttributesCoded = "P,E"
                         },
@@ -282,7 +268,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character excels at moving while remaining unseen, a useful ability when being detected is the difference between life and death.\r\n\r\nSkill Support: {Stealth%}\r\n\r\nAdvancement Rate: +1 per Tier to {Stealth%}\r\n\r\nTraining Value(s): \r\nReconnaissance: +1 per Tier\r\n\r\nMastery: Double the amount of Threat reduced with any Triggered Effect or Mission that requires {Stealth%}.",
                             HtmlDescription = "This character excels at moving while remaining unseen, a useful ability when being detected is the difference between life and death.<br/><br/>Skill Support: {Stealth%}<br/><br/>Advancement Rate: +1 per Tier to {Stealth%}<br/><br/>Training Value(s): <br/>Reconnaissance: +1 per Tier<br/><br/>Mastery: Double the amount of Threat reduced with any Triggered Effect or Mission that requires {Stealth%}.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Reconnaissance Gear",
                             Name = "Concealment",
                             UsesBaseAttributesCoded = "P"
                         },
@@ -293,7 +278,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character is capable of building or modifying structures.\r\n\r\nSpecial Feature(s): \r\nWhen this Character is stationed at a Stronghold for Time 20, they will gain +1 Competence Point(s) per Tier. A GM can deem that a certain Industry needs to be at a certain level in order for a character to make themselves useful in this way.\r\n\r\nTraining Value(s): \r\nTools: +1 per Tier\r\n\r\nMastery: The character gets Competence Point(s) by this Ability every Time 10 instead of the normal Time 20.",
                             HtmlDescription = "This character is capable of building or modifying structures.<br/><br/>Special Feature(s): <br/>When this Character is stationed at a Stronghold for Time 20, they will gain +1 Competence Point(s) per Tier. A GM can deem that a certain Industry needs to be at a certain level in order for a character to make themselves useful in this way.<br/><br/>Training Value(s): <br/>Tools: +1 per Tier<br/><br/>Mastery: The character gets Competence Point(s) by this Ability every Time 10 instead of the normal Time 20.",
                             IsProfessional = true,
-                            ModifiesTrainingValuesCoded = "Tools",
                             Name = "Contractor - Profession",
                             UsesBaseAttributesCoded = "P"
                         },
@@ -314,7 +298,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character has experience working with a specific material such as wood, metal, ceramics, etc.\r\n\r\nSpecial Feature(s): \r\nUndertaking any construction or repair Mission with the named material will gain +1 Competence Point(s) per Tier towards the Work needed to accomplish the task.\r\n\r\nSkill Support: {Craft/Construct/Engineer <Material>%}\r\n\r\nAdvancement Rate: +1 per Tier to {Construct/Engineer <Material>%}\r\n\r\nTraining Value(s):\r\nCrafting <Material> (Work) +1 per Tier\r\n\r\nMastery: All crafted Gear and Upgrades will have one higher Durability than what is normal for the type.",
                             HtmlDescription = "This character has experience working with a specific material such as wood, metal, ceramics, etc.<br/><br/>Special Feature(s): <br/>Undertaking any construction or repair Mission with the named material will gain +1 Competence Point(s) per Tier towards the Work needed to accomplish the task.<br/><br/>Skill Support: {Craft/Construct/Engineer <Material>%}<br/><br/>Advancement Rate: +1 per Tier to {Construct/Engineer <Material>%}<br/><br/>Training Value(s):<br/>Crafting <Material> (Work) +1 per Tier<br/><br/>Mastery: All crafted Gear and Upgrades will have one higher Durability than what is normal for the type.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Tools",
                             Name = "Craftsman <Material>",
                             UsesBaseAttributesCoded = "W"
                         },
@@ -325,7 +308,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character prepares food very well.\r\n\r\nSpecial Feature(s): \r\nWhen this Character is stationed at a Stronghold for Time with any ‘Kitchen’, ‘Mess Hall’ or similar upgrade, they will gain +1 Competence Point(s) per Tier. \r\n\r\nAny Missions undertaken with Sustenance as a descriptor will add Morale 1 per Tier in this Ability if a {Survival <Cooking>%} was made by this character to accomplish the Mission.\r\n\r\nTraining Value(s):\r\nCooking (Work) +1 per Tier\r\n\r\nMastery: A character is disciplined in their use of spices and knows just how much to use. This character gets Efficient 3 (All) to any spices or ingredients.",
                             HtmlDescription = "This character prepares food very well.<br/><br/>Special Feature(s): <br/>When this Character is stationed at a Stronghold for Time with any ‘Kitchen’, ‘Mess Hall’ or similar upgrade, they will gain +1 Competence Point(s) per Tier. <br/><br/>Any Missions undertaken with Sustenance as a descriptor will add Morale 1 per Tier in this Ability if a {Survival <Cooking>%} was made by this character to accomplish the Mission.<br/><br/>Training Value(s):<br/>Cooking (Work) +1 per Tier<br/><br/>Mastery: A character is disciplined in their use of spices and knows just how much to use. This character gets Efficient 3 (All) to any spices or ingredients.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Tools",
                             Name = "Culinary Arts",
                             UsesBaseAttributesCoded = "W"
                         },
@@ -336,7 +318,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character has a background working in the custodial services and is experienced in keeping a Stronghold clean and functional.\r\n\r\nSpecial Feature(s): \r\nWhen stationed at a Stronghold for Time 1 per Size of the Stronghold, they will generate +1 Competence Point(s).\r\n\r\nTraining Value(s):\r\nCustodian (Work) +1 per Tier\r\n\r\nMastery: Time 1 to remove 1 DP from any one Stronghold feature.",
                             HtmlDescription = "This character has a background working in the custodial services and is experienced in keeping a Stronghold clean and functional.<br/><br/>Special Feature(s): <br/>When stationed at a Stronghold for Time 1 per Size of the Stronghold, they will generate +1 Competence Point(s).<br/><br/>Training Value(s):<br/>Custodian (Work) +1 per Tier<br/><br/>Mastery: Time 1 to remove 1 DP from any one Stronghold feature.",
                             IsProfessional = true,
-                            ModifiesTrainingValuesCoded = "Tools",
                             Name = "Custodian - Profession",
                             UsesBaseAttributesCoded = "S,P,E,W"
                         },
@@ -367,7 +348,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character is an exceptional swimmer and knows the finer points of using sophisticated dive equipment.\r\n\r\nSkill Support: {Swim%}\r\n\r\nTraining Value(s):\r\nDiving/Swimming Gear +1 per Tier\r\n\r\nMastery: All Diving/Swimming Gear will treat its Multiplier as being 1x higher.",
                             HtmlDescription = "This character is an exceptional swimmer and knows the finer points of using sophisticated dive equipment.<br/><br/>Skill Support: {Swim%}<br/><br/>Training Value(s):<br/>Diving/Swimming Gear +1 per Tier<br/><br/>Mastery: All Diving/Swimming Gear will treat its Multiplier as being 1x higher.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Swimming/Diving",
                             Name = "Dive Certified",
                             UsesBaseAttributesCoded = "S,P,E,W"
                         },
@@ -398,7 +378,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character has an extensive background working with electrical systems. \r\n\r\nSpecial Feature(s): \r\nEach Time 20, gain +1 Competence Point(s) per Tier that can be used on any feature of ‘Garage’, ‘Factory’, or ‘Machine Shop’.\r\n\r\nTraining Value(s):\r\nElectrical (Work) +1 per Tier\r\n\r\nMastery: Grant “Defense 2 Damage Dice” from failed {Construct/Engineer (Electrical)%}. This will not apply when making Checks representing actions with no consideration for safety.",
                             HtmlDescription = "This character has an extensive background working with electrical systems. <br/><br/>Special Feature(s): <br/>Each Time 20, gain +1 Competence Point(s) per Tier that can be used on any feature of ‘Garage’, ‘Factory’, or ‘Machine Shop’.<br/><br/>Training Value(s):<br/>Electrical (Work) +1 per Tier<br/><br/>Mastery: Grant “Defense 2 Damage Dice” from failed {Construct/Engineer (Electrical)%}. This will not apply when making Checks representing actions with no consideration for safety.",
                             IsProfessional = true,
-                            ModifiesTrainingValuesCoded = "Tools",
                             Name = "Electrical Engineering - Profession",
                             UsesBaseAttributesCoded = "W"
                         },
@@ -409,7 +388,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "Working as a farmer or rancher allows a character to better sustain their needs to survive.\r\n\r\nSpecial Feature(s): \r\nEach Time 20, gain +1 Competence Point(s) per Tier that can be used on any feature of ‘Garden’, ‘Ranch’, or ‘Machine Shop’ Features.\r\n\r\nSkill Support: {Science <Farming>%, Survival <Biome>%}\r\n\r\nAdvancement Rate: +1 per Tier to {Science <Farming>%, Survival <Biome>%}\r\n\r\nTraining Value(s):\r\nFarming/Ranching (Work) +1 per Tier\r\n\r\nMastery: A character can treat the Viability of any Stronghold they are in as being 10 higher than normal. Add +1 Competence Point(s) per Wb when operating out of any Stronghold that requires farming and/or ranching.",
                             HtmlDescription = "Working as a farmer or rancher allows a character to better sustain their needs to survive.<br/><br/>Special Feature(s): <br/>Each Time 20, gain +1 Competence Point(s) per Tier that can be used on any feature of ‘Garden’, ‘Ranch’, or ‘Machine Shop’ Features.<br/><br/>Skill Support: {Science <Farming>%, Survival <Biome>%}<br/><br/>Advancement Rate: +1 per Tier to {Science <Farming>%, Survival <Biome>%}<br/><br/>Training Value(s):<br/>Farming/Ranching (Work) +1 per Tier<br/><br/>Mastery: A character can treat the Viability of any Stronghold they are in as being 10 higher than normal. Add +1 Competence Point(s) per Wb when operating out of any Stronghold that requires farming and/or ranching.",
                             IsProfessional = true,
-                            ModifiesTrainingValuesCoded = "Tools",
                             Name = "Farmer/Rancher - Profession",
                             UsesBaseAttributesCoded = "W"
                         },
@@ -420,7 +398,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character can navigate through and fight fires. \r\n\r\nSkill Support: {Composure%, Diplomacy <Command/Coax>%, Spot/Listen%, Search% and Endurance%}\r\n\r\nTraining Value(s):\r\n -Firefighting +1 per Tier\r\n -First Aid +1 per Tier\r\n\r\nMastery: Reduce any Encumbrance due to Firefighting Gear by 1. Add “Efficient (Wb)” to any Firefighting Gear with a Capacity rating.",
                             HtmlDescription = "This character can navigate through and fight fires. <br/><br/>Skill Support: {Composure%, Diplomacy <Command/Coax>%, Spot/Listen%, Search% and Endurance%}<br/><br/>Training Value(s):<br/> -Firefighting +1 per Tier<br/> -First Aid +1 per Tier<br/><br/>Mastery: Reduce any Encumbrance due to Firefighting Gear by 1. Add “Efficient (Wb)” to any Firefighting Gear with a Capacity rating.",
                             IsProfessional = true,
-                            ModifiesTrainingValuesCoded = "Firefighting,First Aid Kit",
                             Name = "Firefighter - Profession",
                             UsesBaseAttributesCoded = "S"
                         },
@@ -431,7 +408,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character is skilled with thrown explosives and incendiary weapons.\r\n\r\nSkill Support: {Throw%}\r\n\r\nAdvancement Rate: +1 per Tier to {Throw%}\r\n\r\nTraining Value(s):\r\nGrenades (Thrown Weapon) +1 per Tier\r\n\r\nMastery: Thrown Weapons have the Deadly quality (Add 1 Damage Dice).",
                             HtmlDescription = "This character is skilled with thrown explosives and incendiary weapons.<br/><br/>Skill Support: {Throw%}<br/><br/>Advancement Rate: +1 per Tier to {Throw%}<br/><br/>Training Value(s):<br/>Grenades (Thrown Weapon) +1 per Tier<br/><br/>Mastery: Thrown Weapons have the Deadly quality (Add 1 Damage Dice).",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Throwing",
                             Name = "Grenadier",
                             UsesBaseAttributesCoded = "P"
                         },
@@ -442,7 +418,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character is a quick-draw and a fast shot without losing much accuracy. \r\n\r\nSpecial Feature(s): \r\nThis character ignores the limitations of degrees of success being resolved only against a single target using Accuracy. They also get Rush 1 per Tier when using Pistol weapons (so Tier 2 will grant Rush 2 and Tier 3 Rush 3 and so on).\r\n\r\nTraining Value(s):\r\nHandguns +1 per Tier\r\n\r\nMastery: Gain “Rush [1 Speed Die]” from the dice pool to a minimum of 1 Speed Die when using {Firearms <Pistol>%} Check.",
                             HtmlDescription = "This character is a quick-draw and a fast shot without losing much accuracy. <br/><br/>Special Feature(s): <br/>This character ignores the limitations of degrees of success being resolved only against a single target using Accuracy. They also get Rush 1 per Tier when using Pistol weapons (so Tier 2 will grant Rush 2 and Tier 3 Rush 3 and so on).<br/><br/>Training Value(s):<br/>Handguns +1 per Tier<br/><br/>Mastery: Gain “Rush [1 Speed Die]” from the dice pool to a minimum of 1 Speed Die when using {Firearms <Pistol>%} Check.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Pistol",
                             Name = "Gunslinger",
                             UsesBaseAttributesCoded = "P"
                         },
@@ -493,7 +468,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "The character demonstrates a unique charisma and ability to lead. Each Tier reduces Governance of a Stronghold they are in by 1 whenever Governance is determined and also increases the Morale of Formations they lead by 1 per Tier.\r\n\r\nTraining Value(s):\r\nCommand +1 per Tier\r\n\r\nMastery: Grant a bonus Morale 3 for all Formations where this character serves as Point.",
                             HtmlDescription = "The character demonstrates a unique charisma and ability to lead. Each Tier reduces Governance of a Stronghold they are in by 1 whenever Governance is determined and also increases the Morale of Formations they lead by 1 per Tier.<br/><br/>Training Value(s):<br/>Command +1 per Tier<br/><br/>Mastery: Grant a bonus Morale 3 for all Formations where this character serves as Point.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Command Apparatus",
                             Name = "Leadership",
                             UsesBaseAttributesCoded = "S,P,E,W"
                         },
@@ -504,7 +478,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "Working with and knowing how to bypass locks allows a character to access many places they otherwise would be unable to.\r\n\r\nTraining Value(s):\r\nLocksmithing (Work) +1 per Tier\r\n\r\nMastery: Characters get +1 Competence Point(s) when undertaking anything that involves lock picking or such tasks by spending Time 1 on it.",
                             HtmlDescription = "Working with and knowing how to bypass locks allows a character to access many places they otherwise would be unable to.<br/><br/>Training Value(s):<br/>Locksmithing (Work) +1 per Tier<br/><br/>Mastery: Characters get +1 Competence Point(s) when undertaking anything that involves lock picking or such tasks by spending Time 1 on it.",
                             IsProfessional = true,
-                            ModifiesTrainingValuesCoded = "Tools",
                             Name = "Locksmith - Profession",
                             UsesBaseAttributesCoded = "S,P,E,W"
                         },
@@ -515,7 +488,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character has trained extensively with one kind of specific firearm weapon and has excellent accuracy and speed with it.\r\n\r\nSpecial Feature(s): \r\nA character chooses one model of Firearm. This training allows a character to remove 1 Speed Die from the Dice Pool when using that model. This Ability can be taken multiple times; each time it applies to a different model of firearm.\r\n\r\nTraining Value(s):\r\n (Pick One)\r\n -Long Gun +1 per  Tier\r\n -Pistol +1 per Tier\r\n\r\nMastery: The “Hit” Triggered Effect with the model of Firearm and will add 1 Damage Die to any result of resolving Degrees of Success or Difference to use it.",
                             HtmlDescription = "This character has trained extensively with one kind of specific firearm weapon and has excellent accuracy and speed with it.<br/><br/>Special Feature(s): <br/>A character chooses one model of Firearm. This training allows a character to remove 1 Speed Die from the Dice Pool when using that model. This Ability can be taken multiple times; each time it applies to a different model of firearm.<br/><br/>Training Value(s):<br/> (Pick One)<br/> -Long Gun +1 per  Tier<br/> -Pistol +1 per Tier<br/><br/>Mastery: The “Hit” Triggered Effect with the model of Firearm and will add 1 Damage Die to any result of resolving Degrees of Success or Difference to use it.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesOptionsCoded = "Pistol,Long Gun",
                             Name = "Marksman",
                             UsesBaseAttributesCoded = "P"
                         },
@@ -526,7 +498,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character is trained in martial arts, which, given time and training, makes their whole body a weapon.\r\n\r\nSkill Support: {Martial Arts%}\r\n\r\nAdvancement Rate: +1 Advancement Rate per Tier to {Martial Arts%}\r\n\r\nTraining Value(s):\r\nMartial Arts +1 per Tier\r\n\r\nMastery: Add 1 Damage Die and 1 Speed Die to any Triggered Effect targeting an opponent when a character has used {Martial Arts%}, {Brawl%}, and/or {Grapple%}.",
                             HtmlDescription = "This character is trained in martial arts, which, given time and training, makes their whole body a weapon.<br/><br/>Skill Support: {Martial Arts%}<br/><br/>Advancement Rate: +1 Advancement Rate per Tier to {Martial Arts%}<br/><br/>Training Value(s):<br/>Martial Arts +1 per Tier<br/><br/>Mastery: Add 1 Damage Die and 1 Speed Die to any Triggered Effect targeting an opponent when a character has used {Martial Arts%}, {Brawl%}, and/or {Grapple%}.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Martial Arts",
                             Name = "Martial Artist",
                             UsesBaseAttributesCoded = "S,W"
                         },
@@ -547,7 +518,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character has an iron will when it comes to climbing high places.\r\n\r\nSkill Support: {Climb%, Composure%}\r\n\r\nAdvancement Rate: +1 Advancement Rate per Tier to {Climb%, Composure%}\r\n\r\nTraining Value(s):\r\nClimbing Gear +1 per Tier\r\n\r\nMastery: Climbing over periods of Time will add 50% to the distance traveled when determining the results of a Travel mission by climbing.",
                             HtmlDescription = "This character has an iron will when it comes to climbing high places.<br/><br/>Skill Support: {Climb%, Composure%}<br/><br/>Advancement Rate: +1 Advancement Rate per Tier to {Climb%, Composure%}<br/><br/>Training Value(s):<br/>Climbing Gear +1 per Tier<br/><br/>Mastery: Climbing over periods of Time will add 50% to the distance traveled when determining the results of a Travel mission by climbing.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Climbing Gear",
                             Name = "Mountaineer",
                             UsesBaseAttributesCoded = "S,W"
                         },
@@ -578,7 +548,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character is an excellent boxer or fist-fighter.\r\n\r\nSkill Support: {Brawl%}\r\n\r\nAdvancement Rate: +1 per Tier to {Brawl%}\r\n\r\nTraining Value(s):\r\nBludgeon +1 per Tier\r\n\r\nMastery: All {Brawl%} will add 1 Damage Die to the dice pool.",
                             HtmlDescription = "This character is an excellent boxer or fist-fighter.<br/><br/>Skill Support: {Brawl%}<br/><br/>Advancement Rate: +1 per Tier to {Brawl%}<br/><br/>Training Value(s):<br/>Bludgeon +1 per Tier<br/><br/>Mastery: All {Brawl%} will add 1 Damage Die to the dice pool.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Bludgeon",
                             Name = "Pugilist",
                             UsesBaseAttributesCoded = "S"
                         },
@@ -589,7 +558,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character is an excellent researcher in one or more scientific disciplines.\r\n\r\nSpecial Feature(s): \r\nEach Time 20, a character gets +1 Competence Point(s) per Tier if stationed in a Stronghold with any kind of scientific research facility or laboratory.\r\n\r\nSkill Support: {Science <Specialty>%}\r\n\r\nAdvancement Rate: +1 per Tier to {Science <Specialty>%}\r\n\r\nTraining Value(s):\r\nTools, Research Equipment (Work) +1 per Tier\r\n\r\nMastery: A character can treat the Science of any Stronghold they are in as being 10 higher than normal. Add +1 Competence Point(s) per Wb when operating out of any Stronghold that has an attached or upgraded Research Facility.",
                             HtmlDescription = "This character is an excellent researcher in one or more scientific disciplines.<br/><br/>Special Feature(s): <br/>Each Time 20, a character gets +1 Competence Point(s) per Tier if stationed in a Stronghold with any kind of scientific research facility or laboratory.<br/><br/>Skill Support: {Science <Specialty>%}<br/><br/>Advancement Rate: +1 per Tier to {Science <Specialty>%}<br/><br/>Training Value(s):<br/>Tools, Research Equipment (Work) +1 per Tier<br/><br/>Mastery: A character can treat the Science of any Stronghold they are in as being 10 higher than normal. Add +1 Competence Point(s) per Wb when operating out of any Stronghold that has an attached or upgraded Research Facility.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Tools",
                             Name = "Research <Field>",
                             UsesBaseAttributesCoded = "S,P,E,W"
                         },
@@ -610,7 +578,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character is a skilled negotiator and has well-developed instincts for appealing to a customer, distributor and vendor alike.\r\n\r\nSkill Support: {Diplomacy <Barter/Bribe>%} Advancement Rate: +1 per Tier to {Diplomacy <Barter/Bribe>%}. Each Tier will allow a character to have +1 to Reputation among organizations that keep track of such relationships with the character.\r\n\r\nNote that “Reputation” is a feature that is only really explored when using Strongholds, primarily explored in the Gamemaster’s Guide. It is just listed here for completeness.\r\n\r\nTraining Value(s):\r\nCurrency +1 per Tier\r\n\r\nMastery: Characters can add Value 100% that bringing any gear “To Market” will grant.",
                             HtmlDescription = "This character is a skilled negotiator and has well-developed instincts for appealing to a customer, distributor and vendor alike.<br/><br/>Skill Support: {Diplomacy <Barter/Bribe>%} Advancement Rate: +1 per Tier to {Diplomacy <Barter/Bribe>%}. Each Tier will allow a character to have +1 to Reputation among organizations that keep track of such relationships with the character.<br/><br/>Note that “Reputation” is a feature that is only really explored when using Strongholds, primarily explored in the Gamemaster’s Guide. It is just listed here for completeness.<br/><br/>Training Value(s):<br/>Currency +1 per Tier<br/><br/>Mastery: Characters can add Value 100% that bringing any gear “To Market” will grant.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Value",
                             Name = "Salesmanship",
                             UsesBaseAttributesCoded = "E"
                         },
@@ -621,7 +588,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character can search for missing people and treat the wounded in an emergency situation.\r\n\r\nSkill Support: {Search%}\r\n\r\nAdvancement Rate: +1 Advancement Rate per Tier to {Search%}\r\n\r\nTraining Value(s):\r\n -Recon + 1 per Tier\r\n -First Aid +1 per Tier\r\n\r\nMastery: Each Time 1 devoted to any “Search and Rescue” Mission grant a bonus Competence Point(s) to roll on their behalf.",
                             HtmlDescription = "This character can search for missing people and treat the wounded in an emergency situation.<br/><br/>Skill Support: {Search%}<br/><br/>Advancement Rate: +1 Advancement Rate per Tier to {Search%}<br/><br/>Training Value(s):<br/> -Recon + 1 per Tier<br/> -First Aid +1 per Tier<br/><br/>Mastery: Each Time 1 devoted to any “Search and Rescue” Mission grant a bonus Competence Point(s) to roll on their behalf.",
                             IsProfessional = true,
-                            ModifiesTrainingValuesCoded = "Reconnaissance Gear,First Aid Kit",
                             Name = "Search and Rescue - Profession",
                             UsesBaseAttributesCoded = "P"
                         },
@@ -682,7 +648,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character is skilled in performing delicate surgery and is familiar with surgical instruments and procedures.\r\n\r\nSkill Support: {Advanced Medicine%}\r\n\r\nAdvancement Rate: +1 per Tier to {Advanced Medicine%}\r\n\r\nTraining Value(s):\r\n -First Aid +1 per Tier\r\n -Medical Gear +1 per Tier\r\n\r\nMastery: Any removal of Damage Dice assigned to an Injury by way of Heal or any surgical or medical procedures can increase the normal Result allowed to be removed by +1.",
                             HtmlDescription = "This character is skilled in performing delicate surgery and is familiar with surgical instruments and procedures.<br/><br/>Skill Support: {Advanced Medicine%}<br/><br/>Advancement Rate: +1 per Tier to {Advanced Medicine%}<br/><br/>Training Value(s):<br/> -First Aid +1 per Tier<br/> -Medical Gear +1 per Tier<br/><br/>Mastery: Any removal of Damage Dice assigned to an Injury by way of Heal or any surgical or medical procedures can increase the normal Result allowed to be removed by +1.",
                             IsProfessional = true,
-                            ModifiesTrainingValuesCoded = "First Aid Kit,Medical Gear",
                             Name = "Surgical Skills - Profession",
                             UsesBaseAttributesCoded = "P"
                         },
@@ -693,7 +658,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character is highly accustomed to surviving within certain Biomes and is able to utilize available natural resources effectively.\r\n\r\nSpecial Feature(s): \r\nThe character gets +1 Competence Point(s) per tier when in the named Biome.\r\n\r\nSkill Support: {Survival <Biome>%}\r\n\r\nAdvancement Rate: +1 per Tier to {Survival <Biome>%}\r\n\r\nTraining Value(s):\r\nSurvival Kit +1 per Tier\r\n\r\nMastery: Reduce Environmental Modifiers against the character within this Biome by 1.",
                             HtmlDescription = "This character is highly accustomed to surviving within certain Biomes and is able to utilize available natural resources effectively.<br/><br/>Special Feature(s): <br/>The character gets +1 Competence Point(s) per tier when in the named Biome.<br/><br/>Skill Support: {Survival <Biome>%}<br/><br/>Advancement Rate: +1 per Tier to {Survival <Biome>%}<br/><br/>Training Value(s):<br/>Survival Kit +1 per Tier<br/><br/>Mastery: Reduce Environmental Modifiers against the character within this Biome by 1.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Survival Kit",
                             Name = "Survival Skills <Biome>",
                             UsesBaseAttributesCoded = "S,P,E,W"
                         },
@@ -754,7 +718,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character is capable of astounding feats of strength and agility in navigating urban environments.\r\n\r\nSkill Support: {Climb%, Navigation%}\r\n\r\nAdvancement Rate: +1 per Tier to {Climb%, Navigation%}\r\n\r\nTraining Value(s):\r\nClimbing Gear +1 per Tier\r\n\r\nMastery: Each Time 1 devoted to any “Scout” Mission grant a bonus Competence Point(s) to roll on their behalf.",
                             HtmlDescription = "This character is capable of astounding feats of strength and agility in navigating urban environments.<br/><br/>Skill Support: {Climb%, Navigation%}<br/><br/>Advancement Rate: +1 per Tier to {Climb%, Navigation%}<br/><br/>Training Value(s):<br/>Climbing Gear +1 per Tier<br/><br/>Mastery: Each Time 1 devoted to any “Scout” Mission grant a bonus Competence Point(s) to roll on their behalf.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Climbing Gear",
                             Name = "Traceur",
                             UsesBaseAttributesCoded = "P"
                         },
@@ -765,7 +728,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character is capable of hunting and trapping game and has more than a passing understanding of both traps and basic survival skills. \r\n\r\nTraining Value(s):\r\n -Survival Kit +1 per Tier\r\n -Hunting/Trapping Tools (Work) +1 per Tier\r\n\r\nMatery: Each Time 1 devoted to any “Survival” Mission grant a bonus Competence Point(s) when hunting or trapping.",
                             HtmlDescription = "This character is capable of hunting and trapping game and has more than a passing understanding of both traps and basic survival skills. <br/><br/>Training Value(s):<br/> -Survival Kit +1 per Tier<br/> -Hunting/Trapping Tools (Work) +1 per Tier<br/><br/>Matery: Each Time 1 devoted to any “Survival” Mission grant a bonus Competence Point(s) when hunting or trapping.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Survival Kit,Tools",
                             Name = "Trapper/Hunter",
                             UsesBaseAttributesCoded = "P"
                         },
@@ -776,7 +738,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character is well trained in the use of a bow or crossbow. \r\n\r\nSkill Support: {Bow%}\r\n\r\nAdvancement Rate: +1 per Tier to {Bow%}\r\n\r\nTraining Value(s):\r\nArchery +1 per Tier\r\n\r\nMastery: Add 1 Damage Dice to “Hit” and “Headshot” when {Bow%} is used.",
                             HtmlDescription = "This character is well trained in the use of a bow or crossbow. <br/><br/>Skill Support: {Bow%}<br/><br/>Advancement Rate: +1 per Tier to {Bow%}<br/><br/>Training Value(s):<br/>Archery +1 per Tier<br/><br/>Mastery: Add 1 Damage Dice to “Hit” and “Headshot” when {Bow%} is used.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Archery Gear",
                             Name = "Training, Bow/Crossbow",
                             UsesBaseAttributesCoded = "P"
                         },
@@ -797,7 +758,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character is extensively trained with long guns and is capable of firing shots carefully and accurately.\r\n\r\nSkill Support: {Firearms <Long Gun>%}\r\n\r\nAdvancement Rate: +1 per Tier to {Firearms <Long Gun>%}\r\n\r\nTraining Value(s):\r\nLong Gun +1 per Tier\r\n\r\nMastery: Using {Firearms <Long Gun>%} Grants an additional 1 Damage Die for the Deadly quality.",
                             HtmlDescription = "This character is extensively trained with long guns and is capable of firing shots carefully and accurately.<br/><br/>Skill Support: {Firearms <Long Gun>%}<br/><br/>Advancement Rate: +1 per Tier to {Firearms <Long Gun>%}<br/><br/>Training Value(s):<br/>Long Gun +1 per Tier<br/><br/>Mastery: Using {Firearms <Long Gun>%} Grants an additional 1 Damage Die for the Deadly quality.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Long Gun",
                             Name = "Training, Long Guns",
                             UsesBaseAttributesCoded = "P"
                         },
@@ -808,7 +768,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character is trained with a specific kind of melee weapon, generally from the Bludgeoning, Piercing, or Slashing weapon categories.\r\n\r\nSkill Support: Select One {Melee Attack <Bludgeoning, Piercing, or Slashing>%}\r\n\r\nAdvancement Rate: Each Tier adds +1 to the Supported Skills\r\n\r\nTraining Value(s):\r\n (Pick One)\r\n -Bludgeon +1 per Tier\r\n -Piercing +1 per Tier\r\n -Slashing +1 per Tier\r\n\r\nMastery: Any {Melee Attack%} will add 1 Damage Die to the dice pool.",
                             HtmlDescription = "This character is trained with a specific kind of melee weapon, generally from the Bludgeoning, Piercing, or Slashing weapon categories.<br/><br/>Skill Support: Select One {Melee Attack <Bludgeoning, Piercing, or Slashing>%}<br/><br/>Advancement Rate: Each Tier adds +1 to the Supported Skills<br/><br/>Training Value(s):<br/> (Pick One)<br/> -Bludgeon +1 per Tier<br/> -Piercing +1 per Tier<br/> -Slashing +1 per Tier<br/><br/>Mastery: Any {Melee Attack%} will add 1 Damage Die to the dice pool.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesOptionsCoded = "Bludgeon,Piercing,Slashing",
                             Name = "Training, Melee Weapons",
                             UsesBaseAttributesCoded = "S"
                         },
@@ -819,7 +778,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character is extensively trained with pistols and is capable of firing shots carefully and accurately.\r\n\r\nSkill Support: {Firearms <Pistol>%}\r\n\r\nAdvancement Rate: +1 per Tier to {Firearms <Pistol>%}\r\n\r\nTraining Value(s):\r\nHandgun +1 per Tier\r\n\r\nMastery: Using {Firearms <Pistol>%} Grants an additional 1 Damage Die for the Deadly quality.",
                             HtmlDescription = "This character is extensively trained with pistols and is capable of firing shots carefully and accurately.<br/><br/>Skill Support: {Firearms <Pistol>%}<br/><br/>Advancement Rate: +1 per Tier to {Firearms <Pistol>%}<br/><br/>Training Value(s):<br/>Handgun +1 per Tier<br/><br/>Mastery: Using {Firearms <Pistol>%} Grants an additional 1 Damage Die for the Deadly quality.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Pistol",
                             Name = "Training, Pistol",
                             UsesBaseAttributesCoded = "P"
                         },
@@ -830,7 +788,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character is familiar with the working of one kind of motor vehicle or water vessel.\r\n\r\nSkill Support: {Pilot <Vehicle/Vessel Class>%}.\r\n\r\nTraining Value(s):\r\nVehicle/Vessel Class (Vehicle) +1 per Tier\r\n\r\nMastery: A character using this Vessel or Vehicle will be able to add 50% to the amount of Distance they are able to travel with any “Travel” mission they undertake with it.",
                             HtmlDescription = "This character is familiar with the working of one kind of motor vehicle or water vessel.<br/><br/>Skill Support: {Pilot <Vehicle/Vessel Class>%}.<br/><br/>Training Value(s):<br/>Vehicle/Vessel Class (Vehicle) +1 per Tier<br/><br/>Mastery: A character using this Vessel or Vehicle will be able to add 50% to the amount of Distance they are able to travel with any “Travel” mission they undertake with it.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesCoded = "Vehicles",
                             Name = "Training, Vehicle/Vessel",
                             UsesBaseAttributesCoded = "P"
                         },
@@ -841,7 +798,6 @@ namespace OU2eHelperApi.Migrations
                             Description = "This character excels in the ability to carefully manage ammunition. This is an invaluable asset when ammo is scarce.\r\n\r\nSpecial Feature(s): \r\nCharacters with this Ability have “Efficient (1 per Tier)” when using firearms with a Capacity. This has no effect on firearms that do not require Depletion rolls, such as bolt action or revolvers. Depletion Points that equals Capacity will still count as exhausting an ammunition supply and requiring a Reload.\r\n\r\nTraining Value(s):\r\n (Pick One)\r\n -Long Gun +1 per Tier\r\n -Handgun +1 per Tier\r\n\r\nMastery: Remove one Depletion Die of any Result when using Firearms.",
                             HtmlDescription = "This character excels in the ability to carefully manage ammunition. This is an invaluable asset when ammo is scarce.<br/><br/>Special Feature(s): <br/>Characters with this Ability have “Efficient (1 per Tier)” when using firearms with a Capacity. This has no effect on firearms that do not require Depletion rolls, such as bolt action or revolvers. Depletion Points that equals Capacity will still count as exhausting an ammunition supply and requiring a Reload.<br/><br/>Training Value(s):<br/> (Pick One)<br/> -Long Gun +1 per Tier<br/> -Handgun +1 per Tier<br/><br/>Mastery: Remove one Depletion Die of any Result when using Firearms.",
                             IsProfessional = false,
-                            ModifiesTrainingValuesOptionsCoded = "Long Gun,Pistol",
                             Name = "Trigger Discipline",
                             UsesBaseAttributesCoded = "P"
                         },
@@ -1573,9 +1529,6 @@ namespace OU2eHelperApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
-
-                    b.Property<string>("AddedUsingBaseAttributeCode")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("BaseAbilityId")
                         .HasColumnType("int");

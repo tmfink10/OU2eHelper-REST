@@ -41,6 +41,11 @@ namespace OU2eHelperApi.Data
         public async Task<BaseAbility> AddBaseAbility(BaseAbility baseAbility)
         {
             var result = await _dbContext.BaseAbilities.AddAsync(baseAbility);
+            foreach (var value in baseAbility.ModifiesBaseTrainingValues)
+            {
+                _dbContext.Entry(value).State = EntityState.Unchanged;
+            }
+            _dbContext.Entry(baseAbility.ModifiesBaseTrainingValues).State = EntityState.Unchanged;
             await _dbContext.SaveChangesAsync();
             return result.Entity;
         }
@@ -61,6 +66,12 @@ namespace OU2eHelperApi.Data
                 result.SupportsBaseSkills = baseAbility.SupportsBaseSkills;
                 result.UsesBaseAttributes = baseAbility.UsesBaseAttributes;
                 result.Type = baseAbility.Type;
+
+                //foreach (var value in baseAbility.ModifiesBaseTrainingValues)
+                //{
+                //    _dbContext.Entry(value).State = EntityState.Unchanged;
+                //}
+                _dbContext.Entry(baseAbility.ModifiesBaseTrainingValues).State = EntityState.Unchanged;
 
                 return result;
             }

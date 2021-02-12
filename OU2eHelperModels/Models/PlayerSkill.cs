@@ -10,9 +10,13 @@ namespace OU2eHelperModels.Models
         public PlayerCharacter PlayerCharacter { get; set; }
         public BaseSkill BaseSkill { get; set; }
         public int Value { get; set; }
+        public int AttributeValue { get; set; }
         public string Type { get; set; }
         public string Notes { get; set; }
         public int Advancements { get; set; }
-        public bool Supported { get; set; }
+        public List<int> AdvancementsList { get; set; }
+        public bool IsSupported { get; set; }
+        public bool IsSpecialized { get; set; }
+        
     }
 }

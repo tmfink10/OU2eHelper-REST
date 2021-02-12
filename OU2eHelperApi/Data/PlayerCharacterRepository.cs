@@ -45,6 +45,26 @@ namespace OU2eHelperApi.Data
             {
                 _dbContext.Entry(attribute.BaseAttribute).State = EntityState.Unchanged;
             }
+
+            foreach (var ability in playerCharacter.PlayerAbilities)
+            {
+                _dbContext.Entry(ability.BaseAbility).State = EntityState.Unchanged;
+                foreach (var skill in ability.SupportsPlayerSkills)
+                {
+                    _dbContext.Entry(skill.BaseSkill).State = EntityState.Unchanged;
+                }
+            }
+
+            foreach (var skill in playerCharacter.PlayerSkills)
+            {
+                _dbContext.Entry(skill.BaseSkill).State = EntityState.Unchanged;
+            }
+
+            foreach (var value in playerCharacter.TrainingValues)
+            {
+                _dbContext.Entry(value.BaseTrainingValue).State = EntityState.Unchanged;
+            }
+
             await _dbContext.SaveChangesAsync();
             return result.Entity;
         }
@@ -60,9 +80,6 @@ namespace OU2eHelperApi.Data
                 result.LastName = playerCharacter.LastName;
                 result.Age = playerCharacter.Age;
                 result.Sex = playerCharacter.Sex;
-                result.PlayerSkills = playerCharacter.PlayerSkills;
-                result.PlayerAbilities = playerCharacter.PlayerAbilities;
-                result.TrainingValues = playerCharacter.TrainingValues;
                 result.SurvivalPoints = playerCharacter.SurvivalPoints;
                 result.GestaltLevel = playerCharacter.GestaltLevel;
                 result.CargoCapacity = playerCharacter.CargoCapacity;
@@ -73,14 +90,36 @@ namespace OU2eHelperApi.Data
                 result.Notes = playerCharacter.Notes;
 
                 _dbContext.PlayerCharacters.Update(result);
+                foreach (var attribute in result.PlayerAttributes)
+                {
+                    _dbContext.Entry(attribute.BaseAttribute).State = EntityState.Unchanged;
+                }
+
+                foreach (var ability in result.PlayerAbilities)
+                {
+                    _dbContext.Entry(ability.BaseAbility).State = EntityState.Unchanged;
+                    foreach (var skill in ability.SupportsPlayerSkills)
+                    {
+                        _dbContext.Entry(skill.BaseSkill).State = EntityState.Unchanged;
+                    }
+                }
+
+                foreach (var skill in result.PlayerSkills)
+                {
+                    _dbContext.Entry(skill.BaseSkill).State = EntityState.Unchanged;
+                }
+
+                foreach (var value in playerCharacter.TrainingValues)
+                {
+                    _dbContext.Entry(value.BaseTrainingValue).State = EntityState.Unchanged;
+                }
+
                 await _dbContext.SaveChangesAsync();
                 return result;
             }
 
             return null;
         }
-
-
 
         public async Task<PlayerCharacter> DeletePlayerCharacter(int playerCharacterId)
         {

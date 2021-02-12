@@ -13,6 +13,8 @@ namespace OU2eHelperModels.Models
         public string Type { get; set; }
         public string Notes { get; set; }
         public int Tier { get; set; }
-        public List<BaseSkill> Supports { get; set; } = new List<BaseSkill>();
+        public List<PlayerSkill> SupportsPlayerSkills { get; set; } = new List<PlayerSkill>();
+        public bool IsEditing { get; set; }
+        public string AddedUsingBaseAttributeCode { get; set; }
     }
 }
